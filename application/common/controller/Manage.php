@@ -8,7 +8,6 @@
 
 namespace app\common\controller;
 use think\Controller;
-
 /**
  * Class Manage
  * @desc 后端公共文件
