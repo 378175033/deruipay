@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="__LAYUI__/css/layui.css" id="layui">
     <link rel="stylesheet" href="__CSS__/default.css" id="theme">
     <link rel="stylesheet" href="__CSS__/kitadmin.css" id="kitadmin">
-
+    <script type="text/javascript" src="__JS__/jquery.js"></script>
 </head>
 <body class="layui-layout-body kit-theme-default">
     <div class="layui-layout layui-layout-admin">
@@ -34,36 +34,36 @@
             </div>
             <div class="layui-layout-right">
                 <ul class="kit-nav" lay-filter="header_right">
-                    <li class="kit-item" kit-target="help">
-                        <a href="javascript:;">
-                            <i class="layui-icon">&#xe607;</i>
-                            <span>帮助</span>
-                        </a>
-                    </li>
-                    <li class="kit-item" id="ccleft">
-                        <a href="javascript:;">
-                            <i class="layui-icon">&#xe60e;</i>
-                        </a>
-                    </li>
-                    <li class="kit-item" id="cc">
-                        <a href="javascript:;">
-                            <i class="layui-icon">&#xe64c;</i>
-                        </a>
-                    </li>
+                    <!--<li class="kit-item" kit-target="help">-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="layui-icon">&#xe607;</i>-->
+                            <!--<span>帮助</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--<li class="kit-item" id="ccleft">-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="layui-icon">&#xe60e;</i>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--<li class="kit-item" id="cc">-->
+                        <!--<a href="javascript:;">-->
+                            <!--<i class="layui-icon">&#xe64c;</i>-->
+                        <!--</a>-->
+                    <!--</li>-->
                     <li class="kit-item">
                         <a href="javascript:;">
-                  <span>
-                      {empty name="user.avatar"}
-                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">
-                      {else}
-                        <img src="{$user.avatar}" alt="" class="layui-nav-img">
-                      {/empty}
-                      {$user.nickname}
-                  </span>
+                              <span>
+                                  {empty name="user.avatar"}
+                                    <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">
+                                  {else}
+                                    <img src="{$user.avatar}" alt="" class="layui-nav-img">
+                                  {/empty}
+                                  {$user.name}
+                              </span>
                         </a>
                         <ul class="kit-nav-child kit-nav-right">
                             <li class="kit-item">
-                                <a href="#/user/my">
+                                <a href="#/index/welcome">
                                     <i class="layui-icon">&#xe612;</i>
                                     <span>个人中心</span>
                                 </a>
@@ -91,31 +91,26 @@
             <div class="layui-side-scroll">
                 <div id="menu-box">
                     <ul class="kit-menu">
-                        {volist name="menu" id="me"}
-                            <li class="kit-menu-item">
-                                {empty name="me.child"}
-                                <a href="#/{$me.controller}/{$me.action}">
-                                    <i class="layui-icon {$me.icon}"></i>
-                                    <span>{$me.name}</span>
-                                </a>
-                                {else}
-                                <a href="javascript:;">
-                                    <i class="layui-icon {$me.icon}"></i>
-                                    <span>{$me.name}</span>
-                                </a>
-                                <ul class="kit-menu-child layui-anim layui-anim-upbit">
-                                    {volist name="me.child" id="mc"}
-                                        <li class="kit-menu-item">
-                                            <a href="#/{$mc.controller}/{$mc.action}">
-                                                <i class="layui-icon {$mc.icon}"></i>
-                                                <span>{$mc.name}</span>
-                                            </a>
-                                        </li>
-                                    {/volist}
-                                </ul>
-                                {/empty}
-                            </li>
-                        {/volist}
+                        <li class="kit-menu-item">
+                            <a href="#/index/welcome">
+                                <i class="layui-icon layui-icon-home"></i>
+                                <span>商户首页</span>
+                            </a>
+                        </li>
+                        <li class="kit-menu-item">
+                            <a href="javascript:;">
+                                <i class="layui-icon layui-icon-service"></i>
+                                <span>我的订单</span>
+                            </a>
+                            <ul class="kit-menu-child layui-anim layui-anim-upbit">
+                                <li class="kit-menu-item">
+                                    <a href="#/order/index">
+                                        <i class="layui-icon layui-icon-cart"></i>
+                                        <span>订单列表</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -134,7 +129,7 @@
     </div>
     <script src="__LAYUI__/polyfill.min.js"></script>
     <script src="__LAYUI__/layui.js"></script>
-    <script src="__LAYUI__/kitadmin.js"></script>
+    <script src="__LAYUI__/kitBusiness.js"></script>
     <script src="__LAYUI__/mockjs-config.js"></script>
     <script>
         layui.use("admin")

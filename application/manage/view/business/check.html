@@ -1,0 +1,60 @@
+{include file='common:head'}
+<div class="layui-card layui-col-md10 layui-col-md-offset1">
+    <div class="layui-card-body ">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">商户审核</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="check" value="1" {eq name="data.check" value="1"}checked{/eq} title="未通过">
+                    <input type="radio" name="check" value="2" {eq name="data.check" value="2"}checked{/eq} title="通过审核">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">理由</label>
+                <div class="layui-input-block">
+                    <textarea name="check_desc" class="layui-textarea" >{$data.check_desc}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">最近一次审核时间</label>
+                <div class="layui-input-block">
+                    {$data.check_time}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="{$data.id}">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form
+        form.on('submit(formDemo)', function(data){
+            console.log(data.field)
+            $.post('{:url("check")}',data.field,function (res) {
+                console.log( res );
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1000)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

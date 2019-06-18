@@ -149,12 +149,3 @@ function clientOS() {
     return $platform;
 }
 
-/**
- *  记录操作日志
- * @param string $opera 操作信息
- */
-function operaLog($opera = '')
-{
-    \app\manage\model\Log::addLog($opera);
-}
-

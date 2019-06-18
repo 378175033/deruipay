@@ -63,6 +63,7 @@ class Manage extends Controller
             $this->redirect( url("Login/index") );
         }
         $this->userInfo = model( 'user')->where('id', session('userInfo')['id'])->find();
+        $this->assign( "user", $this->userInfo);
     }
 
     public function checkAuth()
@@ -103,7 +104,7 @@ class Manage extends Controller
      */
     public function index()
     {
-        if ($this->request->isPost()) {
+        if ($this->request->isPost() && $this->request->isAjax()) {
             $page = $this->request->param('page', 1, 'intval');
             $per = $this->request->param('limit', 10, 'intval');
             $this->order = $this->request->param('order', $this->order);
@@ -123,6 +124,7 @@ class Manage extends Controller
                         break;
                     case 'i-':
                         if (!empty($val)) $where[$vl] = ['in',$val];
+                        break;
                     default:
                         break;
                 }
@@ -142,7 +144,6 @@ class Manage extends Controller
                 $stime = strtotime($stime);
                 $where['create_time'] = ['between', [$stime, $ltime]];
             }
-//            $this->success( $where);
             $page = $page - 1;
             $list = $this->model
                 ->field($this->field)
@@ -179,6 +180,7 @@ class Manage extends Controller
             $res = $this->model->allowField( true )->data( $data )->isUpdate( false )->save();
             if ($res) {
                 $this->success('新增成功');
+
             }
             $this->error('新增失败！');
         }
@@ -229,7 +231,10 @@ class Manage extends Controller
             $field = $this->request->param('field', 'status');
             $res = $this->model->where($where)->update([ $field => $value]);
             if ($res) {
+                operaLog();
                 $this->success('设置成功！');
+
+
             } else {
                 $this->error('请重新设置！');
             }

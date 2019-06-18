@@ -1,18 +1,7 @@
 /** kitadmin-v2.1.0 MIT License By http://kit.zhengjinfan.cn Author Van Zheng */
 ;
 "use strict";
-var BaseUrl = "http:://www.demo.com/index.php/manage/";
 
-var list = [];
-layui.use("jquery",function () {
-    var jqu = layui.jquery;
-    jqu.post('manage/Api/getmenus',{},function ( res ) {
-        list = res.data;
-        for ( var i = 0; i< list.length; i++ ){
-            list[i]['iframe'] = !0;
-        }
-    });
-})
 var mods = ["element", "sidebar", "mockjs", "select", "tabs", "menu", "route", "utils", "component", "kit"];
 layui.define(mods,
     function(e) {
@@ -49,7 +38,7 @@ layui.define(mods,
                     shade: !0,
                     direction: "left",
                     dynamicRender: !0,
-                    url: "manage/Index/welcome",
+                    url: "business/Index/welcome",
                     width: "50%"
                 }),
                 a("#cc").on("click",
@@ -86,10 +75,23 @@ layui.define(mods,
                     a = {
                         r: [{
                             path: "/index/welcome",
-                            component: "manage/index/welcome",
+                            component: "business/index/welcome",
                             name: "欢迎页面"
                         }],
-                        routes: list
+                        routes: [
+                            {
+                                path: "/index/welcome",
+                                component: "business/index/welcome",
+                                name: "欢迎页面",
+                                iframe: !0
+                            },
+                            {
+                                path: "/order/index",
+                                component: "business/order/index",
+                                name: "订单列表",
+                                iframe: !0
+                            }
+                        ]
                     };
                 return "TABS" === e.loadType && (a.onChanged = function() {
                     i.existsByPath(location.hash) ? i.switchByPath(location.hash) : t.addTab(location.hash, (new Date).getTime())
