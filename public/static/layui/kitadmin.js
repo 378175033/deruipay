@@ -1,7 +1,6 @@
 if (layui === undefined) {
   console.error('请先引用layui.js文件.');
 } else {
-
   var modules = {
     admin: 'kit_modules/admin',
     axios: 'kit_modules/axios',
@@ -19,6 +18,5 @@ if (layui === undefined) {
     select:'kit_modules/select',
     echarts:'kit_modules/echarts'
   };
-
   layui.injectModules(modules);
 }

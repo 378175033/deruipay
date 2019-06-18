@@ -124,6 +124,7 @@ class Manage extends Controller
                         break;
                     case 'i-':
                         if (!empty($val)) $where[$vl] = ['in',$val];
+                        break;
                     default:
                         break;
                 }
