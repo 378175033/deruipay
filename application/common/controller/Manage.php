@@ -180,6 +180,7 @@ class Manage extends Controller
             $res = $this->model->allowField( true )->data( $data )->isUpdate( false )->save();
             if ($res) {
                 $this->success('新增成功');
+
             }
             $this->error('新增失败！');
         }
@@ -230,7 +231,10 @@ class Manage extends Controller
             $field = $this->request->param('field', 'status');
             $res = $this->model->where($where)->update([ $field => $value]);
             if ($res) {
+                operaLog();
                 $this->success('设置成功！');
+
+
             } else {
                 $this->error('请重新设置！');
             }
