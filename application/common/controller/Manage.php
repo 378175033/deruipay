@@ -19,7 +19,7 @@ class Manage extends Controller
      * @var resource 模型变量
      */
     protected $model;
-
+    protected $_limit = '';
     /**
      * @var bool 是否开启数据验证
      */
@@ -299,4 +299,19 @@ class Manage extends Controller
         }
         $this->error('请求方式错误！');
     }
+    /*
+     * 分页计算
+     * */
+    public function limit_on($page,$pageSize=null) {
+        if ($pageSize===null) {
+            $this->_limit = $page;
+        }
+        else {
+            $pageval = intval( ($page - 1) * $pageSize);
+            $this->_limit = $pageval.",".$pageSize;
+        }
+
+        return $this;
+    }
+
 }

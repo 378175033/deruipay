@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+</head>
+<body>
+
+<!--<table id="demo" lay-filter="test"></table>-->
+
+<div  >
+    <style type='text/css'>
+        table {
+            margin-top: 10%;
+        }
+    </style>
+<table class="layui-bg-orange" id="menu-table" lay-filter="text"></table>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form','table'], function() {
+        var form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+        //渲染时间选择器
+/*        lay('.test-item').each(function() {
+            laydate.render({
+                elem: this,
+                trigger: 'click'
+            });
+        });*/
+        //监听查询提交
+        // form.on('submit(query)', function(data) {
+        //     table.reload('LogList', {
+        //         url: '{:url("passagewayList")}',
+        //         where: data.field
+        //     });
+        //     return false;
+        // });
+
+        form.on('submit(clear)', function() {
+            window.refresh();
+            return false;
+        });
+
+        //表格数据渲染
+        table.render({
+            elem: '#menu-table',
+            method: 'post',
+            url: '{:url("passagewayList")}',
+            limit: 10,
+            id:'LogList',
+            limits: [5,10,15,20,50,100], //每页条数的选择项
+            loading: true,
+            where:{ order:'id desc'},
+            cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cols: [
+                [
+                    {field: 'id',title: 'ID'},
+                    {field: 'name',title: '通道名称'},
+                    {field: 'pay_type',title: '通道编号'},
+                    {field: 'rate',title: '基础费率'},
+                    {field: 'status',title: '是否可用'},
+                    {field: 'mini',title: '最小打款金额'},
+                    {field: 'max',title: '最大打款金额'},
+                ]
+            ],
+            page: true,
+            response: {
+                statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            parseData: function(res){ //res 即为原始返回的数据
+                console.log( res.data);
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data//解析数据列表
+                };
+            }
+        });
+    })
+</script>
+</body>
+</html>
