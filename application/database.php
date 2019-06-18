@@ -17,9 +17,9 @@ return [
     // 数据库名
     'database'        => 'www_f4_com',
     // 用户名
-    'username'        => 'www_f4_com ',
+    'username'        => 'www_f4_com',
     // 密码
-    'password'        => 'CAWiP7JR88ZNdH5y ',
+    'password'        => 'CAWiP7JR88ZNdH5y',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
