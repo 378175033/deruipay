@@ -1,0 +1,74 @@
+@charset "utf-8";
+body{
+    overflow-x: unset !important;
+}
+.login-page {
+    width: 40%;
+    margin: 15em auto 0;
+}
+.login-page h2.title1{
+    text-align: center;
+    padding: 1em;
+    background: #629aa9;
+    border-bottom: 10px solid #4b7884;
+    margin: 0;
+    color: #fff;
+    font-size: 1.6em;
+}
+.widget-shadow {
+    background-color: #fff;
+    box-shadow: 0 -1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+    -webkit-box-shadow: 0 -1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+    -moz-box-shadow: 0 -1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
+}
+.login-body {
+    padding: 4em 2em;
+}
+
+.login-page .user, .login-page .lock, .login-page .captcha {
+    font-size: 1em;
+    padding: 14px 15px 14px 37px;
+    width: 100%;
+    color: #A8A8A8;
+    outline: none;
+    border: 1px solid #D3D3D3;
+    margin: 0em 0em 1.5em 0em;
+}
+.cap_image{
+    position: absolute;
+    right: 1px;
+    bottom: 2.6em;
+    margin-bottom: 1.5em;
+    cursor: pointer;
+}
+
+.login-page input.user {
+    background: url(../images/user.png)no-repeat 8px 10px #fff;
+}
+.login-page input.lock {
+    background: url(../images/lock.png)no-repeat 8px 10px #fff;
+}
+.login-page input.captcha {
+    background: url(../images/mail.png)no-repeat 8px 10px #fff;
+}
+.login-page input[type="submit"] {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+    background: #F2B33F;
+    width: 40%;
+    padding: .6em 1em;
+    font-size: 1em;
+    margin: 0.5em auto 0;
+    display: block;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+}
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
+    -webkit-appearance: button;
+    cursor: pointer;
+}
