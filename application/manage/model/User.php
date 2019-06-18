@@ -55,7 +55,7 @@ class User extends Model
                             'last_login_time'   => time(),
                             'last_login_ip'     => request()->ip()
                         ];
-                        $this->where( ['id',$info['id']] )->data( $login )->isUpdate( true )->save();
+                        $this->where( ['id'=>$info['id']] )->update( $login );
                         session( "userInfo", $info);
                         session( 'userAuth', $info['rule'] );
                     } else {
