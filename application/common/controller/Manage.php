@@ -104,7 +104,7 @@ class Manage extends Controller
      */
     public function index()
     {
-        if ($this->request->isPost()) {
+        if ($this->request->isPost() && $this->request->isAjax()) {
             $page = $this->request->param('page', 1, 'intval');
             $per = $this->request->param('limit', 10, 'intval');
             $this->order = $this->request->param('order', $this->order);
@@ -143,7 +143,6 @@ class Manage extends Controller
                 $stime = strtotime($stime);
                 $where['create_time'] = ['between', [$stime, $ltime]];
             }
-//            $this->success( $where);
             $page = $page - 1;
             $list = $this->model
                 ->field($this->field)
