@@ -63,6 +63,7 @@ class Manage extends Controller
             $this->redirect( url("Login/index") );
         }
         $this->userInfo = model( 'user')->where('id', session('userInfo')['id'])->find();
+        $this->assign( "user", $this->userInfo);
     }
 
     public function checkAuth()
