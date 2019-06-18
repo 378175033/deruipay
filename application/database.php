@@ -15,11 +15,11 @@ return [
     // 服务器地址
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 'demo',
+    'database'        => 'www_f4_com',
     // 用户名
-    'username'        => 'root ',
+    'username'        => 'www_f4_com ',
     // 密码
-    'password'        => 'root ',
+    'password'        => 'CAWiP7JR88ZNdH5y ',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
