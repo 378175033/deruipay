@@ -51,6 +51,11 @@ class User extends Model
                 if( $info['status'] == 1 ) {
                     if( compare_password( $info['password'],$data['password'], $info['salt'] ) ){
                         $msg['status'] = 1;
+                        $login = [
+                            'last_login_time'   => time(),
+                            'last_login_ip'     => request()->ip()
+                        ];
+                        $this->where( ['id'=>$info['id']] )->update( $login );
                         session( "userInfo", $info);
                         session( 'userAuth', $info['rule'] );
                     } else {
