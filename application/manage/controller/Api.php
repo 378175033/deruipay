@@ -40,8 +40,12 @@ class Api extends Controller
         if( session( "?userInfo") ){
             $param = $this->request->param();
             $id = session( "userInfo")['id'];
-            $res = model( "User")->allowField(['avatar'])->where( ['id'=>$id] )->save( $param );
-
+            $res = model("user")->allowField(['avatar'])->isUpdate( true, ['id'=>$id])->save( $param );
+            if( $res ){
+                $this->success( "头像上传成功！");
+            } else {
+                $this->error( "头像上传失败！");
+            }
         }
     }
     public function getMenu( $current = 0 )

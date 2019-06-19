@@ -54,9 +54,9 @@
                         <a href="javascript:;">
                   <span>
                       {empty name="user.avatar"}
-                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">
+                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img avatar">
                       {else}
-                        <img src="{$user.avatar}" alt="" class="layui-nav-img">
+                        <img src="/uploads/head/{$user.avatar}" alt="" class="layui-nav-img avatar">
                       {/empty}
                       {$user.nickname}
                   </span>

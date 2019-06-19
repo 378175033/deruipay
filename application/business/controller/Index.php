@@ -29,6 +29,6 @@ class Index extends Business
 
     public function welcome()
     {
-        return 123;
+        return $this->fetch();
     }
 }

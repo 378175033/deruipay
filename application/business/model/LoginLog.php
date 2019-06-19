@@ -20,8 +20,8 @@ class LoginLog extends Model
                 'ip'    => request()->ip(),//获取IP
                 'address' => GetIpLookup(),//获取地址
                 'device'  => clientOS(),//获取登录系统
-                'user_id'   => session( 'userInfo')['id'],
-                'username'   => session( 'userInfo')['nickname'],
+                'user_id'   => session( 'business')['id'],
+                'username'   => session( 'business')['name'],
                 'type'  => 1
             ];
             $this->data( $data )->isUpdate( false )->save();
