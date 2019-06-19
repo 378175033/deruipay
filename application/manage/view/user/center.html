@@ -1,57 +1,59 @@
 {include file='common:head'}
-<div class="layui-card layui-col-md10 layui-col-md-offset1">
+<div class="layui-card layui-col-md10 layui-col-md-offset1 mt20">
+    <div class="layui-card-header">基本信息</div>
     <div class="layui-card-body ">
         <form class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户名/登录名</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" name="username" placeholder="写入用户名/登录名" lay-verify="name">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户昵称</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" name="nickname" placeholder="请输入用户昵称">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">密码</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" type="password" name="password" placeholder="请输入密码">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">手机号码</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" name="mobile" lay-verify="required|phone|number" placeholder="请输入手机号码">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">设置排序</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" name="sort" value="10000" placeholder="设置排序">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">是否隐藏</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" name="status" value="1" checked lay-skin="switch" lay-text="显示|隐藏">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                </div>
+            <div class="left-box left">
+                {empty name="user.avatar"}
+                    <img src="http://m.zhengjinfan.cn/images/0.jpg" alt="" class="layui-circle" id="avatar" width="240px">
+                {/empty}
+                <button type="button" class="layui-btn" id="upload">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
             </div>
         </form>
     </div>
 </div>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
 <script>
-    layui.use(['form'], function() {
-        var form = layui.form
+    layui.use(['form','upload'], function() {
+        var form = layui.form,upload=layui.upload;
+        var uploadInst = upload.render({
+            elem: '#upload' //绑定元素
+            ,url: '{:url("Upload/upload")}' //上传接口
+            ,accept: 'images' //允许上传的文件类型
+            ,data : {"folder": "head"}//上传接口额外参数
+            ,size : 2048//设置文件最大可允许上传的大小，单位 KB
+            ,multiple: false//是否允许多文件上传。
+            ,acceptMime: 'image/*'//规定打开文件选择框时，筛选出的文件类型
+            //,size: 50 //最大允许上传的文件大小
+            ,done: function(res){
+                console.log( res )
+                if( res.code === 1 ){
+                    $.post( "{:url('Api/updateUser'",{avatar: res.msg},function ( data ) {
+                        if( data.code === 1 ){
+                            toastr.success( "头像更换成功！",function () {
+                                $('.avatar').attr( 'src', "/uploads/head/"+res.msg );
+                            })
+                        } else {
+                            toastr.error( res.msg )
+                        }
+                    })
+
+                } else {
+                    toastr.error( res.msg )
+                }
+
+
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
         //自定义验证规则
         form.verify({
             name: function(value) {
