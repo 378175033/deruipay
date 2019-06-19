@@ -18,6 +18,10 @@ class Business extends Model
 {
     protected $autoWriteTimestamp = true;
 
+    protected function getLastLoginTimeAttr( $value )
+    {
+        return date( 'Y-m-d H:i:s', $value);
+    }
     /**
      * 2019/6/14 0014 13:42
      * @desc 检测用户是否登录

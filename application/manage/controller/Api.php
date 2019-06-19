@@ -16,8 +16,7 @@ class Api extends Controller
         if( request()->isAjax() && request()->isPost() )
         {
             $where = [
-                'delete_time'   => 0,
-                'status'        => 1
+                'delete_time'   => 0
             ];
             $menu = model('Menu')->where( $where )->select();
             $return = array();
@@ -30,6 +29,21 @@ class Api extends Controller
         }
     }
 
+    /**
+     * 2019/6/19 0019 10:43
+     * @desc 更新用户头像信息
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function updateUser()
+    {
+        if( session( "?userInfo") ){
+            $param = $this->request->param();
+            $id = session( "userInfo")['id'];
+            $res = model( "User")->allowField(['avatar'])->where( ['id'=>$id] )->save( $param );
+
+        }
+    }
     public function getMenu( $current = 0 )
     {
         $where = [

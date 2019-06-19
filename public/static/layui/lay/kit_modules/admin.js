@@ -42,7 +42,7 @@ layui.define(mods,
                 u.routeInit(i),
                 u.menuInit(i),
             "TABS" === i.loadType && u.tabsInit(),
-            "" === location.hash && t.setUrlState("主页", "#/"),
+            "" === location.hash && t.setUrlState("主页", "#/Index/welcome"),
                 layui.sidebar.render({
                     elem: "#ccleft",
                     title: "这是左侧打开的栗子",

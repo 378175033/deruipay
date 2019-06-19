@@ -1,0 +1,82 @@
+{include file='common:head'}
+<div class="layui-card layui-col-md10 layui-col-md-offset1 mt20">
+    <div class="layui-card-header">基本信息</div>
+    <div class="layui-card-body ">
+        <form class="layui-form">
+            <div class="left-box left">
+                {empty name="user.avatar"}
+                    <img src="http://m.zhengjinfan.cn/images/0.jpg" alt="" class="layui-circle" id="avatar" width="240px">
+                {/empty}
+                <button type="button" class="layui-btn" id="upload">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form','upload'], function() {
+        var form = layui.form,upload=layui.upload;
+        var uploadInst = upload.render({
+            elem: '#upload' //绑定元素
+            ,url: '{:url("Upload/upload")}' //上传接口
+            ,accept: 'images' //允许上传的文件类型
+            ,data : {"folder": "head"}//上传接口额外参数
+            ,size : 2048//设置文件最大可允许上传的大小，单位 KB
+            ,multiple: false//是否允许多文件上传。
+            ,acceptMime: 'image/*'//规定打开文件选择框时，筛选出的文件类型
+            //,size: 50 //最大允许上传的文件大小
+            ,done: function(res){
+                console.log( res )
+                if( res.code === 1 ){
+                    $.post( "{:url('Api/updateUser'",{avatar: res.msg},function ( data ) {
+                        if( data.code === 1 ){
+                            toastr.success( "头像更换成功！",function () {
+                                $('.avatar').attr( 'src', "/uploads/head/"+res.msg );
+                            })
+                        } else {
+                            toastr.error( res.msg )
+                        }
+                    })
+
+                } else {
+                    toastr.error( res.msg )
+                }
+
+
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+        //自定义验证规则
+        form.verify({
+            name: function(value) {
+                if( value ===  "" ){
+                    return "用户名不能为空"
+                }
+            }
+        });
+        form.on('submit(formDemo)', function(data){
+            console.log(data.field)
+            $.post('{:url("add")}',data.field,function (res) {
+                console.log( res );
+                if( res.code === 1 ){
+                    layer.msg( res.msg ,{icon: 1});
+                    parent.location.reload();
+                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    parent.layer.close(index);
+
+                } else {
+                    layer.msg( res.msg ,{icon: 2})
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

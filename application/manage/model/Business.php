@@ -16,4 +16,8 @@ class Business extends Model
     {
         return date("Y-m-d H:i:s", $value);
     }
+    protected function getLastLoginTimeAttr( $value )
+    {
+        return date( 'Y-m-d H:i:s', $value);
+    }
 }

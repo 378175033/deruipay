@@ -179,6 +179,7 @@ class Manage extends Controller
             }
             $res = $this->model->allowField( true )->data( $data )->isUpdate( false )->save();
             if ($res) {
+                operaLog('添加成功');
                 $this->success('新增成功');
 
             }
@@ -207,6 +208,7 @@ class Manage extends Controller
             }
             $res = $this->model->allowField( true )->isUpdate( true )->data( $data )->save();
             if ($res) {
+                operaLog('edit编辑');
                 $this->success('修改成功');
             }
             $this->error('修改失败！');
@@ -231,7 +233,7 @@ class Manage extends Controller
             $field = $this->request->param('field', 'status');
             $res = $this->model->where($where)->update([ $field => $value]);
             if ($res) {
-                operaLog();
+                operaLog('修改状态');
                 $this->success('设置成功！');
 
 
@@ -256,6 +258,7 @@ class Manage extends Controller
             $res = $this->model->where($where)->update(['delete_time' => time()]);
             if ($res) {
                 into_recycle($id, $this->table);
+                operaLog('伪删除');
                 $this->success('移除成功！');
             } else {
                 $this->error('系统繁忙！请稍后再试');
@@ -280,6 +283,7 @@ class Manage extends Controller
             $where = ['id' => $id];
             $res = $this->model->where($where)->delete();
             if ($res) {
+                operaLog();
                 $this->success('删除成功！');
             } else {
                 $this->error('系统繁忙！请稍后再试');
@@ -300,6 +304,7 @@ class Manage extends Controller
         if (request()->isPost() && \request()->isAjax()) {
             $value = $this->request->param('value', 0, 'intval');
             $this->model->where('id', $id)->update(['sort' => $value]);
+            operaLog('排序设置');
             $this->success('设置成功！');
         }
         $this->error('请求方式错误！');

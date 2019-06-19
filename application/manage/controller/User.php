@@ -81,6 +81,16 @@ class User extends Manage
     }
 
     /**
+     * 2019/6/19 0019 9:21
+     * @desc个人中心
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function center()
+    {
+        return $this->fetch();
+    }
+    /**
      * 2019/6/17 0017 16:34
      * @desc 配置用户权限
      * @ApiParams
