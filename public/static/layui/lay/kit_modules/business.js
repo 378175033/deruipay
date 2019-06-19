@@ -98,9 +98,9 @@ layui.define(mods,
                                 iframe: !0
                             },
                             {
-                                path: "/log/index",
-                                component: "business/log/index",
-                                name: "日志列表",
+                                path: "/order_log/index",
+                                component: "business/order_log/index",
+                                name: "余额变动明细",
                                 iframe: !0
                             },
                         ]

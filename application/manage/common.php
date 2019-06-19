@@ -56,6 +56,19 @@ function getSalt()
 }
 
 /**
+ * 2019/6/14 0014 16:27
+ * @desc生成唯一编号
+ * @return string
+ * @ApiParams
+ * @ApiReturnParams
+ */
+function unique_id()
+{
+    $unique_id = date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+    return $unique_id;
+}
+
+/**
  * 2019/6/14 0014 16:21
  * @desc 密码验证！
  * @ApiParams
