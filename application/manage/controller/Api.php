@@ -7,6 +7,7 @@
  */
 
 namespace app\manage\controller;
+use think\Cache;
 use think\Controller;
 
 class Api extends Controller
@@ -102,5 +103,49 @@ class Api extends Controller
             }
         }
         $this->success( $data );
+    }
+
+    /**
+     * 2019/6/19 0019 17:44
+     * @desc清除缓存
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function clear()
+    {
+        $dir_name = "..".DS."/runtime";
+        $this->delete_dir_file( $dir_name );
+        $this->success( '清除成功', 'index/index' );
+    }
+
+    /**
+     * 2019/6/19 0019 17:58
+     * @desc 循环删除缓存文件
+     * @ApiParams
+     * @ApiReturnParams
+     * @param string $dir_name
+     * @return bool
+     */
+    public function delete_dir_file( $dir_name )
+    {
+        $result = false;
+        if(is_dir($dir_name)){ //检查指定的文件是否是一个目录
+            if ($handle = opendir($dir_name)) {   //打开目录读取内容
+                while (false !== ($item = readdir($handle))) { //读取内容
+                    if ($item != '.' && $item != '..') {
+                        if (is_dir($dir_name . DS . $item)) {
+                            $this->delete_dir_file($dir_name . DS . $item);
+                        } else {
+                            unlink($dir_name . DS . $item);  //删除文件
+                        }
+                    }
+                }
+                closedir($handle);  //打开一个目录，读取它的内容，然后关闭
+                if (rmdir($dir_name)) { //删除空白目录
+                    $result = true;
+                }
+            }
+        }
+        return $result;
     }
 }
