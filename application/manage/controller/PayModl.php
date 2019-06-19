@@ -19,4 +19,10 @@ class PayModl extends Manage
         $this->table = "passageway";
         $this->model = model( "passageway" );
     }
+
+    public function get4select()
+    {
+        $passageway_list = $this->model->where('delete_time','=',0)->column('name', 'id');
+        return $passageway_list;
+    }
 }

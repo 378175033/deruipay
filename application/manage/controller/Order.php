@@ -111,6 +111,8 @@ class Order extends Manage
             ];
             $this->success('获取成功！', '', $data);
         }
+        $passageway_list = controller('PayModl')->get4select();
+        $this->assign('passageway_list', $passageway_list);
         return $this->fetch();
     }
 
