@@ -15,7 +15,7 @@ class Log extends Model
 {
     public static function addLog($opera = '')
     {
-        if(!$opera){
+        if(empty($opera)){
             $opera = request()->controller().'/'.request()->action();
         }
         $userInfo = session('userInfo')->getData();
