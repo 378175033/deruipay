@@ -6,41 +6,36 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">通道名称</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="name" placeholder="通道名称" lay-verify="name">
+                    <input class="layui-input" name="name" placeholder="通道名称" lay-verify="name" value="{$data.name}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">通道编号</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="pay_type" placeholder="通道编号">
+                    <input class="layui-input" name="pay_type" placeholder="通道编号" value="{$data.pay_type}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">基础费率</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="rate" placeholder="基础费率">
+                    <input class="layui-input" name="rate" placeholder="基础费率" value="{$data.rate}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">最小打款金额</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="mini" value="0.01" placeholder="最小打款金额">
+                    <input class="layui-input" name="mini" value="0.01" placeholder="最小打款金额" value="{$data.mini}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">最大打款金额</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="max" value="49999" placeholder="最大打款金额">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">是否可用</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" name="status" value="1" checked lay-skin="switch" lay-text="是否可用">
+                    <input class="layui-input" name="max" value="49999" placeholder="最大打款金额" value="{$data.max}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
+                    <input type="hidden" name="id" value="{$data.id}">
                     <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
@@ -73,7 +68,7 @@
         form.on('submit(formDemo)', function(data){
 
             console.log(data.field);
-            $.post('{:url("add")}',data.field,function (res) {
+            $.post('{:url("edit")}',data.field,function (res) {
                 console.log( res )
                 if( res.code === 1 ){
                     toastr.success( res.msg ,function () {

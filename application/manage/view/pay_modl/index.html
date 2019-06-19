@@ -1,104 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
-</head>
-<body>
-
-<!--<table id="demo" lay-filter="test"></table>-->
-
-<div  >
-
+{include file='common:head'}
+<div class="layui-card">
     <div class="layui-card-header">
         <a class="layui-btn" href="javascript:openIframe({'title':'添加通道'});"> <i class="layui-icon layui-icon-add-1"></i>新增通道</a>
     </div>
-    <style type='text/css'>
-        table {
-            margin-top: 2%;
-        }
-    </style>
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
-            <i class="layui-icon layui-icon-edit"></i>
-        </a>
-        <a class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" title="移除数据">
-            <i class="layui-icon layui-icon-delete"></i>
-        </a>
-        <a href="javascript:openIframe({content:'add?pid={{d.id}}'});" class="layui-btn layui-btn-xs layui-btn-warm" data-id="{{ d.id }}" title="添加子菜单">
-            <i class="layui-icon layui-icon-add-1"></i>
-        </a>
-    </script>
-<table class="layui-bg-orange" id="menu-table" lay-filter="text"></table>
+    <div class="layui-card-body">
+        <table class="layui-hide" id="table" lay-filter="text"></table>
+    </div>
 </div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
+        <i class="layui-icon layui-icon-edit"></i>
+    </a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" title="移除数据">
+        <i class="layui-icon layui-icon-delete"></i>
+    </a>
+</script>
+<script type="text/html" id="status">
+    <div>
+        {{#  if(d.status == 1){ }}
+        <a class="layui-btn layui-btn-normal layui-btn-xs status-toggle" data-value="0" data-id="{{ d.id }}">否</a>
+        {{#  } else { }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs status-toggle" data-value="1" data-id="{{ d.id }}">是</a>
+        {{#  } }}
+    </div>
+</script>
+<script type="text/html" id="sort">
+    <input type="number" class="layui-input sort-order" style="height: 28px" value="{{ d.sort }}" data-id="{{d.id}}">
+</script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
-    layui.use(['form','table'], function() {
-        var form = layui.form,
-            laydate = layui.laydate,
-            table = layui.table;
-        //渲染时间选择器
-/*        lay('.test-item').each(function() {
-            laydate.render({
-                elem: this,
-                trigger: 'click'
-            });
-        });*/
-        //监听查询提交
-        // form.on('submit(query)', function(data) {
-        //     table.reload('LogList', {
-        //         url: '{:url("passagewayList")}',
-        //         where: data.field
-        //     });
-        //     return false;
-        // });
-
-        form.on('submit(clear)', function() {
-            window.refresh();
-            return false;
-        });
-
+    layui.use(['table'], function() {
+        var table = layui.table;
         //表格数据渲染
         table.render({
-            elem: '#menu-table',
+            elem: '#table',
             method: 'post',
-            url: '{:url("passagewayList")}',
-            limit: 10,
-            id:'LogList',
+            url: '{:url("index")}',
+            limit: 9999,
+            page : true,
             limits: [5,10,15,20,50,100], //每页条数的选择项
+            // limits: false, //每页条数的选择项
             loading: true,
-            where:{ order:'id desc'},
+            param: {},
             cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            //count: 50,
+            initSort: {
+                field: 'sort',
+                type: 'asc'
+            },
             cols: [
                 [
                     {field: 'id',title: 'ID'},
                     {field: 'name',title: '通道名称'},
                     {field: 'pay_type',title: '通道编号'},
                     {field: 'rate',title: '基础费率'},
-                    {field: 'status',title: '是否可用'},
+                    {field: 'status',title: '是否可用',templet: '#status'},
                     {field: 'mini',title: '最小打款金额'},
                     {field: 'max',title: '最大打款金额'},
                     {field: 'operation',title: '操作',toolbar: '#barDemo'}
                 ]
             ],
-            page: true,
             response: {
                 statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
             },
+            done: function(){
+
+            },
             parseData: function(res){ //res 即为原始返回的数据
-                console.log( res.data);
+                // console.log( res )
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data//解析数据列表
+                    "data": res.data.list//解析数据列表
                 };
             }
         });
     })
 </script>
-</body>
-</html>
