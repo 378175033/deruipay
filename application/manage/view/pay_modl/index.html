@@ -10,11 +10,26 @@
 <!--<table id="demo" lay-filter="test"></table>-->
 
 <div  >
+
+    <div class="layui-card-header">
+        <a class="layui-btn" href="javascript:openIframe({'title':'添加通道'});"> <i class="layui-icon layui-icon-add-1"></i>新增通道</a>
+    </div>
     <style type='text/css'>
         table {
-            margin-top: 10%;
+            margin-top: 2%;
         }
     </style>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
+            <i class="layui-icon layui-icon-edit"></i>
+        </a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" title="移除数据">
+            <i class="layui-icon layui-icon-delete"></i>
+        </a>
+        <a href="javascript:openIframe({content:'add?pid={{d.id}}'});" class="layui-btn layui-btn-xs layui-btn-warm" data-id="{{ d.id }}" title="添加子菜单">
+            <i class="layui-icon layui-icon-add-1"></i>
+        </a>
+    </script>
 <table class="layui-bg-orange" id="menu-table" lay-filter="text"></table>
 </div>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
@@ -66,6 +81,7 @@
                     {field: 'status',title: '是否可用'},
                     {field: 'mini',title: '最小打款金额'},
                     {field: 'max',title: '最大打款金额'},
+                    {field: 'operation',title: '操作',toolbar: '#barDemo'}
                 ]
             ],
             page: true,

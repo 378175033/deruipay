@@ -24,12 +24,14 @@ class PayModl extends Manage
     public function passagewayList() // 通道列表
     {
       $limit[0] = input('post.page');
-      $limit[0] = 1;
-
       $limit[1] = input('post.total');
       if (empty($limit[1]))
       {
           $limit[1] = 10;
+      }
+      if (empty($limit[0]))
+      {
+          $limit[1] = 1;
       }
       $PublicDb = new PublicDb();
       $where = [];
@@ -38,6 +40,56 @@ class PayModl extends Manage
       return json(['data' => $data,'code' => 1,'msg' => '成功']);
     }
 
+    /**
+     *  新增
+     * */
+    public function addPassageway()
+    {
+        $name = input('post.name'); // 通道名称
+        $pay_type = input('post.pay_type'); // 通道编码
+        $rate = input('post.rate'); // 费率
+        $status = input('post.status'); // 是否可用
+        $mini = input('post.mini'); // 最小打款金额
+        $max = input('post.max'); // 最大打款金额
+        $data = [
+            'name' => $name,
+            'pay_type' => $pay_type,
+            'rate' => $rate,
+            'status' => $status,
+            'mini' => $mini,
+            'max' => $max,
+        ];
+        $validate = new \think\Validate([
+            ['name', 'require', '通道名称不能为空'],
+            ['pay_type', 'require', '通道编码不能为空'],
+            ['status', 'require', '代付单号格式不正确'],
+        ]);
+        if (!$validate->check($data)) {
+            $this->error( $validate->getError() );
+        }
+        $PublicDb = new PublicDb();
+        $where = [
+            'pay_type' => $pay_type
+        ];
+        $onlyType = $PublicDb->all_select($this->table,$where);
+        if ($onlyType)   $this->error( "通道编码已存在！");
+        if ($rate >= 1) $this->error( "通道费率不能大于1！");
+        $str = [
+            'name' => $name,
+            'pay_type' => $pay_type,
+            'rate' => $rate,
+            'status' => $status,
+            'mini' => $mini,
+            'max' => $max,
+            'create_time'  => time()
+        ];
+       $data = $PublicDb->all_add('passageway',$str);
+       if ($data)
+       {
+           $this->success( "新增成功！" );
+       }
+       $this->error( "新增失败！");
+    }
 
 
 

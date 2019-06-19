@@ -1,0 +1,93 @@
+{include file='common:head'}
+<div class="layui-card layui-col-md10 layui-col-md-offset1">
+    <div class="layui-card-body ">
+        <form class="layui-form">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">通道名称</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="name" placeholder="通道名称" lay-verify="name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">通道编号</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="pay_type" placeholder="通道编号">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">基础费率</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="rate" placeholder="基础费率">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">最小打款金额</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="mini" value="0.01" placeholder="最小打款金额">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">最大打款金额</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="max" value="49999" placeholder="最大打款金额">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否可用</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="status" value="1" checked lay-skin="switch" lay-text="是否可用">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form
+        //自定义验证规则
+        form.verify({
+            name: function(value) {
+                if( value ===  "" ){
+                    return "用户名不能为空"
+                }
+            }
+        });
+        form.verify({
+            pay_type: function(value) {
+                if( value ===  "" ){
+                    return "通道编码不能为空"
+                }
+            }
+        });
+        form.on('submit(formDemo)', function(data){
+
+            console.log(data.field);
+            $.post('{:url("addPassageway")}',data.field,function (res) {
+                console.log( res )
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1000)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
