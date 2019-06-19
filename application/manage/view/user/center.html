@@ -5,10 +5,12 @@
         <form class="layui-form">
             <div class="left-box left">
                 {empty name="user.avatar"}
-                    <img src="http://m.zhengjinfan.cn/images/0.jpg" alt="" class="layui-circle" id="avatar" width="240px">
+                    <img src="http://m.zhengjinfan.cn/images/0.jpg" alt="" class="layui-circle avatar" width="160px">
+                {else}
+                    <img src="/uploads/head/{$user.avatar}" alt="" class="layui-circle avatar" width="160px">
                 {/empty}
                 <button type="button" class="layui-btn" id="upload">
-                    <i class="layui-icon">&#xe67c;</i>上传图片
+                    <i class="layui-icon">&#xe67c;</i>更换头像
                 </button>
             </div>
         </form>
@@ -31,18 +33,17 @@
             ,acceptMime: 'image/*'//规定打开文件选择框时，筛选出的文件类型
             //,size: 50 //最大允许上传的文件大小
             ,done: function(res){
-                console.log( res )
                 if( res.code === 1 ){
-                    $.post( "{:url('Api/updateUser'",{avatar: res.msg},function ( data ) {
+                    $.post( "{:url('Api/updateUser')}",{avatar: res.msg},function ( data ) {
                         if( data.code === 1 ){
                             toastr.success( "头像更换成功！",function () {
+                                $('.avatar',window.parent.document).attr( 'src', "/uploads/head/"+res.msg );
                                 $('.avatar').attr( 'src', "/uploads/head/"+res.msg );
                             })
                         } else {
                             toastr.error( res.msg )
                         }
                     })
-
                 } else {
                     toastr.error( res.msg )
                 }

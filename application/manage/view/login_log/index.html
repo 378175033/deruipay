@@ -18,12 +18,16 @@
                     <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
                 </div>
             </div>
-            <!--<div class="layui-inline">-->
-                <!--<label class="layui-form-label">用户ID</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="e-user_id" autocomplete="off" placeholder="请输入用户id" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
+            <div class="layui-inline">
+                <label class="layui-form-label">日志类型</label>
+                <div class="layui-input-inline">
+                    <select name="l-type" class="layui-select">
+                        <option value="">选取日志类型</option>
+                        <option value="2">管理员</option>
+                        <option value="1">商户</option>
+                    </select>
+                </div>
+            </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">
                 <i class="layui-icon layui-icon-search"></i>查询
             </button>
@@ -87,12 +91,10 @@
                 ]
             ],
             page: true,
-
             response: {
                 statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
             },
             parseData: function(res){ //res 即为原始返回的数据
-                console.log( res )
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本

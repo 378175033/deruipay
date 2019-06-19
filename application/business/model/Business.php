@@ -73,7 +73,6 @@ class Business extends Model
                         $msg['msg'] = "用户已被禁用，请前往联系客服申请启用！";
                     }
                 }
-
             } else {
                 $msg['msg'] = "用户不存在！";
             }
