@@ -38,10 +38,10 @@ class Withdraw extends Manage
                         if (!empty($val)) $where[$vl] = ['like', '%' . $val . '%'];
                         break;
                     case 'e-':
-                        if (!empty($val))  $where[$vl] = $val;
+                        if (!empty($val)) $where[$vl] = $val;
                         break;
                     case 'i-':
-                        if (!empty($val)) $where[$vl] = ['in',$val];
+                        if (!empty($val)) $where[$vl] = ['in', $val];
                         break;
                     default:
                         break;
@@ -50,7 +50,8 @@ class Withdraw extends Manage
             $stime = $this->request->param('stime', 0);
 
             $ltime = $this->request->param('ltime', 0);
-            $bus_name = $this->request->param('bus_name','');
+            $bus_name = $this->request->param('bus_name', '');
+            $w_id = $this->request->param('w_id', 0);
             if (empty($stime) && !empty($ltime)) {
                 $ltime = strtotime($ltime);
                 $where['create_time'] = ['<=', $ltime];
@@ -64,19 +65,22 @@ class Withdraw extends Manage
                 $stime = strtotime($stime);
                 $where['create_time'] = ['between', [$stime, $ltime]];
             }
-            if (!empty($bus_name)){
-                $bus  =  db('business')->where(['name' => ['like', '%' . trim($bus_name) . '%']])->field('id')->select();
+            if (!empty($bus_name)) {
+                $bus = db('business')->where(['name' => ['like', '%' . trim($bus_name) . '%']])->field('id')->select();
                 if (!empty($bus)) {
                     $where['bus_id'] = ['in', array_column($bus, 'id')];
                 } else {
                     $this->error('商户名称错误');
                 }
             }
+            if (!empty($w_id)) {
+                $where['w_id'] = ['eq', $w_id];
+            }
             $page = $page - 1;
-            if( count( $this->join ) > 0 ){
+            if (count($this->join) > 0) {
                 $list = $this->model
                     ->alias('a')
-                    ->join( $this->join )
+                    ->join($this->join)
                     ->field($this->field)
                     ->where($where)
                     ->limit($page * $per, $per)
@@ -96,7 +100,7 @@ class Withdraw extends Manage
             $data = [
                 'list' => $list,
                 'count' => $count,
-                'sql'   => $sql
+                'sql' => $sql
             ];
             $this->success('获取成功！', '', $data);
         }
@@ -132,6 +136,7 @@ class Withdraw extends Manage
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
             if ($result) {
                 \app\manage\model\Withdraw::addWithdrawLog($post_data);
+                operaLog('提款审核');
                 $this->success("设置成功！");
             }
             $this->error("请稍后再试！");
@@ -160,6 +165,7 @@ class Withdraw extends Manage
             if (!$result) {
                 $this->error('移除失败');
             }
+            operaLog('提款列表删除');
             $this->success('移除成功');
         }
     }

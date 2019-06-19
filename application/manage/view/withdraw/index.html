@@ -34,6 +34,12 @@
                 </div>
             </div>
             <div class="layui-inline">
+                <label class="layui-form-label">流水号</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="w_id" autocomplete="off" placeholder="请输入流水号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
                 <label class="layui-form-label">商户名称</label>
                 <div class="layui-input-inline">
                     <input type="text" name="bus_name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
@@ -117,7 +123,7 @@
                     {field: 'id',title: 'ID'},
                     {field: 'bus_id',title: '商户名称'},
                     {field: 'money',title: '申请提款金额'},
-                    {field: 'ip',title: '操作IP'},
+                    {field: 'w_id',title: '流水号'},
                     {field: 'create_time',title: '商户发起时间'},
                     {field: 'check_desc',title: '审核描述'},
                     {field: 'status',title: '审核',toolbar:'#status'},
