@@ -16,8 +16,7 @@ class Api extends Controller
         if( request()->isAjax() && request()->isPost() )
         {
             $where = [
-                'delete_time'   => 0,
-                'status'        => 1
+                'delete_time'   => 0
             ];
             $menu = model('Menu')->where( $where )->select();
             $return = array();
