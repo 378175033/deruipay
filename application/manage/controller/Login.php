@@ -9,6 +9,7 @@
 namespace app\manage\controller;
 use think\Controller;
 use think\captcha\Captcha;
+use think\Image;
 
 /**
  * Class Login
@@ -56,6 +57,8 @@ class Login extends Controller
      * @desc
      * @ApiParams
      * @ApiReturnParams
+     * @param $id string
+     * @return resource
      */
     public function entry( $id = "")
     {
@@ -78,7 +81,7 @@ class Login extends Controller
      * @ApiParams
      * @ApiReturnParams
      * @param $code string
-     * @param $id int
+     * @param $id
      * @return bool
      */
     public function check_verify( $code, $id = ""){
@@ -86,6 +89,12 @@ class Login extends Controller
         return $captcha->check($code, $id);
     }
 
+    /**
+     * 2019/6/19 0019 14:32
+     * @desc 退出登录
+     * @ApiParams
+     * @ApiReturnParams
+     */
     public function logout()
     {
         session( 'userInfo', null);

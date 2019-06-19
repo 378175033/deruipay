@@ -46,6 +46,10 @@ class Manage extends Controller
     protected $userInfo;
 
     /**
+     * @var array 是否关联查询
+     */
+    protected $join = [];
+    /**
      * @var array 定义允许访问的目录
      */
     protected $allow_auth = [];
@@ -145,12 +149,24 @@ class Manage extends Controller
                 $where['create_time'] = ['between', [$stime, $ltime]];
             }
             $page = $page - 1;
-            $list = $this->model
-                ->field($this->field)
-                ->where($where)
-                ->limit($page * $per, $per)
-                ->order($this->order)
-                ->select();
+            if( count( $this->join ) > 0 ){
+                $list = $this->model
+                    ->alias('a')
+                    ->join( $this->join )
+                    ->field($this->field)
+                    ->where($where)
+                    ->limit($page * $per, $per)
+                    ->order($this->order)
+                    ->select();
+            } else {
+                $list = $this->model
+                    ->field($this->field)
+                    ->where($where)
+                    ->limit($page * $per, $per)
+                    ->order($this->order)
+                    ->select();
+            }
+
             $sql = $this->model->getLastSql();
             $count = $this->model->where($where)->count();
             $data = [

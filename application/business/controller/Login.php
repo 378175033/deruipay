@@ -31,7 +31,7 @@ class Login extends Controller
     public  function index()
     {
         if( model( 'Business')->checkLogin() ){
-            $this->error("您已经登录了！", '/business.html#/Index/welcome' );
+            $this->error("您已经登录了！", '/business.html#/index/welcome' );
         }
         if( $this->request->isAjax() && $this->request->isPost() ){
             $data = $this->request->param();
@@ -46,7 +46,7 @@ class Login extends Controller
             }
             //写入登录日志
             model( "LoginLog")->addLog();
-            $this->success( "登录成功！", '/business.html#/Index/welcome');
+            $this->success( "登录成功！", '/business.html#/index/welcome');
         }
         return $this->fetch('/login');
     }

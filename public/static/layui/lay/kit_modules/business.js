@@ -90,7 +90,19 @@ layui.define(mods,
                                 component: "business/order/index",
                                 name: "订单列表",
                                 iframe: !0
-                            }
+                            },
+                            {
+                                path: "/login_log/index",
+                                component: "business/login_log/index",
+                                name: "登录日志",
+                                iframe: !0
+                            },
+                            {
+                                path: "/order_log/index",
+                                component: "business/order_log/index",
+                                name: "余额变动明细",
+                                iframe: !0
+                            },
                         ]
                     };
                 return "TABS" === e.loadType && (a.onChanged = function() {
