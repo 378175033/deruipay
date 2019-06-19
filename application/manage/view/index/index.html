@@ -34,6 +34,12 @@
             </div>
             <div class="layui-layout-right">
                 <ul class="kit-nav" lay-filter="header_right">
+                    <li class="kit-item">
+                        <a href="javascript:;" id="clear">
+                            <i class="layui-icon">&#xe669;</i>
+                            <span>清除缓存</span>
+                        </a>
+                    </li>
                     <li class="kit-item" kit-target="help">
                         <a href="javascript:;">
                             <i class="layui-icon">&#xe607;</i>
@@ -136,8 +142,17 @@
     <script src="__LAYUI__/layui.js"></script>
     <script src="__LAYUI__/kitadmin.js"></script>
     <script src="__LAYUI__/mockjs-config.js"></script>
+    <script type="text/javascript" src="__JS__/jquery.js"></script>
+    <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+    <script type="text/javascript" src="__JS__/base.js"></script>
     <script>
+
         layui.use("admin")
+        $('#clear').click( function () {
+            $.post( "{:url('Api/clear')}",{},function ( res ) {
+                toastr.success( "缓存清除成功！",function () {})
+            })
+        })
     </script>
 </body>
 </html>

@@ -41,12 +41,14 @@ class Business extends Manage
             $data['salt'] = getSalt();
             $data['password'] = encode_password( $password, $data['salt'] );
             $data['create_time'] = time();
+
             if( $this->isValidate ){
                 $validate = validate($this->table);
                 if (!$validate->check($data)) {
                     $this->error($validate->getError());
                 }
             }
+            $data['shop_sn'] = $this->model->max("shop_sn")+1;
             $res = $this->model->allowField( true )->data($data)->isUpdate( false )->save();
             if ($res) {
                 $this->success('新增成功');

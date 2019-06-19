@@ -19,6 +19,11 @@ class PayModl extends Manage
         $this->table = "passageway";
         $this->model = model( "passageway" );
     }
+    public function pay_babay()  // 支付宝接口
+    {
+
+
+    }
 
     public function get4select()
     {

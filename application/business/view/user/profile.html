@@ -1,0 +1,19 @@
+{include file='common:head'}
+<div class="layui-card mt20">
+    <div class="layui-card-header">账户信息</div>
+    <div class="layui-card-body">
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="250">
+            </colgroup>
+            <tbody>
+                <tr><td class="align-right">商户号</td><td>{$user.shop_sn}</td></tr>
+                <tr><td class="align-right">商户名</td><td>{$user.name}</td></tr>
+                <tr><td class="align-right">登录名</td><td>{$user.name}</td></tr>
+                <tr><td class="align-right">手机号</td><td>{$user.mobile}</td></tr>
+                <tr><td class="align-right">入驻时间</td><td>{$user.create_time}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>

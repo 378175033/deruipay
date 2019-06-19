@@ -25,7 +25,7 @@ function openIframe( obj )
         closeBtn    : 2,
         shade   : 0.3,  //你想定义别的颜色，可以shade: [0.8, '#393D49']；如果你不想显示遮罩，可以shade: 0
         shadeClose : false, //是否点击遮罩关闭
-    }
+    };
     var newObj = $.extend( opt, obj);
     layui.use( 'layer', function () {
         layer = layui.layer;
@@ -40,9 +40,9 @@ $(document).on('click', '.btn-update',function () {
     var obj = {
         content : 'edit?id='+$(this).data('id'),
         title   : '更新数据信息'
-    }
+    };
     openIframe( obj );
-})
+});
 /**
  * 切换状态
  */
@@ -67,7 +67,7 @@ $(document).on('click','.status-toggle',function () {
             toastr.error( res.msg )
         }
     })
-})
+});
 /**
  * 更新排序
  */
@@ -80,7 +80,7 @@ $(document).on('blur','.sort-order',function () {
             toastr.error( res.msg );
         }
     })
-})
+});
 /**
  * 软删除数据
  */
@@ -96,7 +96,7 @@ $(document).on('click','.btn-remove',function () {
             toastr.error( res.msg );
         }
     })
-})
+});
 /**
  * 真实删除数据
  */
@@ -113,4 +113,4 @@ $(document).on('click','.btn-delete',function () {
             }
         })
     })
-})
+});

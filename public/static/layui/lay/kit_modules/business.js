@@ -103,6 +103,12 @@ layui.define(mods,
                                 name: "余额变动明细",
                                 iframe: !0
                             },
+                            {
+                                path: "/user/profile",
+                                component: "business/user/profile",
+                                name: "账户信息",
+                                iframe: !0
+                            }
                         ]
                     };
                 return "TABS" === e.loadType && (a.onChanged = function() {
