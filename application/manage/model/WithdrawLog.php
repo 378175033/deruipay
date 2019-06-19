@@ -16,7 +16,7 @@ class WithdrawLog extends Model
 
     public function getBusIdAttr($val)
     {
-        $res = db('business')->where('id',$val)->value('name');
+        $res = db('business')->where('id', $val)->value('name');
         return $res;
     }
 }
