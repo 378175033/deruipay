@@ -37,9 +37,9 @@
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
     layui.use(['form'], function() {
-        var form = layui.form
+        var form = layui.form;
         form.on('submit(formDemo)', function(data){
-            console.log(data.field)
+            console.log(data.field);
             $.post('{:url("check")}',data.field,function (res) {
                 console.log( res );
                 if( res.code === 1 ){
