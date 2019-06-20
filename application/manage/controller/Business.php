@@ -91,6 +91,7 @@ class Business extends Manage
             }
             $res = $this->model->allowField( true )->data($data)->isUpdate( true )->save();
             if ($res) {
+                operaLog($this->admin_id.'更新商户:'.$data['name'].'信息');
                 $this->success('更新成功');
             }
             $this->error('更新失败！');
@@ -116,6 +117,7 @@ class Business extends Manage
             $data['check_time'] = time();
             $res = $this->model->allowField(true)->where( ['id'=>$id] )->data( $data )->update();
             if( $res ){
+                operaLog($this->admin_id.'审核商户信息');
                 $this->success( "设置成功！");
             }
             $this->error( "请稍后再试！");

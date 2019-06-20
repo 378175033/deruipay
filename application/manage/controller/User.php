@@ -56,6 +56,7 @@ class User extends Manage
             }
             $res = $this->model->allowField( true )->data($data)->isUpdate( false )->save();
             if ($res) {
+                operaLog($this->admin_id.'添加user');
                 $this->success('新增成功');
             }
             $this->error('新增失败！');
@@ -87,6 +88,7 @@ class User extends Manage
             }
             $res = $this->model->allowField( true )->data($data)->isUpdate( true )->save();
             if ($res) {
+                operaLog($this->admin_id.'更新user:'.$id);
                 $this->success('更新成功');
             }
             $this->error('更新失败！');
@@ -122,6 +124,7 @@ class User extends Manage
             $rule = $this->request->param('rule', '');
             $res = $this->model->where('id',$id)->update(['rule' => $rule, 'update_time' => time()]);
             if( $res ){
+                operaLog($this->admin_id.'配置权限');
                 $this->success( "权限配置成功！");
             }
             $this->error("系统繁忙，请稍后再试！");

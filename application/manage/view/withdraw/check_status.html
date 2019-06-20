@@ -46,8 +46,7 @@
         var form = layui.form;
         form.on('submit(formDemo)', function(data){
             $.post('{:url("check_status")}',data.field,function (res) {
-                console.log( res );
-                if( res.code === 0 ){
+                if( res.code === 1 ){
                     toastr.success( res.msg ,function () {
                         setTimeout( function () {
                             parent.location.reload();

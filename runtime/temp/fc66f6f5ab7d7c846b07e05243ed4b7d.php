@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:73:"D:\a_project\F4\public/../application/manage\view\withdraw_log\index.html";i:1560934179;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:70:"D:\a_project\F4\public/../application/manage\view\login_log\index.html";i:1560933288;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,26 +19,6 @@
     </style>
 </head>
 <body>
-
-
-<script type="text/html" id="dele_log">
-    <div>
-        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" id="delete_1" data-id="{{ d.id }}" >删除
-        </a>
-    </div>
-</script>
-
-<script type="text/html" id="sta">
-    <div>
-        {{#  if(d.status === 2){ }}
-        <span class="layui-btn layui-btn-success layui-btn-xs">同意</span>
-        {{#  } else { }}
-        <span class="layui-btn layui-btn-danger layui-btn-xs">拒绝</span>
-        {{#  } }}
-    </div>
-</script>
-
-
 <form class="layui-form" action="">
     <div class="lay-all">
         <div class="layui-block" style="padding: 20px">
@@ -55,15 +35,19 @@
             <div class="layui-inline">
                 <label class="layui-form-label">用户昵称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="bus_name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                    <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
                 </div>
             </div>
-            <!--<div class="layui-inline">-->
-            <!--<label class="layui-form-label">用户ID</label>-->
-            <!--<div class="layui-input-inline">-->
-            <!--<input type="text" name="e-user_id" autocomplete="off" placeholder="请输入用户id" class="layui-input">-->
-            <!--</div>-->
-            <!--</div>-->
+            <div class="layui-inline">
+                <label class="layui-form-label">日志类型</label>
+                <div class="layui-input-inline">
+                    <select name="l-type" class="layui-select">
+                        <option value="">选取日志类型</option>
+                        <option value="2">管理员</option>
+                        <option value="1">商户</option>
+                    </select>
+                </div>
+            </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">
                 <i class="layui-icon layui-icon-search"></i>查询
             </button>
@@ -77,22 +61,9 @@
 </body>
 <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
 <script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
-    $(document).on('click','#delete_1',function () {
-        var id = parseInt( $(this).data('id') );
-        var ptr = $(this).parents('tr');
-        ptr.remove();
-        $.post('remove',{id:id},function (res) {
-            if( res.code === 1 ){
-                toastr.success( res.msg, function () {
-                    ptr.remove();
-                });
-            } else {
-                toastr.error( res.msg );
-            }
-        })
-    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,
@@ -104,9 +75,6 @@
                 trigger: 'click'
             });
         });
-
-
-
         //监听查询提交
         form.on('submit(query)', function(data) {
             table.reload('LogList', {
@@ -135,21 +103,18 @@
             cols: [
                 [
                     {field: 'id',title: 'ID'},
-                    {field: 'bus_id',title: '商户名称'},
-                    {field: 'status',title: '状态',toolbar:'#sta'},
-                    {field: 'money',title: '申请提款金额'},
-                    {field: 'note',title: '备注'},
-                    {field: 'create_time',title: '新增时间'},
-                    {field: 'opera',title: '操作',toolbar:'#dele_log'},
+                    {field: 'username',title: '登录账号'},
+                    {field: 'create_time',title: '登录时间'},
+                    {field: 'device',title: '登录设备'},
+                    {field: 'ip',title: 'IP地址'},
+                    {field: 'address',title: '登录地址'},
                 ]
             ],
             page: true,
-
             response: {
                 statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
             },
             parseData: function(res){ //res 即为原始返回的数据
-                console.log( res );
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本

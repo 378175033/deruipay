@@ -20,4 +20,9 @@ class Log extends Manage
         $this->model = model($this->table);
     }
 
+    public function se()
+    {
+        halt(session('userInfo'));
+    }
+
 }

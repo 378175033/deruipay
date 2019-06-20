@@ -5,7 +5,9 @@
  * Date: 2019/6/14 0014
  * Time: 16:04
  */
+
 use think\Db;
+
 /**
  * 2019/6/14 0014 16:06
  * @desc 密码加密
@@ -15,9 +17,9 @@ use think\Db;
  * @param $salt string 盐
  * @return  string $pass 生成的加密密码
  */
-function encode_password( $password, $salt )
+function encode_password($password, $salt)
 {
-    $pass = md5( crypt( $password, $salt ) );
+    $pass = md5(crypt($password, $salt));
     return $pass;
 }
 
@@ -30,16 +32,16 @@ function encode_password( $password, $salt )
  * @param $table
  * @param string $desc
  */
-function into_recycle( $rid, $table, $desc = "")
+function into_recycle($rid, $table, $desc = "")
 {
     $data = [
         'create_time' => time(),
-        'table'     => $table,
-        'rid'    => $rid,
-        'desc'  => $desc,
-        'user_id'   => session('userInfo')['id']
+        'table' => $table,
+        'rid' => $rid,
+        'desc' => $desc,
+        'user_id' => session('userInfo')['id']
     ];
-    model('Recycle')->data( $data )->allowField(['create_time','table','rid','desc'])->isUpdate( false )->save();
+    model('Recycle')->data($data)->allowField(['create_time', 'table', 'rid', 'desc'])->isUpdate(false)->save();
 }
 
 /**
@@ -51,7 +53,7 @@ function into_recycle( $rid, $table, $desc = "")
 function getSalt()
 {
     $str = "2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY";
-    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-5),4);
+    $name = substr(str_shuffle($str), mt_rand(0, strlen($str) - 5), 4);
     return $name;
 }
 
@@ -64,7 +66,7 @@ function getSalt()
  */
 function unique_id()
 {
-    $unique_id = date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+    $unique_id = date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
     return $unique_id;
 }
 
@@ -78,10 +80,10 @@ function unique_id()
  * @param $salt string 用户盐密码
  * @return bool 密码是否正确
  */
-function compare_password( $c_password,$password, $salt )
+function compare_password($c_password, $password, $salt)
 {
-    $pass = md5( crypt( $password, $salt ) );
-    if( $pass == $c_password ){
+    $pass = md5(crypt($password, $salt));
+    if ($pass == $c_password) {
         return true;
     }
     return false;
@@ -97,12 +99,12 @@ function compare_password( $c_password,$password, $salt )
  * @param string $url 跳转路径
  * @return array 提示信息数组
  */
-function msg( $msg = '', $status = 0, $url = '')
+function msg($msg = '', $status = 0, $url = '')
 {
     $return = [
         'status' => $status,
-        'msg'   => $msg,
-        'url'   => $url
+        'msg' => $msg,
+        'url' => $url
     ];
     return $return;
 }
@@ -112,14 +114,15 @@ function msg( $msg = '', $status = 0, $url = '')
  * @desc 获取IP的真实地址
  * @$ip 默认为空，IP地址
  */
-function GetIpLookup(){
+function GetIpLookup()
+{
 //    $ip = '125.70.179.81';
     $ip = request()->ip();
-    if(empty($ip)){
+    if (empty($ip)) {
         return '请输入IP地址';
     }
     $ak = "M7kfUpOtIIYGY4uS6M1KD13sw0y2yUyT";
-    $url = "http://api.map.baidu.com/location/ip?ip=".$ip."&ak=".$ak;
+    $url = "http://api.map.baidu.com/location/ip?ip=" . $ip . "&ak=" . $ak;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_REFERER, '百度地图referer');
@@ -127,8 +130,8 @@ function GetIpLookup(){
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $resp = curl_exec($ch);
     curl_close($ch);
-    $resp = json_decode( $resp, true);
-    if( $resp['status'] == 0 ){
+    $resp = json_decode($resp, true);
+    if ($resp['status'] == 0) {
         return $resp['content']['address'];
     }
     return $resp['message'];
@@ -138,23 +141,24 @@ function GetIpLookup(){
  * 用户设备类型
  * @return string
  */
-function clientOS() {
+function clientOS()
+{
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-    if(strpos($agent, 'windows nt')) {
+    if (strpos($agent, 'windows nt')) {
         $platform = 'windows';
-    } elseif(strpos($agent, 'macintosh')) {
+    } elseif (strpos($agent, 'macintosh')) {
         $platform = 'mac';
-    } elseif(strpos($agent, 'ipod')) {
+    } elseif (strpos($agent, 'ipod')) {
         $platform = 'ipod';
-    } elseif(strpos($agent, 'ipad')) {
+    } elseif (strpos($agent, 'ipad')) {
         $platform = 'ipad';
-    } elseif(strpos($agent, 'iphone')) {
+    } elseif (strpos($agent, 'iphone')) {
         $platform = 'iphone';
     } elseif (strpos($agent, 'android')) {
         $platform = 'android';
-    } elseif(strpos($agent, 'unix')) {
+    } elseif (strpos($agent, 'unix')) {
         $platform = 'unix';
-    } elseif(strpos($agent, 'linux')) {
+    } elseif (strpos($agent, 'linux')) {
         $platform = 'linux';
     } else {
         $platform = 'other';
@@ -169,5 +173,18 @@ function clientOS() {
 function operaLog($opera = '')
 {
     \app\manage\model\Log::addLog($opera);
+}
+
+
+function getBusName($table = '', $id = 0, $value = 'name')
+{
+    if (empty($value)) {
+        return '请输入值';
+    }
+    if(empty($table)){
+        $table = 'business';
+    }
+    $bus_name = db($table)->where('id', $id)->value($value);
+    return $bus_name;
 }
 

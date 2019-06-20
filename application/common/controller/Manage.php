@@ -54,11 +54,13 @@ class Manage extends Controller
      */
     protected $allow_auth = [];
 
+
     public function _initialize()
     {
         parent::_initialize();
         $this->checkLogin();
         $this->checkAuth();
+        $this->admin_id = '管理员id:'.session('userInfo')->id.'>>';
     }
 
     public function checkLogin()
@@ -113,7 +115,7 @@ class Manage extends Controller
             $per = $this->request->param('limit', 10, 'intval');
             $this->order = $this->request->param('order', $this->order);
             $where = [
-                'delete_time' => 0,
+                'a.delete_time' => 0,
             ];
             $param = $this->request->param();
             foreach ($param as $key => $val) {
@@ -121,13 +123,31 @@ class Manage extends Controller
                 $vl = substr($key, 2);
                 switch ($ps) {
                     case 'l-':
-                        if (!empty($val)) $where[$vl] = ['like', '%' . $val . '%'];
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val)) $where["b.".$vl] = ['like', '%' . $val . '%'];
+                        } else {
+                            if (!empty($val)) $where["a.".$vl] = ['like', '%' . $val . '%'];
+                        }
                         break;
                     case 'e-':
-                        if (!empty($val))  $where[$vl] = $val;
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val))  $where["b.".$vl] = $val;
+                        } else {
+                            if (!empty($val))  $where["a.".$vl] = $val;
+                        }
                         break;
                     case 'i-':
-                        if (!empty($val)) $where[$vl] = ['in',$val];
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val)) $where["b.".$vl] = ['in',$val];
+                        } else {
+                            if (!empty($val)) $where["a.".$vl] = ['in',$val];
+                        }
                         break;
                     default:
                         break;
@@ -137,16 +157,16 @@ class Manage extends Controller
             $ltime = $this->request->param('ltime', 0);
             if (empty($stime) && !empty($ltime)) {
                 $ltime = strtotime($ltime);
-                $where['create_time'] = ['<=', $ltime];
+                $where['a.create_time'] = ['<=', $ltime];
             }
             if (!empty($stime) && empty($ltime)) {
                 $stime = strtotime($stime);
-                $where['create_time'] = ['>', $stime];
+                $where['a.create_time'] = ['>', $stime];
             }
             if (!empty($stime) && !empty($ltime)) {
                 $ltime = strtotime($ltime);
                 $stime = strtotime($stime);
-                $where['create_time'] = ['between', [$stime, $ltime]];
+                $where['a.create_time'] = ['between', [$stime, $ltime]];
             }
             $page = $page - 1;
             if( count( $this->join ) > 0 ){
@@ -158,17 +178,19 @@ class Manage extends Controller
                     ->limit($page * $per, $per)
                     ->order($this->order)
                     ->select();
+                $sql = $this->model->getLastSql();
+                $count = $this->model->alias('a')->join( $this->join )->where($where)->count();
             } else {
                 $list = $this->model
+                    ->alias('a')
                     ->field($this->field)
                     ->where($where)
                     ->limit($page * $per, $per)
                     ->order($this->order)
                     ->select();
+                $sql = $this->model->getLastSql();
+                $count = $this->model->alias('a')->where($where)->count();
             }
-
-            $sql = $this->model->getLastSql();
-            $count = $this->model->where($where)->count();
             $data = [
                 'list' => $list,
                 'count' => $count,
@@ -195,7 +217,7 @@ class Manage extends Controller
             }
             $res = $this->model->allowField( true )->data( $data )->isUpdate( false )->save();
             if ($res) {
-                operaLog('添加成功');
+                operaLog($this->admin_id.'添加成功');
                 $this->success('新增成功');
 
             }
@@ -224,7 +246,7 @@ class Manage extends Controller
             }
             $res = $this->model->allowField( true )->isUpdate( true )->data( $data )->save();
             if ($res) {
-                operaLog('edit编辑');
+                operaLog($this->admin_id.'edit编辑');
                 $this->success('修改成功');
             }
             $this->error('修改失败！');
@@ -249,7 +271,7 @@ class Manage extends Controller
             $field = $this->request->param('field', 'status');
             $res = $this->model->where($where)->update([ $field => $value]);
             if ($res) {
-                operaLog('修改状态');
+                operaLog($this->admin_id.'修改状态');
                 $this->success('设置成功！');
 
 
@@ -274,7 +296,7 @@ class Manage extends Controller
             $res = $this->model->where($where)->update(['delete_time' => time()]);
             if ($res) {
                 into_recycle($id, $this->table);
-                operaLog('伪删除');
+                operaLog($this->admin_id.'伪删除');
                 $this->success('移除成功！');
             } else {
                 $this->error('系统繁忙！请稍后再试');
@@ -299,7 +321,7 @@ class Manage extends Controller
             $where = ['id' => $id];
             $res = $this->model->where($where)->delete();
             if ($res) {
-                operaLog();
+                operaLog($this->admin_id.'真实删除');
                 $this->success('删除成功！');
             } else {
                 $this->error('系统繁忙！请稍后再试');
@@ -320,7 +342,7 @@ class Manage extends Controller
         if (request()->isPost() && \request()->isAjax()) {
             $value = $this->request->param('value', 0, 'intval');
             $this->model->where('id', $id)->update(['sort' => $value]);
-            operaLog('排序设置');
+            operaLog($this->admin_id.'排序设置');
             $this->success('设置成功！');
         }
         $this->error('请求方式错误！');
