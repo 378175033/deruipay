@@ -287,18 +287,4 @@ class Business extends Manage
         $this->assign("id", $id);
         return $this->fetch();
     }
-
-    /**
-     * 2019/6/20 0020 14:48
-     * @desc查看商户的通道信息
-     * @ApiParams
-     * @ApiReturnParams
-     */
-    public function passageway()
-    {
-        $id = $this->request->param('id',0,'intval');
-        if( empty( $id )){
-            $this->error( "商户参数错误！");
-        }
-    }
 }
