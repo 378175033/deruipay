@@ -170,4 +170,3 @@ function operaLog($opera = '')
 {
     \app\manage\model\Log::addLog($opera);
 }
-

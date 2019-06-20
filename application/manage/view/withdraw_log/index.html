@@ -3,7 +3,7 @@
 
 <script type="text/html" id="dele_log">
     <div>
-        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" id="delete_1" data-id="{{ d.id }}" >删除
+        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" >删除
         </a>
     </div>
 </script>
@@ -35,7 +35,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">用户昵称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="bus_name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                    <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                 </div>
             </div>
             <!--<div class="layui-inline">-->
@@ -57,22 +57,9 @@
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
-    $(document).on('click','#delete_1',function () {
-        var id = parseInt( $(this).data('id') );
-        var ptr = $(this).parents('tr');
-        ptr.remove();
-        $.post('remove',{id:id},function (res) {
-            if( res.code === 1 ){
-                toastr.success( res.msg, function () {
-                    ptr.remove();
-                });
-            } else {
-                toastr.error( res.msg );
-            }
-        })
-    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,

@@ -29,6 +29,7 @@ class Recycle extends Manage
                 $res = db( $info['table'] )->where( ['id'=>$info['rid']] )->update( ['delete_time'=>0] );
                 if( $res ){
                     $this->model->where(['id'=>$id])->delete();
+                    operaLog($this->admin_id.'还原信息');
                     $this->success( "还原成功！");
                 }
                 $this->error( "还原信息不存在！");

@@ -23,7 +23,6 @@ class Order extends Model
     }
 
 
-    // status属性读取器
     protected function getBackStatusAttr($value)
     {
         $status = [0 => '无回调', 1 => '成功', 2 => '失败'];

@@ -103,6 +103,18 @@ layui.define(mods,
                                 name: "余额变动明细",
                                 iframe: !0
                             },
+                            {
+                                path: "/user/user_passageway_list",
+                                component: "business/user/user_passageway_list",
+                                name: "商户通道",
+                                iframe: !0
+                            },
+                            {
+                                path: "/user/profile",
+                                component: "business/user/profile",
+                                name: "账户信息",
+                                iframe: !0
+                            }
                         ]
                     };
                 return "TABS" === e.loadType && (a.onChanged = function() {

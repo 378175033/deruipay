@@ -53,6 +53,12 @@ class PayModl extends Manage
 
     }
 
+    public function get4select()
+    {
+        $passageway_list = $this->model->where('delete_time','=',0)->column('name', 'id');
+        return $passageway_list;
+    }
+
     /**
     //   商家收款 （当面付）
      *

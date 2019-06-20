@@ -63,7 +63,7 @@
         form.on('submit(formDemo)', function(data){
             console.log(data.field)
             $.post('{:url("add")}',data.field,function (res) {
-                console.log( res );
+                console.log( res.code );
                 if( res.code === 1 ){
                     layer.msg( res.msg ,{icon: 1});
                     parent.location.reload();
