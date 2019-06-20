@@ -104,6 +104,12 @@ layui.define(mods,
                                 iframe: !0
                             },
                             {
+                                path: "/user/user_passageway_list",
+                                component: "business/user/user_passageway_list",
+                                name: "商户通道",
+                                iframe: !0
+                            },
+                            {
                                 path: "/user/profile",
                                 component: "business/user/profile",
                                 name: "账户信息",

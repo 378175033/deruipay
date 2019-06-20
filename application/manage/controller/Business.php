@@ -143,11 +143,144 @@ class Business extends Manage
     public function account()
     {
         $id = $this->request->param('id',0,'intval');
-        if( empty( $id ) ){
-            $this->error( "请选择指定商户！");
+        $type = $this->request->param('type',0,'intval');
+        if( empty( $type ) || empty( $id )){
+            $this->error( "商户参数错误！");
+        }
+        if( request()->isPost() && request()->isAjax() ){
+            $data = request()->param();
+            $info = 1;
+            $dif = 0;
+            switch ( $type ){
+                case 1://修改余额
+                    if( empty( $data['inc'] ) ){
+                        $this->error( "请设置更改余额数量");
+                    }
+                    switch ( $data['way'] )
+                    {
+                        case 1://增加余额
+                            $dif = $data['inc'];
+                            $data['money'] = $data['money'] + $dif;
+                            break;
+                        case 2://减少余额
+                            if( $data['inc'] > $data['money'] ){
+                                $this->error("您最多可以扣除余额".$data['money']);
+                            }
+                            $dif = -$data['inc'];
+                            break;
+                        default:
+                            $this->error( "参数错误！");
+                    }
+                    $data['money'] = $data['money'] + $dif;
+                    break;
+                case 2://修改冻结金额
+                    //获取原冻结金额
+                    $frozen = $this->model->where( 'id', $id)->value('frozen_money');
+                    $dif =  $frozen - $data['frozen_money'];
+                    $data['money'] = $data['money'] + $dif;
+                    if( $data['money'] < 0 ){
+                        $this->error( "没有多余余额加入冻结金额！");
+                    }
+                    $info = 2;
+                    break;
+                default:
+                    $this->error( "参数错误！");
+            }
+            $this->error( $data );
+            $res = $this->model->allowField(['money','frozen_money'])->isUpdate( true )->save( $data,['id'=>$id] );
+            if( $res ){
+                //将金额变动记录到数据表
+                $insert = [
+                    'bus_id'    => $id,
+                    'account'   => $dif,
+                    'desc'      => $data['desc'],
+                    'info'      => $info
+                ];
+                model( 'account_log')->add( $insert );
+                $this->success( "操作成功！", "", $info."当前余额为:".$data['money']);
+            }
+            $this->error( "请稍后再试！");
         }
         $data = $this->model->where( "id",$id)->field( "id,money,frozen_money")->find();
         $this->assign( "data", $data);
+        $this->assign( 'type', $type);
+        return $this->fetch();
+    }
+
+    public function account_log()
+    {
+        $id = $this->request->param('id',0,'intval');
+        if( empty( $id )){
+            $this->error( "商户参数错误！");
+        }
+        if( request()->isAjax() && request()->isPost() )
+        {
+            $page = $this->request->param('page', 1, 'intval');
+            $per = $this->request->param('limit', 10, 'intval');
+            $this->order = $this->request->param('order', $this->order);
+            $param = $this->request->param();
+            $where = [ 'a.bus_id' => $id ];
+            foreach ($param as $key => $val) {
+                $ps = substr($key, 0, 2);
+                $vl = substr($key, 2);
+                switch ($ps) {
+                    case 'l-':
+                        if (!empty($val)) $where["a.".$vl] = ['like', '%' . $val . '%'];
+                        break;
+                    case 'e-':
+                        if (!empty($val))  $where["a.".$vl] = $val;
+                        break;
+                    case 'i-':
+                        if (!empty($val)) $where["a.".$vl] = ['in',$val];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            $stime = $this->request->param('stime', 0);
+            $ltime = $this->request->param('ltime', 0);
+            if (empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $where["a.".'create_time'] = ['<=', $ltime];
+            }
+            if (!empty($stime) && empty($ltime)) {
+                $stime = strtotime($stime);
+                $where["a.".'create_time'] = ['>', $stime];
+            }
+            if (!empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $stime = strtotime($stime);
+                $where["a.".'create_time'] = ['between', [$stime, $ltime]];
+            }
+            $page = $page - 1;
+            $list = model('AccountLog')
+                ->alias('a')
+                ->join( [
+                    [config('database.prefix').'business b', 'b.id = a.bus_id','left'],
+                    [config('database.prefix').'user c', 'c.id = a.user_id','left'],
+                ])
+                ->field( "a.info,a.desc,a.account,a.create_time,a.id,b.name,c.nickname")
+                ->where($where)
+                ->limit($page * $per, $per)
+                ->order($this->order)
+                ->select();
+            $sql = $this->model->getLastSql();
+            $count = model('AccountLog')
+                ->alias('a')
+                ->join( [
+                    [config('database.prefix').'business b', 'b.id = a.bus_id','left'],
+                    [config('database.prefix').'user c', 'c.id = a.user_id','left'],
+                ])
+                ->where($where)
+                ->count();
+            $data = [
+                'list' => $list,
+                'count' => $count,
+                'sql'   => $sql
+            ];
+            $this->success('获取成功！', '', $data);
+        }
+        $this->assign("id", $id);
         return $this->fetch();
     }
 

@@ -3,20 +3,45 @@
     <div class="layui-card-body ">
         <form class="layui-form">
             <div class="layui-form-item">
-                <label class="layui-form-label">设置余额</label>
+                <label class="layui-form-label">当前余额</label>
                 <div class="layui-input-block">
-                    <input type="number" class="layui-input" name="money" placeholder="请设置默认余额" value="{$data.money}">
+                    <p style="line-height: 36px">&yen;{$data.money}</p>
                 </div>
             </div>
+            {eq name="type" value="1"}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">改变方式</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="way" value="1" title="增加" checked>
+                        <input type="radio" name="way" value="2" title="减少">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">改变数量</label>
+                    <div class="layui-input-block">
+                        <input type="number" class="layui-input" name="inc" placeholder="请设置增加/减少金额">
+                    </div>
+                </div>
+            {/eq}
+            {eq name="type" value="2"}
             <div class="layui-form-item">
                 <label class="layui-form-label">冻结余额</label>
                 <div class="layui-input-block">
                     <input type="number" class="layui-input" name="frozen_money" value="{$data.frozen_money}" placeholder="请设置冻结余额">
                 </div>
             </div>
+            {/eq}
+            <div class="layui-form-item">
+                <label class="layui-form-label">变动原因</label>
+                <div class="layui-input-block">
+                    <textarea name="desc" class="layui-textarea" placeholder="请输入您的变更原因"></textarea>
+                </div>
+            </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
                     <input type="hidden" name="id" value="{$data.id}">
+                    <input type="hidden" name="money" value="{$data.money}">
+                    <input type="hidden" name="type" value="{$type}">
                     <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
@@ -39,22 +64,24 @@
                 }
             }
         });
+        var flag = true;
         form.on('submit(formDemo)', function(data){
-            console.log(data.field)
-            $.post('{:url("account")}',data.field,function (res) {
-                console.log( res );
-                if( res.code === 1 ){
-                    toastr.success( res.msg ,function () {
-                        setTimeout(function () {
-                            parent.location.reload();
-                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                            parent.layer.close(index);
-                        },1000)
-                    });
-                } else {
-                    toastr.error( res.msg )
-                }
-            })
+            if( flag ){
+                $.post('{:url("account")}',data.field,function (res) {
+                    if( res.code === 1 ){
+                        flag = false;
+                        toastr.success( res.msg ,function () {
+                            setTimeout(function () {
+                                parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                            },1000)
+                        });
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                })
+            }
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });
