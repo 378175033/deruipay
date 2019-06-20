@@ -35,9 +35,13 @@ class User extends Business
             $list = model('manage/user_passageway')
                 ->alias('user')
                 ->where('business_id','=',$this->user->id)
-                ->join('passageway','user.passageway_id = passageway.id')
+                ->join(config('database.prefix').'passageway b','user.passageway_id = b.id')
                 ->select();
-            $count = model('manage/user_passageway')->where('business_id','=',$this->user->id)->count();
+            $count = model('manage/user_passageway')
+                ->alias('user')
+                ->where('business_id','=',$this->user->id)
+                ->join(config('database.prefix').'passageway b','user.passageway_id = b.id')
+                ->count();
             $data = [
                 'list' => $list,
                 'count' => $count,
