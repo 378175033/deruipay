@@ -15,6 +15,15 @@ toastr.options = {
     hideMethod: "fadeOut"  	//隐藏的方式，和jquery相同
     //等其他参数
 };
+
+$('#clear').click( function () {
+    $.post( "manage/Api/clear",{},function () {
+        layui.use( "layer",function () {
+            layui.layer.msg( "缓存清除成功！",{icon:1})
+        })
+    })
+})
+
 function openIframe( obj )
 {
     var opt = {

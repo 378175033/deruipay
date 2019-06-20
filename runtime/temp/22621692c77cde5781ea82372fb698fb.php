@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"E:\www\F4\public/../application/manage\view\index\index.html";i:1560938638;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"E:\www\F4\public/../application/manage\view\index\index.html";i:1560993688;}*/ ?>
 <!DOCTYPE html>
 <html>
 
@@ -139,28 +139,16 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
     <script src="/static/layui/polyfill.min.js"></script>
     <script src="/static/layui/layui.js"></script>
     <script src="/static/layui/kitadmin.js"></script>
     <script src="/static/layui/mockjs-config.js"></script>
-    <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
     <script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
     <script type="text/javascript" src="/static/manage/js/base.js"></script>
     <script>
-        toastr.success( "缓存清除成功！",function () {
-
-        })
         layui.use("admin")
-        $('#clear').click( function () {
-            $.post( "<?php echo url('Api/clear'); ?>",{},function ( res ) {
-                // layui.use("layer",function () {
-                //     layui.layer.msg( "缓存清除成功！");
-                // })
-                toastr.success( "缓存清除成功！",function () {
-
-                })
-            })
-        })
     </script>
 </body>
 </html>

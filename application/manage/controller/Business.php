@@ -131,4 +131,22 @@ class Business extends Manage
         $this->assign( "data", $data );
         return $this->fetch();
     }
+
+    /**
+     * 2019/6/20 0020 10:02
+     * @desc手动设置商户余额
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function account()
+    {
+        $id = $this->request->param('id',0,'intval');
+        if( empty( $id ) ){
+            $this->error( "请选择指定商户！");
+        }
+        $data = $this->model->where( "id",$id)->field( "id,money,frozen_money")->find();
+        $this->assign( "data", $data);
+        return $this->fetch();
+    }
+
 }
