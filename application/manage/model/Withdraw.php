@@ -8,8 +8,6 @@
 
 namespace app\manage\model;
 
-
-use think\Db;
 use think\Model;
 
 class Withdraw extends Model

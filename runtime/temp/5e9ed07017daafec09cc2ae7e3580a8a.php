@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:64:"D:\a_project\F4\public/../application/manage\view\log\index.html";i:1561019099;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:64:"D:\a_project\F4\public/../application/manage\view\log\index.html";i:1561020223;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,9 +51,6 @@
             <button class="layui-btn" lay-filter="clear" lay-submit="">
                 <i class="layui-icon layui-icon-circle"></i>清空条件
             </button>
-            <button class="layui-btn" lay-filter="clear_time" lay-submit="">
-                <i class="layui-icon layui-icon-circle"></i>清空七天前数据
-            </button>
         </div>
     </div>
 </form>
@@ -82,11 +79,6 @@
                 where: data.field
             });
             return false;
-        });
-
-        form.on('submit(clear_time)',function () {
-           window.reload();
-           return false;
         });
 
         form.on('submit(clear)', function() {

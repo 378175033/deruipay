@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\withdraw\index.html";i:1560998861;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\withdraw\index.html";i:1561024349;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,6 +63,16 @@
                 <label class="layui-form-label">商户名称</label>
                 <div class="layui-input-inline">
                     <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">审核状态</label>
+                <div class="layui-input-inline">
+                    <select name="e-status">
+                        <option value=0>请选择</option>
+                        <option value=1>未通过</option>
+                        <option value=2>已通过</option>
+                    </select>
                 </div>
             </div>
             <!--<div class="layui-inline">-->
