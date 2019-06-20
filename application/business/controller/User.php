@@ -28,4 +28,11 @@ class User extends Business
     {
         return $this->fetch();
     }
+
+    public function user_passageway_list()
+    {
+        $user_passageway_list = model('user_passageway_list')->get($this->user->id);
+        $this->assign('user_passageway_list', $user_passageway_list);
+        return $this->fetch();
+    }
 }
