@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"D:\a_project\F4\public/../application/manage\view\order\index.html";i:1560933288;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"D:\a_project\F4\public/../application/manage\view\order\index.html";i:1560999187;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,8 +70,12 @@
             <div class="layui-inline">
                 <label class="layui-form-label">通道编号</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="passageway_id" autocomplete="off" placeholder="请输入通道编号"
-                           class="layui-input">
+                    <select name="passageway_id" lay-search="">
+                        <option value="">选取通道</option>
+                        <?php if(is_array($passageway_list) || $passageway_list instanceof \think\Collection || $passageway_list instanceof \think\Paginator): $k = 0; $__LIST__ = $passageway_list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$passageway): $mod = ($k % 2 );++$k;?>
+                        <option value="<?php echo $k; ?>"><?php echo $k; ?>.<?php echo $passageway; ?></option>
+                        <?php endforeach; endif; else: echo "" ;endif; ?>
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
@@ -83,7 +87,16 @@
             <div class="layui-inline">
                 <label class="layui-form-label">状态</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="e-status" autocomplete="off" placeholder="请输入状态" class="layui-input">
+                    <select name="e-status">
+                        <option value="">请选择一个状态</option>
+                        <option value="0">审核中</option>
+                        <option value="1">成功</option>
+                        <option value="2">未提交</option>
+                        <option value="3">已提交</option>
+                        <option value="4">代付失败</option>
+                        <option value="5">提交失败</option>
+                        <option value="5">已退回</option>
+                    </select>
                 </div>
             </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">

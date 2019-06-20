@@ -23,95 +23,8 @@ class Withdraw extends Manage
             ['business b','b.id = a.bus_id','left']
         ];
         $this->field = "a.*,b.name";
-        $this->admin_id = session('userInfo')->id;
+//        $this->admin_id = session('userInfo')->id;
     }
-
-//    public function index()
-//    {
-//        if ($this->request->isPost() && $this->request->isAjax()) {
-//            $page = $this->request->param('page', 1, 'intval');
-//            $per = $this->request->param('limit', 10, 'intval');
-//            $this->order = $this->request->param('order', $this->order);
-//            $where = [
-//                'delete_time' => 0,
-//            ];
-//            $param = $this->request->param();
-//            foreach ($param as $key => $val) {
-//                $ps = substr($key, 0, 2);
-//                $vl = substr($key, 2);
-//                switch ($ps) {
-//                    case 'l-':
-//                        if (!empty($val)) $where[$vl] = ['like', '%' . $val . '%'];
-//                        break;
-//                    case 'e-':
-//                        if (!empty($val)) $where[$vl] = $val;
-//                        break;
-//                    case 'i-':
-//                        if (!empty($val)) $where[$vl] = ['in', $val];
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//            $stime = $this->request->param('stime', 0);
-//
-//            $ltime = $this->request->param('ltime', 0);
-//            $bus_name = $this->request->param('bus_name', '');
-//            $w_id = $this->request->param('w_id', 0);
-//            if (empty($stime) && !empty($ltime)) {
-//                $ltime = strtotime($ltime);
-//                $where['create_time'] = ['<=', $ltime];
-//            }
-//            if (!empty($stime) && empty($ltime)) {
-//                $stime = strtotime($stime);
-//                $where['create_time'] = ['>', $stime];
-//            }
-//            if (!empty($stime) && !empty($ltime)) {
-//                $ltime = strtotime($ltime);
-//                $stime = strtotime($stime);
-//                $where['create_time'] = ['between', [$stime, $ltime]];
-//            }
-//            if (!empty($bus_name)) {
-//                $bus = db('business')->where(['name' => ['like', '%' . trim($bus_name) . '%']])->field('id')->select();
-//                if (!empty($bus)) {
-//                    $where['bus_id'] = ['in', array_column($bus, 'id')];
-//                } else {
-//                    $this->error('商户名称错误');
-//                }
-//            }
-//            if (!empty($w_id)) {
-//                $where['w_id'] = ['eq', $w_id];
-//            }
-//            $page = $page - 1;
-//            if (count($this->join) > 0) {
-//                $list = $this->model
-//                    ->alias('a')
-//                    ->join($this->join)
-//                    ->field($this->field)
-//                    ->where($where)
-//                    ->limit($page * $per, $per)
-//                    ->order($this->order)
-//                    ->select();
-//            } else {
-//                $list = $this->model
-//                    ->field($this->field)
-//                    ->where($where)
-//                    ->limit($page * $per, $per)
-//                    ->order($this->order)
-//                    ->select();
-//            }
-//
-//            $sql = $this->model->getLastSql();
-//            $count = $this->model->where($where)->count();
-//            $data = [
-//                'list' => $list,
-//                'count' => $count,
-//                'sql' => $sql
-//            ];
-//            $this->success('获取成功！', '', $data);
-//        }
-//        return $this->fetch();
-//    }
 
     /**
      *  提款审核
@@ -146,7 +59,7 @@ class Withdraw extends Manage
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
             if ($result) {
                 \app\manage\model\Withdraw::addWithdrawLog($post_data);
-                operaLog('管理员' . $this->admin_id . '对商户(' . $bus_name . ')提款审核');
+                operaLog($this->admin_id . '对商户(' . $bus_name . ')提款审核');
                 $this->success("设置成功！");
             }
             $this->error("请稍后再试！");
