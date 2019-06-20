@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:73:"D:\a_project\F4\public/../application/manage\view\withdraw_log\index.html";i:1560934179;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:73:"D:\a_project\F4\public/../application/manage\view\withdraw_log\index.html";i:1560999819;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +23,7 @@
 
 <script type="text/html" id="dele_log">
     <div>
-        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" id="delete_1" data-id="{{ d.id }}" >删除
+        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" >删除
         </a>
     </div>
 </script>
@@ -55,7 +55,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">用户昵称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="bus_name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                    <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                 </div>
             </div>
             <!--<div class="layui-inline">-->
@@ -77,22 +77,9 @@
 </body>
 <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
 <script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
-    $(document).on('click','#delete_1',function () {
-        var id = parseInt( $(this).data('id') );
-        var ptr = $(this).parents('tr');
-        ptr.remove();
-        $.post('remove',{id:id},function (res) {
-            if( res.code === 1 ){
-                toastr.success( res.msg, function () {
-                    ptr.remove();
-                });
-            } else {
-                toastr.error( res.msg );
-            }
-        })
-    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,
