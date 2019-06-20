@@ -9,6 +9,7 @@
 namespace app\manage\controller;
 use think\Cache;
 use think\Controller;
+use think\helper\Time;
 
 class Api extends Controller
 {

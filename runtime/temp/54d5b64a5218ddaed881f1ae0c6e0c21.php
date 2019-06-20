@@ -1,21 +1,40 @@
-{include file='common:head'}
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:73:"D:\a_project\F4\public/../application/manage\view\withdraw_log\index.html";i:1560999819;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/static/manage/js/toastr/build/toastr.css">
+    <style>
+        .mt20{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
-<script type="text/html" id="status">
-    <div>
-        {{# if(d.status == 0){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
-        {{# } else if( d.status == 1 ){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-primary">未通过</a>
-        {{# }else{  }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=2',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs">通过</a>
-        {{# } }}
-    </div>
-</script>
 
-<script type="text/html" id="dele">
+<script type="text/html" id="dele_log">
     <div>
         <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" >删除
         </a>
+    </div>
+</script>
+
+<script type="text/html" id="sta">
+    <div>
+        {{#  if(d.status === 2){ }}
+        <span class="layui-btn layui-btn-success layui-btn-xs">同意</span>
+        {{#  } else { }}
+        <span class="layui-btn layui-btn-danger layui-btn-xs">拒绝</span>
+        {{#  } }}
     </div>
 </script>
 
@@ -34,25 +53,9 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">流水号</label>
-                <div class="layui-input-inline">
-                    <input type="number" name="e-w_id" autocomplete="off" placeholder="请输入流水号" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">商户名称</label>
+                <label class="layui-form-label">用户昵称</label>
                 <div class="layui-input-inline">
                     <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">审核状态</label>
-                <div class="layui-input-inline">
-                    <select name="e-status">
-                        <option value=0>请选择</option>
-                        <option value=1>未通过</option>
-                        <option value=2>已通过</option>
-                    </select>
                 </div>
             </div>
             <!--<div class="layui-inline">-->
@@ -72,10 +75,10 @@
 </form>
 <table class="layui-hide" id="menu-table" lay-filter="text"></table>
 </body>
-<script type="text/javascript" src="__JS__/jquery.js"></script>
-<script type="text/javascript" src="__LAYUI__/layui.js"></script>
-<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
-<script type="text/javascript" src="__JS__/base.js"></script>
+<script type="text/javascript" src="/static/manage/js/jquery.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
+<script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
@@ -93,9 +96,8 @@
 
         //监听查询提交
         form.on('submit(query)', function(data) {
-            console.log( data )
             table.reload('LogList', {
-                url: '{:url("index")}',
+                url: '<?php echo url("index"); ?>',
                 where: data.field
             });
             return false;
@@ -110,7 +112,7 @@
         table.render({
             elem: '#menu-table',
             method: 'post',
-            url: '{:url("index")}',
+            url: '<?php echo url("index"); ?>',
             limit: 10,
             id:'LogList',
             limits: [5,10,15,20,50,100], //每页条数的选择项
@@ -121,12 +123,11 @@
                 [
                     {field: 'id',title: 'ID'},
                     {field: 'bus_id',title: '商户名称'},
+                    {field: 'status',title: '状态',toolbar:'#sta'},
                     {field: 'money',title: '申请提款金额'},
-                    {field: 'w_id',title: '流水号'},
-                    {field: 'create_time',title: '商户发起时间'},
-                    {field: 'check_desc',title: '审核描述'},
-                    {field: 'status',title: '审核',toolbar:'#status'},
-                    {field: 'opera',title: '操作',toolbar:'#dele'},
+                    {field: 'note',title: '备注'},
+                    {field: 'create_time',title: '新增时间'},
+                    {field: 'opera',title: '操作',toolbar:'#dele_log'},
                 ]
             ],
             page: true,

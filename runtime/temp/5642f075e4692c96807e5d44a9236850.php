@@ -1,4 +1,24 @@
-{include file='common:head'}
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\withdraw\index.html";i:1561024349;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/static/manage/js/toastr/build/toastr.css">
+    <style>
+        .mt20{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
 <script type="text/html" id="status">
     <div>
@@ -72,10 +92,10 @@
 </form>
 <table class="layui-hide" id="menu-table" lay-filter="text"></table>
 </body>
-<script type="text/javascript" src="__JS__/jquery.js"></script>
-<script type="text/javascript" src="__LAYUI__/layui.js"></script>
-<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
-<script type="text/javascript" src="__JS__/base.js"></script>
+<script type="text/javascript" src="/static/manage/js/jquery.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
+<script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
@@ -95,7 +115,7 @@
         form.on('submit(query)', function(data) {
             console.log( data )
             table.reload('LogList', {
-                url: '{:url("index")}',
+                url: '<?php echo url("index"); ?>',
                 where: data.field
             });
             return false;
@@ -110,7 +130,7 @@
         table.render({
             elem: '#menu-table',
             method: 'post',
-            url: '{:url("index")}',
+            url: '<?php echo url("index"); ?>',
             limit: 10,
             id:'LogList',
             limits: [5,10,15,20,50,100], //每页条数的选择项

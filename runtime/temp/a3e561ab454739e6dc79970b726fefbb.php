@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:64:"D:\a_project\F4\public/../application/manage\view\user\edit.html";i:1560835034;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:67:"D:\a_project\F4\public/../application/manage\view\pay_modl\add.html";i:1560933288;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,46 +22,46 @@
 <div class="layui-card layui-col-md10 layui-col-md-offset1">
     <div class="layui-card-body ">
         <form class="layui-form">
+
             <div class="layui-form-item">
-                <label class="layui-form-label">用户名/登录名</label>
+                <label class="layui-form-label">通道名称</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="username" placeholder="写入用户名/登录名" lay-verify="name" value="<?php echo $data['username']; ?>">
+                    <input class="layui-input" name="name" placeholder="通道名称" lay-verify="name">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">用户昵称</label>
+                <label class="layui-form-label">通道编号</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="nickname" placeholder="请输入用户昵称" value="<?php echo $data['nickname']; ?>">
+                    <input class="layui-input" name="pay_type" placeholder="通道编号">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">密码</label>
+                <label class="layui-form-label">基础费率</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" type="password" name="password" placeholder="请输入密码">
+                    <input class="layui-input" name="rate" placeholder="基础费率">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">手机号码</label>
+                <label class="layui-form-label">最小打款金额</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="mobile" lay-verify="required|phone|number" placeholder="请输入手机号码" value="<?php echo $data['mobile']; ?>">
+                    <input class="layui-input" name="mini" value="0.01" placeholder="最小打款金额">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">设置排序</label>
+                <label class="layui-form-label">最大打款金额</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="sort" value="<?php echo $data['sort']; ?>" placeholder="设置排序">
+                    <input class="layui-input" name="max" value="49999" placeholder="最大打款金额">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">是否隐藏</label>
+                <label class="layui-form-label">是否可用</label>
                 <div class="layui-input-block">
-                    <input type="checkbox" name="status" value="1" <?php if(!(empty($data['status']) || (($data['status'] instanceof \think\Collection || $data['status'] instanceof \think\Paginator ) && $data['status']->isEmpty()))): ?>checked<?php endif; ?> lay-skin="switch" lay-text="显示|隐藏">
+                    <input type="checkbox" name="status" value="1" checked lay-skin="switch" lay-text="是否可用">
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
@@ -70,6 +70,8 @@
 </div>
 <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
+<script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
     layui.use(['form'], function() {
         var form = layui.form
@@ -81,18 +83,28 @@
                 }
             }
         });
+        form.verify({
+            pay_type: function(value) {
+                if( value ===  "" ){
+                    return "通道编码不能为空"
+                }
+            }
+        });
         form.on('submit(formDemo)', function(data){
-            console.log(data.field)
-            $.post('<?php echo url("edit"); ?>',data.field,function (res) {
-                console.log( res );
-                if( res.code === 1 ){
-                    layer.msg( res.msg ,{icon: 1});
-                    parent.location.reload();
-                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                    parent.layer.close(index);
 
+            console.log(data.field);
+            $.post('<?php echo url("add"); ?>',data.field,function (res) {
+                console.log( res )
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1000)
+                    });
                 } else {
-                    layer.msg( res.msg ,{icon: 2})
+                    toastr.error( res.msg )
                 }
             })
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
