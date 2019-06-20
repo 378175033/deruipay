@@ -27,7 +27,6 @@ class Order extends Manage
 
     public function index()
     {
-
         if ($this->request->isPost() && $this->request->isAjax()) {
             $page = $this->request->param('page', 1, 'intval');
             $per = $this->request->param('limit', 10, 'intval');
