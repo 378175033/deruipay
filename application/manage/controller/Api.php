@@ -43,6 +43,7 @@ class Api extends Controller
             $id = session( "userInfo")['id'];
             $res = model("user")->allowField(['avatar'])->isUpdate( true, ['id'=>$id])->save( $param );
             if( $res ){
+                operaLog('管理员'.$id.'更换头像');
                 $this->success( "头像上传成功！");
             } else {
                 $this->error( "头像上传失败！");

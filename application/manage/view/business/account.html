@@ -1,0 +1,61 @@
+{include file='common:head'}
+<div class="layui-card layui-col-md10 layui-col-md-offset1">
+    <div class="layui-card-body ">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">设置余额</label>
+                <div class="layui-input-block">
+                    <input type="number" class="layui-input" name="money" placeholder="请设置默认余额" value="{$data.money}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">冻结余额</label>
+                <div class="layui-input-block">
+                    <input type="number" class="layui-input" name="frozen_money" value="{$data.frozen_money}" placeholder="请设置冻结余额">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="{$data.id}">
+                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form
+        //自定义验证规则
+        form.verify({
+            name: function(value) {
+                if( value ===  "" ){
+                    return "用户名不能为空"
+                }
+            }
+        });
+        form.on('submit(formDemo)', function(data){
+            console.log(data.field)
+            $.post('{:url("account")}',data.field,function (res) {
+                console.log( res );
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout(function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1000)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
