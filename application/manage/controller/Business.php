@@ -160,7 +160,6 @@ class Business extends Manage
                     {
                         case 1://增加余额
                             $dif = $data['inc'];
-                            $data['money'] = $data['money'] + $dif;
                             break;
                         case 2://减少余额
                             if( $data['inc'] > $data['money'] ){
@@ -186,7 +185,6 @@ class Business extends Manage
                 default:
                     $this->error( "参数错误！");
             }
-            $this->error( $data );
             $res = $this->model->allowField(['money','frozen_money'])->isUpdate( true )->save( $data,['id'=>$id] );
             if( $res ){
                 //将金额变动记录到数据表
@@ -207,6 +205,12 @@ class Business extends Manage
         return $this->fetch();
     }
 
+    /**
+     * 2019/6/20 0020 14:47
+     * @desc 查看商户的余额变动明细
+     * @ApiParams
+     * @ApiReturnParams
+     */
     public function account_log()
     {
         $id = $this->request->param('id',0,'intval');
@@ -284,4 +288,17 @@ class Business extends Manage
         return $this->fetch();
     }
 
+    /**
+     * 2019/6/20 0020 14:48
+     * @desc查看商户的通道信息
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function passageway()
+    {
+        $id = $this->request->param('id',0,'intval');
+        if( empty( $id )){
+            $this->error( "商户参数错误！");
+        }
+    }
 }
