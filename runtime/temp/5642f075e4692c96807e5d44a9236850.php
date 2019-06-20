@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\withdraw\index.html";i:1560938589;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\withdraw\index.html";i:1560998861;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +34,7 @@
 
 <script type="text/html" id="dele">
     <div>
-        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" id="del" data-id="{{ d.id }}" >删除
+        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" >删除
         </a>
     </div>
 </script>
@@ -56,13 +56,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">流水号</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="w_id" autocomplete="off" placeholder="请输入流水号" class="layui-input">
+                    <input type="number" name="e-w_id" autocomplete="off" placeholder="请输入流水号" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">商户名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="bus_name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                    <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                 </div>
             </div>
             <!--<div class="layui-inline">-->
@@ -84,21 +84,9 @@
 </body>
 <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
 <script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
-    $(document).on('click','#del',function () {
-        var id = parseInt( $(this).data('id') );
-        var ptr = $(this).parents('tr');
-        $.post('remove',{id:id},function (res) {
-            if( res.code === 1 ){
-                toastr.success( res.msg, function () {
-                    ptr.remove();
-                });
-            } else {
-                toastr.error( res.msg );
-            }
-        })
-    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,
@@ -115,6 +103,7 @@
 
         //监听查询提交
         form.on('submit(query)', function(data) {
+            console.log( data )
             table.reload('LogList', {
                 url: '<?php echo url("index"); ?>',
                 where: data.field

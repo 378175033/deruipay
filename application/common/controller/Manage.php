@@ -113,7 +113,7 @@ class Manage extends Controller
             $per = $this->request->param('limit', 10, 'intval');
             $this->order = $this->request->param('order', $this->order);
             $where = [
-                'delete_time' => 0,
+                'a.delete_time' => 0,
             ];
             $param = $this->request->param();
             foreach ($param as $key => $val) {
@@ -121,13 +121,31 @@ class Manage extends Controller
                 $vl = substr($key, 2);
                 switch ($ps) {
                     case 'l-':
-                        if (!empty($val)) $where[$vl] = ['like', '%' . $val . '%'];
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val)) $where["b.".$vl] = ['like', '%' . $val . '%'];
+                        } else {
+                            if (!empty($val)) $where["a.".$vl] = ['like', '%' . $val . '%'];
+                        }
                         break;
                     case 'e-':
-                        if (!empty($val))  $where[$vl] = $val;
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val))  $where["b.".$vl] = $val;
+                        } else {
+                            if (!empty($val))  $where["a.".$vl] = $val;
+                        }
                         break;
                     case 'i-':
-                        if (!empty($val)) $where[$vl] = ['in',$val];
+                        $st = substr($vl, 0, 2);
+                        if( $st == "b-"){
+                            $vl = substr($vl, 2);
+                            if (!empty($val)) $where["b.".$vl] = ['in',$val];
+                        } else {
+                            if (!empty($val)) $where["a.".$vl] = ['in',$val];
+                        }
                         break;
                     default:
                         break;
@@ -137,16 +155,16 @@ class Manage extends Controller
             $ltime = $this->request->param('ltime', 0);
             if (empty($stime) && !empty($ltime)) {
                 $ltime = strtotime($ltime);
-                $where['create_time'] = ['<=', $ltime];
+                $where['a.create_time'] = ['<=', $ltime];
             }
             if (!empty($stime) && empty($ltime)) {
                 $stime = strtotime($stime);
-                $where['create_time'] = ['>', $stime];
+                $where['a.create_time'] = ['>', $stime];
             }
             if (!empty($stime) && !empty($ltime)) {
                 $ltime = strtotime($ltime);
                 $stime = strtotime($stime);
-                $where['create_time'] = ['between', [$stime, $ltime]];
+                $where['a.create_time'] = ['between', [$stime, $ltime]];
             }
             $page = $page - 1;
             if( count( $this->join ) > 0 ){
@@ -158,17 +176,19 @@ class Manage extends Controller
                     ->limit($page * $per, $per)
                     ->order($this->order)
                     ->select();
+                $sql = $this->model->getLastSql();
+                $count = $this->model->alias('a')->join( $this->join )->where($where)->count();
             } else {
                 $list = $this->model
+                    ->alias('a')
                     ->field($this->field)
                     ->where($where)
                     ->limit($page * $per, $per)
                     ->order($this->order)
                     ->select();
+                $sql = $this->model->getLastSql();
+                $count = $this->model->alias('a')->where($where)->count();
             }
-
-            $sql = $this->model->getLastSql();
-            $count = $this->model->where($where)->count();
             $data = [
                 'list' => $list,
                 'count' => $count,

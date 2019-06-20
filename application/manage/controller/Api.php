@@ -116,6 +116,7 @@ class Api extends Controller
     {
         $dir_name = "..".DS."/runtime";
         $this->delete_dir_file( $dir_name );
+        operaLog('管理员'.session('userInfo')['id'].'清除缓存');
         $this->success( '清除成功', 'index/index' );
     }
 
