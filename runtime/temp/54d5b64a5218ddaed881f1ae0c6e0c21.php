@@ -1,4 +1,44 @@
-{include file='common:head'}
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:73:"D:\a_project\F4\public/../application/manage\view\withdraw_log\index.html";i:1560999819;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/static/manage/js/toastr/build/toastr.css">
+    <style>
+        .mt20{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+
+<script type="text/html" id="dele_log">
+    <div>
+        <a href="#" class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" >删除
+        </a>
+    </div>
+</script>
+
+<script type="text/html" id="sta">
+    <div>
+        {{#  if(d.status === 2){ }}
+        <span class="layui-btn layui-btn-success layui-btn-xs">同意</span>
+        {{#  } else { }}
+        <span class="layui-btn layui-btn-danger layui-btn-xs">拒绝</span>
+        {{#  } }}
+    </div>
+</script>
+
+
 <form class="layui-form" action="">
     <div class="lay-all">
         <div class="layui-block" style="padding: 20px">
@@ -15,10 +55,9 @@
             <div class="layui-inline">
                 <label class="layui-form-label">用户昵称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                    <input type="text" name="l-b-name" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                 </div>
             </div>
-
             <!--<div class="layui-inline">-->
             <!--<label class="layui-form-label">用户ID</label>-->
             <!--<div class="layui-input-inline">-->
@@ -36,10 +75,10 @@
 </form>
 <table class="layui-hide" id="menu-table" lay-filter="text"></table>
 </body>
-<script type="text/javascript" src="__JS__/jquery.js"></script>
-<script type="text/javascript" src="__LAYUI__/layui.js"></script>
-<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
-<script type="text/javascript" src="__JS__/base.js"></script>
+<script type="text/javascript" src="/static/manage/js/jquery.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
+<script type="text/javascript" src="/static/manage/js/base.js"></script>
 <script>
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
@@ -52,10 +91,13 @@
                 trigger: 'click'
             });
         });
+
+
+
         //监听查询提交
         form.on('submit(query)', function(data) {
             table.reload('LogList', {
-                url: '{:url("index")}',
+                url: '<?php echo url("index"); ?>',
                 where: data.field
             });
             return false;
@@ -70,7 +112,7 @@
         table.render({
             elem: '#menu-table',
             method: 'post',
-            url: '{:url("index")}',
+            url: '<?php echo url("index"); ?>',
             limit: 10,
             id:'LogList',
             limits: [5,10,15,20,50,100], //每页条数的选择项
@@ -80,12 +122,12 @@
             cols: [
                 [
                     {field: 'id',title: 'ID'},
-                    {field: 'username',title: '操作人'},
-                    {field: 'nickname',title: '昵称'},
-                    {field: 'ip',title: '操作IP'},
-                    {field: 'create_time',title: '操作时间'},
-                    {field: 'device',title: '操作设备'},
-                    {field: 'opera_type',title: '操作类型'},
+                    {field: 'bus_id',title: '商户名称'},
+                    {field: 'status',title: '状态',toolbar:'#sta'},
+                    {field: 'money',title: '申请提款金额'},
+                    {field: 'note',title: '备注'},
+                    {field: 'create_time',title: '新增时间'},
+                    {field: 'opera',title: '操作',toolbar:'#dele_log'},
                 ]
             ],
             page: true,

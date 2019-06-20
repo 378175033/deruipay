@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\business\index.html";i:1560999187;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"D:\a_project\F4\public/../application/manage\view\business\index.html";i:1561012380;s:56:"D:\a_project\F4\application\manage\view\common\head.html";i:1560933288;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,8 +99,9 @@
         <br/>
         冻结金额：<span class="layui-bg-red">{{ d.frozen_money }}</span>
     </div>
-    <a href="javascript:openIframe({content:'account.html?id={{d.id}}',title:'设置商户余额',area:['60%','60%']});" class="layui-btn layui-btn-xs layui-btn-warm" title="设置商户余额"><i class="layui-icon">&#xe659;</i></a>
-    <a href="javascript:openIframe({content:'account_log.html?id={{d.id}}',title:'查看商户余额明细',area:['60%','60%']});" class="layui-btn layui-btn-xs layui-btn-primary" title="查看商户余额变动明细"><i class="layui-icon">&#xe656;</i></a>
+    <a href="javascript:openIframe({content:'account.html?id={{d.id}}&type=1',title:'设置商户-{{d.name}}余额',area:['30%','50%']});" class="layui-btn layui-btn-xs layui-btn-warm" title="设置商户余额"><i class="layui-icon">&#xe659;</i></a>
+    <a href="javascript:openIframe({content:'account.html?id={{d.id}}&type=2',title:'设置商户-{{d.name}}冻结金额',area:['30%','50%']});" class="layui-btn layui-btn-xs" title="设置商户冻结金额"><i class="layui-icon">&#xe659;</i></a>
+    <a href="javascript:openIframe({content:'account_log.html?id={{d.id}}',title:'查看商户-{{d.name}}余额明细',area:['80%','80%']});" class="layui-btn layui-btn-xs layui-btn-primary" title="查看商户余额变动明细"><i class="layui-icon">&#xe656;</i></a>
 </script>
 <script type="text/javascript" src="/static/manage/js/jquery.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>

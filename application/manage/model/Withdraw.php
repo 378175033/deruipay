@@ -9,15 +9,11 @@
 namespace app\manage\model;
 
 
+use think\Db;
 use think\Model;
 
 class Withdraw extends Model
 {
-//    public function getStatusAttr($value)
-//    {
-//        $status = [0=>'等待审核',1=>'禁用',2=>'正常',3=>'待审核'];
-//        return $status[$value];
-//    }
 
     public function getBusIdAttr($value)
     {
@@ -28,13 +24,26 @@ class Withdraw extends Model
     public static function addWithdrawLog($value)
     {
         if ($value['status'] == 2) {  //成功
-            db('business')->where('id', $value['id'])->setInc('money', $value['money']);
+            model('business')->where('id', $value['id'])->setInc('money', (int)$value['money']);
             self::log_c($value);
+            self::addAccountLog($value);
+
         }
         if ($value['status'] == 1) {  //拒绝
-            db('business')->where('id', $value['id'])->setDec('money', $value['money']);
+//            db('business')->where('id', $value['id'])->setDec('money', $value['money']);
             self::log_c($value);
         }
+    }
+
+    public static function addAccountLog($value)
+    {
+        $insert = [
+            'bus_id'    => $value['id'],
+            'account'   => $value['money'],
+            'desc'      => $value['check_desc'],
+            'info'      => 3
+        ];
+        model( 'account_log')->add( $insert );
     }
 
     public static function log_c($val)

@@ -20,10 +20,9 @@ class Withdraw extends Manage
         $this->table = "Withdraw";
         $this->model = model($this->table);
         $this->join = [
-            ['business b','b.id = a.bus_id','left']
+            ['business b', 'b.id = a.bus_id', 'left']
         ];
         $this->field = "a.*,b.name";
-//        $this->admin_id = session('userInfo')->id;
     }
 
     /**
@@ -43,17 +42,15 @@ class Withdraw extends Manage
         ];
         $field = 'id,status,check_desc,check_time,money';
         $data = $this->model->where($where)->field($field)->find();
-        if ($data->status !== 0) {
-            $this->error('该申请以审核,请勿重复申请');
-        }
-        if (!$data) {
-            $this->error('该申请不存在');
-        }
+
         $bus_name = db('business')->where('id', $id)->value('name');
         if (request()->post()) {
             $post_data = $this->request->param('');
             if (!isset($post_data['status'])) {
-                $this->error('请选择状态');
+                $this->error('请选择审核状态');
+            }
+            if ($data['status'] !== 0) {
+                $this->error('已审核过,请勿重复审核');
             }
             $post_data['check_time'] = time();
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
