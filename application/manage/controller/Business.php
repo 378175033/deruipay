@@ -287,4 +287,101 @@ class Business extends Manage
         $this->assign("id", $id);
         return $this->fetch();
     }
+
+    /**
+     * 2019/6/20 0020 14:48
+     * @desc查看商户的通道信息
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function passageway()
+    {
+        $id = $this->request->param('id',0,'intval');
+//        return url();
+        if( empty( $id )){
+            $this->error( "商户参数错误！");
+        }
+        if( request()->isAjax() && request()->isPost() )
+        {
+            $page = $this->request->param('page', 1, 'intval');
+            $per = $this->request->param('limit', 10, 'intval');
+            $this->order = $this->request->param('order', $this->order);
+            $param = $this->request->param();
+            $where = [ 'a.business_id' => $id ];
+            foreach ($param as $key => $val) {
+                $ps = substr($key, 0, 2);
+                $vl = substr($key, 2);
+                switch ($ps) {
+                    case 'l-':
+                        if (!empty($val)) $where["a.".$vl] = ['like', '%' . $val . '%'];
+                        break;
+                    case 'e-':
+                        if (!empty($val))  $where["a.".$vl] = $val;
+                        break;
+                    case 'i-':
+                        if (!empty($val)) $where["a.".$vl] = ['in',$val];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            $stime = $this->request->param('stime', 0);
+            $ltime = $this->request->param('ltime', 0);
+            if (empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $where["a.".'create_time'] = ['<=', $ltime];
+            }
+            if (!empty($stime) && empty($ltime)) {
+                $stime = strtotime($stime);
+                $where["a.".'create_time'] = ['>', $stime];
+            }
+            if (!empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $stime = strtotime($stime);
+                $where["a.".'create_time'] = ['between', [$stime, $ltime]];
+            }
+            $pay_type = $this->request->param('pay_type');
+            $join_where = 'a.passageway_id = b.id and b.status = 1';
+            if (!empty($pay_type)) {
+                if($pay_type == 99){
+                    $join_where .= ' and `b`.`pay_type` not in (';
+                    $str = '';
+                    foreach (config('pay_type') as $k=>$v){
+                        $str .= $k.',';
+                    }
+                    $join_where .= trim($str,',').')';
+                }else{
+                    $join_where .= ' and `b`.`pay_type` = '.$pay_type;
+                }
+            }
+            $page--;
+            $list = model('user_passageway')
+                ->alias('a')
+                ->join( [
+                    [config('database.prefix').'passageway b', $join_where],
+                ])
+                ->field( "a.id,name,passageway_id,a.cost,a.rate,max,mini,a.status,pay_type,a.create_time")
+                ->where($where)
+                ->limit($page * $per, $per)
+                ->order('a.id desc')
+                ->select();
+            $sql = $this->model->getLastSql();
+            $count = model('user_passageway')
+                ->alias('a')
+                ->join( [
+                    [config('database.prefix').'passageway b', $join_where],
+                ])
+                ->where($where)
+                ->count();
+            $data = [
+                'list' => $list,
+                'count' => $count,
+                'sql'   => $sql
+            ];
+            $this->success('获取成功！', '', $data);
+        }
+        $this->assign('pay_type', config('pay_type'));
+        $this->assign("id", $id);
+        return $this->fetch();
+    }
 }
