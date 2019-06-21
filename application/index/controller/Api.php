@@ -22,4 +22,9 @@ class Api extends Controller
         $type = user_agent();
         echo "<h1>这是ID为".$id."的商户来自".$type."的扫码</h1>";
     }
+
+    public function unionpay()
+    {
+
+    }
 }
