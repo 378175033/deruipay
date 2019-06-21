@@ -25,7 +25,7 @@ class UserPassageway extends Model
     // status属性读取器
     protected function getPayTypeAttr($value)
     {
-        $status = [ 1 => '支付宝', 2 => '微信', 3 => '通联'];
+        $status = config('pay_type');
         if (!array_key_exists($value, $status)){
             return '其他';
         }

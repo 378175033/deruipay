@@ -340,11 +340,25 @@ class Business extends Manage
                 $stime = strtotime($stime);
                 $where["a.".'create_time'] = ['between', [$stime, $ltime]];
             }
-            $page = $page - 1;
+            $pay_type = $this->request->param('pay_type');
+            $join_where = 'a.passageway_id = b.id and b.status = 1';
+            if (!empty($pay_type)) {
+                if($pay_type == 99){
+                    $join_where .= ' and `b`.`pay_type` not in (';
+                    $str = '';
+                    foreach (config('pay_type') as $k=>$v){
+                        $str .= $k.',';
+                    }
+                    $join_where .= trim($str,',').')';
+                }else{
+                    $join_where .= ' and `b`.`pay_type` = '.$pay_type;
+                }
+            }
+            $page--;
             $list = model('user_passageway')
                 ->alias('a')
                 ->join( [
-                    [config('database.prefix').'passageway b', 'a.passageway_id = b.id and b.status = 1'],
+                    [config('database.prefix').'passageway b', $join_where],
                 ])
                 ->field( "a.id,name,passageway_id,a.cost,a.rate,max,mini,a.status,pay_type,a.create_time")
                 ->where($where)
@@ -355,7 +369,7 @@ class Business extends Manage
             $count = model('user_passageway')
                 ->alias('a')
                 ->join( [
-                    [config('database.prefix').'business b', 'a.business_id = b.id and b.status = 1'],
+                    [config('database.prefix').'passageway b', $join_where],
                 ])
                 ->where($where)
                 ->count();
@@ -366,6 +380,7 @@ class Business extends Manage
             ];
             $this->success('获取成功！', '', $data);
         }
+        $this->assign('pay_type', config('pay_type'));
         $this->assign("id", $id);
         return $this->fetch();
     }

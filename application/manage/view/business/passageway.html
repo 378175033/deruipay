@@ -15,7 +15,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">商户</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                    <select name="pay_type" lay-search="">
+                        <option value="">选取通道</option>
+                        {volist name="pay_type" key="k" id="passageway"}
+                        <option value="{$k}">{$passageway}</option>
+                        {/volist}
+                        <option value="99">其他</option>
+                    </select>
                 </div>
             </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">
@@ -53,7 +59,7 @@
         });
         //监听查询提交
         form.on('submit(query)', function(data) {
-            table.reload('menu-table', {
+            table.reload('LogList', {
                 url: '{:url("passageway",["id"=>$id])}',
                 where: data.field
             });
@@ -61,7 +67,7 @@
         });
 
         form.on('submit(clear)', function() {
-            table.reload('menu-table', {
+            table.reload('LogList', {
                 url: '{:url("passageway",["id"=>$id])}'
             });
             return false;

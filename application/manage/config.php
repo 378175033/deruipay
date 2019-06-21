@@ -6,5 +6,11 @@
          '__IMAGE__' =>'/static/manage/images',
          '__EDITOR__' =>'/static/ueditor',
          '__LAYUI__' =>'/static/layui',
+     ],
+
+     'pay_type' => [
+         1 => '支付宝',
+         2 => '微信',
+         3 => '通联'
      ]
  ];
