@@ -83,6 +83,7 @@
     <a href="javascript:openIframe({content:'account.html?id={{d.id}}&type=2',title:'设置商户-{{d.name}}冻结金额',area:['30%','50%']});" class="layui-btn layui-btn-xs" title="设置商户冻结金额"><i class="layui-icon">&#xe659;</i></a>
     <a href="javascript:openIframe({content:'account_log.html?id={{d.id}}',title:'查看商户-{{d.name}}余额明细',area:['80%','80%']});" class="layui-btn layui-btn-xs layui-btn-primary" title="查看商户余额变动明细"><i class="layui-icon">&#xe656;</i></a>
     <a href="javascript:openIframe({content:'passageway.html?id={{d.id}}',title:'查看商户-{{d.name}}通道',area:['80%','80%']});" class="layui-btn layui-btn-xs layui-btn-danger" title="查看商户通道"><i class="layui-icon">&#xe663;</i></a>
+    <a href="javascript:openIframe({content:'qrcode.html?id={{d.id}}',title:'查看商户-{{d.name}}收款二维码',area:['80%','80%']});" class="layui-btn layui-btn-xs" title="查看商户收款二维码"><i class="layui-icon">&#xe679;</i></a>
 </script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
@@ -130,7 +131,7 @@
                     {field: 'name',title: '商户名'},
                     {field: 'mobile',title: '手机号码'},
                     {field: 'last_login_time',title: '商户最近登录时间'},
-                    {field: 'money',title: '商户余额',templet: '#money',width:400},
+                    {field: 'money',title: '商户余额',templet: '#money',width:430},
                     {field: 'sort',title: '排序',templet:'#sort'},
                     {field: 'status',title: '状态',templet: '#status'},
                     {field: 'create_time',title: '添加时间'},
