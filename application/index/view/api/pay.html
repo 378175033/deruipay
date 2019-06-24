@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="__LAYUI__/css/layui.css">
+
+
+<form class="layui-form layui-col-md-offset3 layui-col-xs6" method="post" action="" target="_blank" style="padding-top: 60px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式</label>
+        <div class="layui-input-block">
+            <select name="type" >
+                <option value="">--请选择支付方式--</option>
+                {volist name="payWay" id="pw"}
+                <option value="{$pw.type}">{$pw.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">交易金额</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="number" name="amount" placeholder="请输入交易金额" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<form class="layui-form">
+
+</form>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script>
+    layui.use(['form','jquery','layer'], function() {
+        var form = layui.form,$=layui.jquery,layer=layui.layer;
+        //自定义验证规则
+        form.on('submit(formDemo)', function(data){
+            console.log(data.field)
+            $.post('{:url("pay")}',data.field,function (res) {
+                console.log( res )
+                if( res.code === 1 ){
+                    layer.open({
+                        type : 1,
+                        content: res.data,
+                        area : ['60%','60%'],
+                        title : '银行卡支付'
+                    })
+                } else {
+                    layer.msg( res.msg ,{icon:2})
+                }
+            })
+            return true; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
