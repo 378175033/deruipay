@@ -7,9 +7,11 @@
  */
 
 namespace pay\unionpay;
-
+const COMPANY = "中国银联股份有限公司";
 
 class Cert
 {
-
+    public $cert;
+    public $certId;
+    public $key;
 }
