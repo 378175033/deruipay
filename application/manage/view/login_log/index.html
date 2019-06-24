@@ -1,44 +1,48 @@
 {include file='common:head'}
-<form class="layui-form" action="">
-    <div class="lay-all">
-        <div class="layui-block" style="padding: 20px">
-            <!-- 时间验证 -->
-            <div class="layui-inline">
-                <label class="layui-form-label" style="width: auto">时间范围查询</label>
+<div class="container">
+    <form class="layui-form" action="">
+        <div class="lay-all">
+            <div class="layui-block" style="padding: 20px">
+                <!-- 时间验证 -->
                 <div class="layui-inline">
-                    <input class="layui-input test-item"  name="stime" placeholder="开始日" type="text">
+                    <label class="layui-form-label" style="width: auto">时间范围查询</label>
+                    <div class="layui-inline">
+                        <input class="layui-input test-item"  name="stime" placeholder="开始日" type="text">
+                    </div>
+                    <div class="layui-inline">
+                        <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
+                    </div>
                 </div>
                 <div class="layui-inline">
-                    <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
+                    <label class="layui-form-label">用户昵称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">用户昵称</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                <div class="layui-inline">
+                    <label class="layui-form-label">日志类型</label>
+                    <div class="layui-input-inline">
+                        <select name="l-type" class="layui-select">
+                            <option value="">选取日志类型</option>
+                            <option value="2">管理员</option>
+                            <option value="1">商户</option>
+                        </select>
+                    </div>
                 </div>
+                <button class="layui-btn" lay-filter="query" lay-submit="">
+                    <i class="layui-icon layui-icon-search"></i>查询
+                </button>
+                <button class="layui-btn" lay-filter="clear" lay-submit="">
+                    <i class="layui-icon layui-icon-circle"></i>清空条件
+                </button>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">日志类型</label>
-                <div class="layui-input-inline">
-                    <select name="l-type" class="layui-select">
-                        <option value="">选取日志类型</option>
-                        <option value="2">管理员</option>
-                        <option value="1">商户</option>
-                    </select>
-                </div>
-            </div>
-            <button class="layui-btn" lay-filter="query" lay-submit="">
-                <i class="layui-icon layui-icon-search"></i>查询
-            </button>
-            <button class="layui-btn" lay-filter="clear" lay-submit="">
-                <i class="layui-icon layui-icon-circle"></i>清空条件
-            </button>
         </div>
+    </form>
+    <table class="layui-hide" id="menu-table" lay-filter="text" style="margin: 0 5%"></table>
+    <div class="layui-form" layui-filter="more">
+        <a class="layui-btn layui-btn-danger delete-btn">删除日志</a>
     </div>
-</form>
-<table class="layui-hide" id="menu-table" lay-filter="text"></table>
-</body>
+</div>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -69,6 +73,37 @@
             return false;
         });
 
+        //日志删除
+        $(document).on('click','.delete-btn',function () {
+            var checkStatus = table.checkStatus( 'LogList' ); //idTest 即为基础参数 id 对应的值
+            var data = checkStatus.data;
+            var len = checkStatus.data.length;
+            //判断是否有选中项
+            if( len < 1){
+                toastr.error("请至少选中一项！");
+                return false;
+            }
+            var myIn = layer.confirm("您确定要删除吗？无法找回哟！",function () {
+                var param = new Array();
+                for( var i = 0; i< len; i++){
+                    param.push( data[i].id );
+                }
+                $.post( "delete", {id:param},function (res) {
+                    if( res.code === 1){
+                        toastr.success( res.msg )
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                },'json')
+                table.reload('LogList', {
+                    url: '{:url("index")}',
+                    where: data.field
+                });
+                layer.close( myIn );
+            })
+            return false;
+        })
+
         //表格数据渲染
         table.render({
             elem: '#menu-table',
@@ -82,6 +117,7 @@
             cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols: [
                 [
+                    {checkbox: true},
                     {field: 'id',title: 'ID'},
                     {field: 'username',title: '登录账号'},
                     {field: 'create_time',title: '登录时间'},

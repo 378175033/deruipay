@@ -314,11 +314,11 @@ class Manage extends Controller
     public function delete()
     {
         if (request()->isAjax() && request()->isPost()) {
-            $id = request()->param('id', 0, 'intval');
+            $id = request()->param('id/a', 0, 'intval');
             if (empty($id)) {
                 $this->error('参数错误');
             }
-            $where = ['id' => $id];
+            $where = ['id' =>['in',$id]];
             $res = $this->model->where($where)->delete();
             if ($res) {
                 operaLog($this->admin_id.'真实删除');

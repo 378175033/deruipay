@@ -17,8 +17,10 @@ class Pay extends Manage
         list($mode,$config) = config('union_pay');
 //        halt($config);
         $unionPay = UnionPay::B2C($config,$mode);
+
         $payOrderNo = date('YmdHis');
         $amt = 1;
+
         $html = $unionPay->pay($payOrderNo,$amt);
         echo $html;
     }

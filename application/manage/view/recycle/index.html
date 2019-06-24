@@ -1,6 +1,6 @@
 {include file='common:head'}
+<table class="layui-hide" id="menu-table" lay-filter="text"></table>
 <form class="layui-form">
-    <table class="layui-hide" id="menu-table" lay-filter="text"></table>
     <a href="javascript:;" class="layui-btn layui-btn-xs" lay-filter="reduction" lay-submit="">还原选中项</a>
     <a href="javascript:;" class="layui-btn layui-btn-xs" lay-filter="delete" lay-submit="">删除选中项</a>
 </form>
@@ -11,9 +11,6 @@
     <a class="layui-btn layui-btn-xs btn-reduction" data-id="{{ d.id }}" title="数据还原">
         <i class="layui-icon layui-icon-refresh"></i>
     </a>
-</script>
-<script type="text/html" id="tree">
-    <input type="checkbox" name="id[]" value="{{d.id}}" title="{{d.id}}" class="checkbox-item">
 </script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
@@ -34,29 +31,64 @@
             }
         })
     })
-    $(document).on('click','#checkAll~.layui-form-checkbox',function () {
-        if( $('.layui-form-checked').length <  $('.layui-form-checkbox').length ){
-            $('.layui-form-checkbox').not('.layui-form-checked').trigger( 'click');
-        } else {
-            $('.layui-form-checkbox').trigger( 'click');
-        }
-    })
 
     layui.use(['table','form'], function() {
         var table = layui.table,form = layui.form;
-        form.on('submit(reduction)', function(data) {
-            console.log( data.field )
+        form.on('submit(reduction)', function() {
+            var checkStatus = table.checkStatus( 'menu-table' ); //idTest 即为基础参数 id 对应的值
+            var data = checkStatus.data;
+            var len = checkStatus.data.length;
             //判断是否有选中项
-            if( $('.layui-form-checked').length < 1){
+            if( len < 1){
                 toastr.error("请至少选中一项！");
                 return false;
             }
+            var param = new Array();
+            for( var i = 0; i< len; i++){
+                param.push( data[i].id );
+            }
+            $.post( "reduction", {id:param},function (res) {
+                if( res.code === 1){
+                    toastr.success( res.msg )
+                } else {
+                    toastr.error( res.msg )
+                }
+            },'json')
             table.reload('menu-table', {
                 url: '{:url("index")}',
                 where: data.field
             });
             return false;
         });
+        form.on('submit(delete)', function() {
+            var checkStatus = table.checkStatus( 'menu-table' ); //idTest 即为基础参数 id 对应的值
+            var data = checkStatus.data;
+            var len = checkStatus.data.length;
+            //判断是否有选中项
+            if( len < 1){
+                toastr.error("请至少选中一项！");
+                return false;
+            }
+            layer.confirm("您确定要删除吗？无法找回哟！",function () {
+                var param = new Array();
+                for( var i = 0; i< len; i++){
+                    param.push( data[i].id );
+                }
+                $.post( "delete", {id:param},function (res) {
+                    if( res.code === 1){
+                        toastr.success( res.msg )
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                },'json')
+                table.reload('menu-table', {
+                    url: '{:url("index")}',
+                    where: data.field
+                });
+            })
+            return false;
+        });
+
         //表格数据渲染
         table.render({
             elem: '#menu-table',
@@ -70,7 +102,8 @@
             cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols: [
                 [
-                    {field: 'id',title: '<input type="checkbox" title="ID" id="checkAll">',templet:'#tree'},
+                    {checkbox: true},
+                    {field: 'id',title: 'ID'},
                     {field: 'table',title: '来源表单'},
                     {field: 'desc',title: '描述信息'},
                     {field: 'rid',title: '数据编号'},
