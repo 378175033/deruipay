@@ -31,8 +31,23 @@ class User extends Business
 
     public function user_passageway_list()
     {
-        $user_passageway_list = model('user_passageway_list')->get($this->user->id);
-        $this->assign('user_passageway_list', $user_passageway_list);
+        if($this->request->isPost() && $this->request->isAjax()){
+            $list = model('manage/user_passageway')
+                ->alias('user')
+                ->where('business_id','=',$this->user->id)
+                ->join(config('database.prefix').'passageway b','user.passageway_id = b.id')
+                ->select();
+            $count = model('manage/user_passageway')
+                ->alias('user')
+                ->where('business_id','=',$this->user->id)
+                ->join(config('database.prefix').'passageway b','user.passageway_id = b.id')
+                ->count();
+            $data = [
+                'list' => $list,
+                'count' => $count,
+            ];
+            $this->success('',null,$data);
+        }
         return $this->fetch();
     }
 }

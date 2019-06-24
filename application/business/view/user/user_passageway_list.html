@@ -2,18 +2,51 @@
 <div class="layui-card mt20">
     <div class="layui-card-header">账户信息</div>
     <div class="layui-card-body">
-        <table class="layui-table">
-            <colgroup>
-                <col width="150">
-                <col width="250">
-            </colgroup>
-            <tbody>
-                <tr><td class="align-right">商户号</td><td>{$user.shop_sn}</td></tr>
-                <tr><td class="align-right">商户名</td><td>{$user.name}</td></tr>
-                <tr><td class="align-right">登录名</td><td>{$user.name}</td></tr>
-                <tr><td class="align-right">手机号</td><td>{$user.mobile}</td></tr>
-                <tr><td class="align-right">入驻时间</td><td>{$user.create_time}</td></tr>
-            </tbody>
-        </table>
+        <table class="layui-hide" id="menu-table" lay-filter="text"></table>
     </div>
 </div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['table'], function () {
+        var table = layui.table;
+
+        //表格数据渲染
+        table.render({
+            elem: '#menu-table',
+            method: 'post',
+            url: '{:url("user_passageway_list")}',
+            limit: 10,
+            id: 'LogList',
+            limits: [5, 10, 15, 20, 50, 100], //每页条数的选择项
+            loading: true,
+            where: {order: 'id desc'},
+            cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cols: [
+                [
+                    {field: 'id', title: 'ID'},
+                    {field: 'name', title: '通道名称'},
+                    {field: 'rate', title: '费率'},
+                    {field: 'cost', title: '最低手续费'},
+                    {field: 'update_time', title: '修改时间'},
+                ]
+            ],
+            page: true,
+
+            response: {
+                statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            parseData: function (res) { //res 即为原始返回的数据
+                console.log(res)
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.list//解析数据列表
+                };
+            }
+        });
+    })
+</script>

@@ -49,6 +49,7 @@ class Curl extends Controller
      * @param mixed  $options CURL的参数
      * @return array
      */
+
     public static function sendRequest($url, $params = [], $method = 'POST', $options = [])
     {
         $method = strtoupper($method);

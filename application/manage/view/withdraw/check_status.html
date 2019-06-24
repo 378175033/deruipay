@@ -45,7 +45,9 @@
     layui.use(['form'], function() {
         var form = layui.form;
         form.on('submit(formDemo)', function(data){
+            console.log(data.field);
             $.post('{:url("check_status")}',data.field,function (res) {
+                console.log(res);
                 if( res.code === 1 ){
                     toastr.success( res.msg ,function () {
                         setTimeout( function () {
