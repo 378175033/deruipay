@@ -181,5 +181,41 @@ class Api extends Controller
             $this->error('系统异常，状态未知!!', '');
         }
     }
+    /**
+     * 支付宝回调
+     * */
+    public function succNotifyServer()
+    {
+        if (!isset($_GET['notify_time'])) return 'error';
+        $notify_time = $_GET['notify_time'];         // 通知时间
+        $notify_type = $_GET['notify_type'];        // 通知类型
+        $AMOUNT = $_GET['notify_id'];               // 通知校验ID
+        $sign_type = $_GET['sign_type'];            // 签名类型
+        $sign = $_GET['sign'];                      // 签名
+        $trade_no = $_GET['trade_no'];              // 支付宝交易号
+        $app_id = $_GET['app_id'];                  //开发者的app_id
+        $out_trade_no= $_GET['out_trade_no'];       // 商户订单号
+        $out_biz_no = $_GET['out_biz_no'];          // 商户业务号
+        $buyer_id = $_GET['buyer_id'];              // 买家支付宝用户号
+        $buyer_logon_id = $_GET['buyer_logon_id'];  //买家支付宝账号
+        $seller_id = $_GET['seller_id'];            //	卖家支付宝用户号
+        $seller_email = $_GET['seller_email'];      //	卖家支付宝账号
+        $trade_status = $_GET['trade_status'];      //  交易状态
+        $total_amount = $_GET['total_amount'];      //  订单金额
+        $receipt_amount = $_GET['receipt_amount'];  //实收金额
+        $invoice_amount = $_GET['invoice_amount'];  //开票金额
+        $buyer_pay_amount = $_GET['buyer_pay_amount'];//	付款金额
+        $subject = $_GET['subject'];                //	订单标题
+        $body = $_GET['body'];                      //商品描述
+        $gmt_create = $_GET['gmt_create'];          // 交易创建时间
+        $gmt_payment = $_GET['gmt_payment'];        //交易付款时间
+        $gmt_refund = $_GET['gmt_refund'];          // 交易退款时间
+        $gmt_close = $_GET['gmt_close'];            //交易结束时间
+        $fund_bill_list = $_GET['fund_bill_list'];  //支付金额信息
+
+
+
+
+    }
 
 }

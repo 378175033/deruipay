@@ -60,25 +60,6 @@ class PayModl extends Manage
     }
 
 
-    /**
-     * 支付宝回调
-     * */
-    public function succNotifyServer()
-    {
-        if (!isset($_GET['ACCOUNT_NO'])) return 'error';
-        $ACCOUNT_NO = $_GET['ACCOUNT_NO'];
-        $MOBILE = $_GET['MOBILE'];
-        $AMOUNT = $_GET['AMOUNT'];
-        $BATCHID = $_GET['BATCHID'];
-        $SETTDAY = $_GET['SETTDAY'];
-        $FINTIME = $_GET['FINTIME'];
-        $SUBMITTIME = $_GET['SUBMITTIME'];
-        $SN = $_GET['SN'];
-        $POUNDAGE = $_GET['POUNDAGE'];
-        $USERCODE = $_GET['USERCODE'];
-        $SIGN = $_GET['SIGN'];//签名后的字符串
-
-    }
 
     /**
      *支付宝转账接口  必须要企业号才行

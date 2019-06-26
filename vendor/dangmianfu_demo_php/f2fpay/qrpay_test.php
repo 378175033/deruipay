@@ -100,7 +100,9 @@ function Pay_face($orderId,$orderTitel,$goods,$config)
 //            echo "支付宝创建订单二维码成功:"."<br>---------------------------------------<br>";
             $response = $qrPayResult->getResponse();
             $qrcode = $qrPay->create_erweima($response->qr_code);
-            return $qrcode;
+            $all['code'] = $qrcode;
+            $all['url'] = $response->qr_code;
+            return $all;
 //            echo $qrcode;
 //            print_r($response);
 
