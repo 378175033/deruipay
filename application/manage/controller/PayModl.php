@@ -61,29 +61,6 @@ class PayModl extends Manage
 
 
     /**
-     *  商家收款 （当面付）
-     *
-     */
-    public function Face( $data )
-    {
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/service/AlipayTradeService.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
-        $orderTitel = $data['title'];
-        $goods = $data['money'];
-        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-        $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
-        echo $succ;
-        die;
-        if ($succ != 1 && $succ != 3) {
-            $this->success('支付宝创建订单二维码成功', '', $succ);
-        } elseif ($succ == 1) {
-            $this->error('支付宝创建订单二维码失败', '');
-        } else {
-            $this->error('系统异常，状态未知!!', '');
-        }
-    }
-    /**
      * 支付宝回调
      * */
     public function succNotifyServer()
