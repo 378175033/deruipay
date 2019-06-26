@@ -42,7 +42,6 @@ class Pay extends Controller
                         ])
                         ->where($where)
                         ->select();
-//            var_dump($passage);die;
             $str = [
                 'business_id' => $business['id'],
                 'order_id' => generate16Num(),
@@ -83,7 +82,6 @@ class Pay extends Controller
                 default:
                     $this->error( "暂无该支付方式！请重新选取");
             }
-
         }
         //获取支付通道
         $where = [
