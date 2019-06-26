@@ -8,7 +8,6 @@
 
 namespace app\manage\controller;
 use think\Controller;
-use think\helper\Time;
 
 class Api extends Controller
 {
@@ -119,7 +118,7 @@ class Api extends Controller
     {
         $dir_name = "..".DS."/runtime";
         $this->delete_dir_file( $dir_name );
-        operaLog($this->admin_id.'清除缓存');
+        operaLog(session('userInfo')['id'].'清除缓存');
         $this->success( '清除成功', 'index/index' );
     }
 
@@ -167,6 +166,11 @@ class Api extends Controller
         $goods = $data['money'];
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
+        if( ismobile() ){
+            $succ = "<script> window.location.href='".$succ['url']."'</script>";
+        } else {
+            $succ = $succ['code'];
+        }
         $this->success( "获取二维码成功！",'', $succ);
         if ($succ != 1 && $succ != 3) {
             $this->success('支付宝创建订单二维码成功', '', $succ);

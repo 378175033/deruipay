@@ -69,10 +69,13 @@ class Pay extends Controller
                     }
                     break;
                 case 'wechat':
+
                     break;
                 case 'union':
                     $api = new \app\manage\controller\Pay();
-                    $res = $api->pay( $data );
+                    $data = ['accNo'=>'6216261000000000018','money'=> $money*100];
+                    $customerInfo = ['smsCode' => '111111'];
+                    $res = $api->pay( $data, $customerInfo );
                     if( $res['code'] == 1 ){
                         $this->success( "获取二维码成功！", '', $res['data']);
                     } else{

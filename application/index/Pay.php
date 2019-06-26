@@ -1,29 +1,34 @@
 <?php
 namespace app\manage\controller;
-//use app\common\controller\Manage;
 use think\Controller;
 use zhangv\unionpay\UnionPay;
 
-class Pay extends Controller
+class Pay extends controller
 {
-
-    public function _initialize()
+    public function testPay()
     {
-        parent::_initialize();
+        $this->pay(['accNo'=>'6216261000000000018','money'=>100], ['smsCode' => '111111']);
     }
 
-
-    public function pay( $data )
+    public function pay( $data, array $customerInfo)
     {
+        $accNo = $data['accNo'];
+        if (!is_string($accNo)) {
+            $this->error('账户类型错误！');
+        }
         list($mode,$config) = config('union_pay');
-//        halt($config);
-        $unionPay = UnionPay::B2C($config,$mode);
+        $unionPay = UnionPay::Direct($config,$mode);
 
         $payOrderNo = date('YmdHis');
-        $amt = $data['money']*100;
+        $amt = $data['money'];
 
-        $html = $unionPay->pay($payOrderNo,$amt);
-        $this->success( '支付生成成功','', $html );
+        $res = $unionPay->pay($payOrderNo,$amt,$accNo,$customerInfo);
+        $this->afterPay($res);
+    }
+
+    public function afterPay($res)
+    {
+        dump($res);
     }
 
     public function payreturn()
