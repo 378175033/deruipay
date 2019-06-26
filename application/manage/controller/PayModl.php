@@ -64,13 +64,13 @@ class PayModl extends Manage
      *  商家收款 （当面付）
      *
      */
-    public function Face()
+    public function Face( $data )
     {
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/service/AlipayTradeService.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
-        $orderTitel = '测试';
-        $goods = 0.01;
+        $orderTitel = $data['title'];
+        $goods = $data['money'];
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
         echo $succ;

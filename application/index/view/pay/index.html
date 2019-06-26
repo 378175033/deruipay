@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>支付测试</title>
+    <link rel="stylesheet" href="__LAYUI__/css/layui.css">
+    <link rel="stylesheet" href="__TOASTR__/build/toastr.css">
+    <style>
+        .layui-layer-msg{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付金额</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付方式</label>
+            <div class="layui-input-block">
+                <select name="type" id="" lay-verify="type">
+                    <option value="0">-请选择支付方式-</option>
+                    {volist name="way" id="w"}
+                    <option value="{$w.id}">{$w.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__TOASTR__/toastr.js"></script>
+<script>
+
+    function validationNumber(e, num) {
+        var regu = /^[0-9]+\.?[0-9]*$/;
+        if (e.value != "") {
+            if (!regu.test(e.value)) {
+                alert("请输入正确的数字");
+                e.value = e.value.substring(0, e.value.length - 1);
+                e.focus();
+            } else {
+                if (num == 0) {
+                    if (e.value.indexOf('.') > -1) {
+                        e.value = e.value.substring(0, e.value.length - 1);
+                        e.focus();
+                    }
+                }
+                if (e.value.indexOf('.') > -1) {
+                    if (e.value.split('.')[1].length > num) {
+                        e.value = e.value.substring(0, e.value.length - 1);
+                        e.focus();
+                    }
+                }
+            }
+        }
+    }
+
+    layui.use(['form'], function() {
+        var form = layui.form;
+        var flag = true;
+        //自定义验证规则
+        form.verify({
+            money: function(value) {
+                if( value ===  "" ){
+                    toastr.error( "请输入支付金额" );
+                    return "请输入支付金额";
+                }
+            },
+            type:function ( value ) {
+                if( value === "0"){
+                    toastr.error( "请选择支付方式" );
+                    return "请选择支付方式";
+                }
+            }
+        });
+
+        form.on('submit(formDemo)', function(data){
+            console.log(data.field)
+            $.post('',data.field,function (res) {
+                console.log( res );
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        parent.location.reload();
+                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        parent.layer.close(index);
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
+</html>
