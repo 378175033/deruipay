@@ -12,47 +12,17 @@
                     <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label" style="width: auto">支付方式</label>
-                <div class="layui-inline">
-                    <select name="way">
-                        <option value="0">--支付方式--</option>
-                        {volist name="way" id="w"}
-                        <option value="{$w.id}">{$w.name}</option>
-                        {/volist}
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label" style="width: auto">订单状态</label>
-                <div class="layui-inline">
-                    <select name="status">
-                        <option value="">--订单状态--</option>
-                        {php} $st = [ '审核中',  '成功', '未提交', '已提交', '代付失败', '提交失败',  '已退回'];{/php}
-                        {volist name="st" id="s"}
-                        <option value="{$key+1}">{$s}</option>
-                        {/volist}
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label" style="width: auto">交易流水号</label>
-                <div class="layui-inline">
-                    <input class="layui-input"  name="batch" placeholder="交易流水号" type="text">
-                </div>
-            </div>
+            <button class="layui-btn" lay-filter="query" lay-submit="">
+                <i class="layui-icon layui-icon-search"></i>查询
+            </button>
+            <button class="layui-btn" lay-filter="clear" lay-submit="">
+                <i class="layui-icon layui-icon-circle"></i>清空条件
+            </button>
         </div>
     </div>
-    <table class="layui-hide" id="menu-table" lay-filter="text"></table>
 </form>
-<script type="text/html" id="toolbar">
-    <button class="layui-btn" lay-filter="query" lay-submit="">
-        <i class="layui-icon layui-icon-search"></i>查询
-    </button>
-    <button class="layui-btn" lay-filter="clear" lay-submit="">
-        <i class="layui-icon layui-icon-circle"></i>清空条件
-    </button>
-</script>
+<table class="layui-hide" id="menu-table" lay-filter="text"></table>
+</body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -71,7 +41,6 @@
         });
         //监听查询提交
         form.on('submit(query)', function(data) {
-            console.log( data.field )
             table.reload('LogList', {
                 url: '{:url("index")}',
                 where: data.field
@@ -94,28 +63,15 @@
             limits: [5,10,15,20,50,100], //每页条数的选择项
             loading: true,
             where:{ order:'id desc' },
-            // toolbar: true,
-            toolbar: '#toolbar',
             cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols: [
                 [
                     {field: 'id',title: 'ID'},
-                    {field: 'order_id',title: '订单编号'},
-                    {field: 'batch',title: '交易流水号'},
-                    {field: 'amount',title: '交易金额'},
                     {field: 'name',title: '支付通道'},
-                    {field: 'commission',title: '通道手续费'},
-                    {field: 'service_charges',title: '平台手续费'},
-                    {field: 'status',title: '订单状态',templet:function (d) {
-                            var a = [ '审核中',  '成功', '未提交', '已提交', '代付失败', '提交失败',  '已退回'];
-                            var v = d.status;
-                            var str = "<span style='color: #FF0000;'>"+a[v]+"</span>";
-                            if( v === 1 ) str = "<span style='color: green;'>"+a[v]+"</span>";
-                            return str;
-                        }},
-                    {field: 'create_time',title: '订单生成时间'},
-                    {field: 'pay_time',title: '支付时间'},
-
+                    {field: 'create_time',title: '登录时间'},
+                    {field: 'device',title: '登录设备'},
+                    {field: 'ip',title: 'IP地址'},
+                    {field: 'address',title: '登录地址'},
                 ]
             ],
             page: true,

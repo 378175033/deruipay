@@ -18,7 +18,7 @@ return [
         'version' => '5.1.0',
         'signMethod' => '01', //RSA
         'encoding' => 'UTF-8',
-        'merId' => '700000000000001',
+        'merId' => '777290058170687',
         'currencyCode' => 156,
         'returnUrl' => 'http://dev.git.com/union-pay/demo/payreturn.php', //前台网关支付返回
         'notifyUrl' => 'http://dev.git.com/union-pay/demo/paynotify.php', //后台通知
