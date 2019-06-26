@@ -1,9 +1,10 @@
 <?php
 namespace app\manage\controller;
-use app\common\controller\Manage;
+//use app\common\controller\Manage;
+use think\Controller;
 use zhangv\unionpay\UnionPay;
 
-class Pay extends Manage
+class Pay extends Controller
 {
 
     public function _initialize()
@@ -12,17 +13,17 @@ class Pay extends Manage
     }
 
 
-    public function pay()
+    public function pay( $data )
     {
         list($mode,$config) = config('union_pay');
 //        halt($config);
         $unionPay = UnionPay::B2C($config,$mode);
 
         $payOrderNo = date('YmdHis');
-        $amt = 1;
+        $amt = $data['money']*100;
 
         $html = $unionPay->pay($payOrderNo,$amt);
-        echo $html;
+        $this->success( '支付生成成功','', $html );
     }
 
     public function payreturn()

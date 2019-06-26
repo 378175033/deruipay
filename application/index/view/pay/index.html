@@ -15,11 +15,11 @@
     </style>
 </head>
 <body>
-    <form class="layui-form">
+    <form class="layui-form" style="width: 95%;margin: 60px auto">
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
+                <input type="number" class="layui-input" name="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
             </div>
         </div>
         <div class="layui-form-item">
@@ -31,6 +31,10 @@
                     <option value="{$w.id}">{$w.name}</option>
                     {/volist}
                 </select>
+            </div>
+        </div>
+        <div class="layui-card">
+            <div class="layui-card-body" style="text-align: center">
             </div>
         </div>
         <div class="layui-form-item">
@@ -94,11 +98,7 @@
             $.post('',data.field,function (res) {
                 console.log( res );
                 if( res.code === 1 ){
-                    toastr.success( res.msg ,function () {
-                        parent.location.reload();
-                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(index);
-                    });
+                    $('.layui-card-body').html( res.data );
                 } else {
                     toastr.error( res.msg )
                 }

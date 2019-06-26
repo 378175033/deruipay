@@ -8,7 +8,7 @@
 
 namespace app\index\controller;
 use think\Controller;
-use app\manage\controller\PayModl;
+//use app\manage\controller\Api;
 
 class Pay extends Controller
 {
@@ -26,18 +26,30 @@ class Pay extends Controller
                 'id'            => $type
             ];
             $type = db( 'passageway')->where($where )->value("pay_type");
+            $data = [
+                'title' => '测试支付1',
+                'money' => $money
+            ];
             switch ( $type ){
                 case 'alipay':
-                    $pay = new PayModl();
-                    $data = [
-                        'title' => '测试支付1',
-                        'money' => $money
-                    ];
-                    new $pay->Face( $data );
+                    $api = new \app\manage\controller\Api();
+                    $res = $api->Face( $data );
+                    if( $res['code'] == 1 ){
+                        $this->success( "获取二维码成功！", '', $res['data']);
+                    } else{
+                        $this->error( $res['msg'] );
+                    }
                     break;
                 case 'wechat':
                     break;
                 case 'union':
+                    $api = new \app\manage\controller\Pay();
+                    $res = $api->pay( $data );
+                    if( $res['code'] == 1 ){
+                        $this->success( "获取二维码成功！", '', $res['data']);
+                    } else{
+                        $this->error( $res['msg'] );
+                    }
                     break;
                 default:
                     $this->error( "暂无该支付方式！请重新选取");

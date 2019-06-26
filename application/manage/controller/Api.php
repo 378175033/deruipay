@@ -7,7 +7,6 @@
  */
 
 namespace app\manage\controller;
-use think\Cache;
 use think\Controller;
 use think\helper\Time;
 
@@ -157,19 +156,18 @@ class Api extends Controller
 
     /**
      *  商家收款 （当面付）
-     *
+     * @param $data array
      */
-    public function Face()
+    public function Face( $data )
     {
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/service/AlipayTradeService.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
-        $orderTitel = '测试';
-        $goods = 0.01;
+        $orderTitel = $data['title'];
+        $goods = $data['money'];
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
-        echo $succ;
-        die;
+        $this->success( "获取二维码成功！",'', $succ);
         if ($succ != 1 && $succ != 3) {
             $this->success('支付宝创建订单二维码成功', '', $succ);
         } elseif ($succ == 1) {
