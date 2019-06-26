@@ -7,11 +7,12 @@ class Pay extends controller
 {
     public function testPay()
     {
-        $this->pay('6216261000000000018', ['smsCode' => '111111']);
+        $this->pay(['accNo'=>'6216261000000000018','money'=>100], ['smsCode' => '111111']);
     }
 
-    public function pay($accNo , array $customerInfo)
+    public function pay( $data, array $customerInfo)
     {
+        $accNo = $data['accNo'];
         if (!is_string($accNo)) {
             $this->error('账户类型错误！');
         }
@@ -19,7 +20,7 @@ class Pay extends controller
         $unionPay = UnionPay::Direct($config,$mode);
 
         $payOrderNo = date('YmdHis');
-        $amt = '199';
+        $amt = $data['money'];
 
         $res = $unionPay->pay($payOrderNo,$amt,$accNo,$customerInfo);
         $this->afterPay($res);

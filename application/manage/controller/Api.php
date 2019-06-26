@@ -8,7 +8,6 @@
 
 namespace app\manage\controller;
 use think\Controller;
-use think\helper\Time;
 
 class Api extends Controller
 {
@@ -119,7 +118,7 @@ class Api extends Controller
     {
         $dir_name = "..".DS."/runtime";
         $this->delete_dir_file( $dir_name );
-        operaLog($this->admin_id.'清除缓存');
+        operaLog(session('userInfo')['id'].'清除缓存');
         $this->success( '清除成功', 'index/index' );
     }
 
