@@ -104,8 +104,8 @@ layui.define(mods,
                                 iframe: !0
                             },
                             {
-                                path: "/user/user_passageway_list",
-                                component: "business/user/user_passageway_list",
+                                path: "/user/passageway",
+                                component: "business/user/passageway",
                                 name: "商户通道",
                                 iframe: !0
                             },

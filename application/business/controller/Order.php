@@ -30,23 +30,57 @@ class Order extends Business
                 'a.business_id'   => $this->user['id'],
                 'a.delete_time'   => 0
             ];
+            //订单创建日期筛选
+            $stime = $this->request->param('stime', 0);
+            $ltime = $this->request->param('ltime', 0);
+            if (empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $where['a.create_time'] = ['<=', $ltime];
+            }
+            if (!empty($stime) && empty($ltime)) {
+                $stime = strtotime($stime);
+                $where['a.create_time'] = ['>', $stime];
+            }
+            if (!empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $stime = strtotime($stime);
+                $where['a.create_time'] = ['between', [$stime, $ltime]];
+            }
+            //订单支付方式筛选
+            $way = $this->request->param('way', 0, 'intval');
+            if( !empty( $way ) ) $where['p.id'] = $way;
+            //订单状态筛选
+            $way = $this->request->param('status', 0, 'intval');
+            if( !empty( $way ) ) $where['a.status'] = $way-1;
+            //交易流水号筛选
+            $way = $this->request->param('batch', "");
+            if( !empty( $way ) ) $where['a.batch'] = $way;
             $join = [
                 [$this->pre."passageway p",'p.id = a.user_passageway_id', 'left'],
             ];
-            $field = "a.id,p.name,a.create_time";
+            $field = "a.id,p.name,a.create_time,a.order_id,a.batch,a.amount,a.commission,a.service_charges,a.pay_time,a.status";
             $list = $this->model
                 ->alias( "a")
                 ->field( $field )
                 ->join( $join )
                 ->where( $where )
-                ->limit( $page*$per, $per)
+                ->order( "id desc")
+                ->limit( ($page-1)*$per, $per)
                 ->select();
             $sql = $this->model->getLastSql();
             $count = $this->model
+                ->alias( "a")
+                ->join( $join )
                 ->where( $where )
                 ->count();
             $this->success( "数据加载成功！",'',['list'=>$list,'count'=>$count,'sql'=>$sql]);
         }
+        $where = [
+            'delete_time'   => 0,
+            'status'        => 1
+        ];
+        $way = db( "passageway")->field('id,name')->where( $where )->select();
+        $this->assign( 'way', $way);
         return $this->fetch();
     }
 }

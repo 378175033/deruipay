@@ -29,7 +29,13 @@ class User extends Business
         return $this->fetch();
     }
 
-    public function user_passageway_list()
+    /**
+     * 2019/6/26 0026 15:01
+     * @desc获取通道列表
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function passageway()
     {
         if($this->request->isPost() && $this->request->isAjax()){
             $list = model('manage/user_passageway')

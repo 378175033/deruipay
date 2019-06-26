@@ -167,6 +167,11 @@ class Api extends Controller
         $goods = $data['money'];
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
+        if( ismobile() ){
+            $succ = "<script> window.location.href='".$succ['url']."'</script>";
+        } else {
+            $succ = $succ['code'];
+        }
         $this->success( "获取二维码成功！",'', $succ);
         if ($succ != 1 && $succ != 3) {
             $this->success('支付宝创建订单二维码成功', '', $succ);
