@@ -11,5 +11,8 @@ use think\Controller;
 
 class Api extends Controller
 {
+    public function getMenus()
+    {
 
+    }
 }

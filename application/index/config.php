@@ -10,6 +10,7 @@
          '__CSS__' =>'/static/index/css',
          '__LAYUI__' =>'/static/layui',
          '__JS__'  =>'/static/index/js',
-         '__IMAGE__' =>'/static/index/images'
+         '__IMAGE__' =>'/static/index/images',
+         '__TOASTR__' =>'/static/toastr',
      ]
  ];
