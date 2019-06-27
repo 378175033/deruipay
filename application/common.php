@@ -40,5 +40,11 @@ function ismobile()
             return true;
         }
     }
+
     return false;
+}
+function generate16Num()
+{
+    $uid = date('Ymd') . str_pad(mt_rand(1, 99999), 8,mt_rand(1, 99999), STR_PAD_LEFT);
+    return $uid;
 }

@@ -211,9 +211,19 @@ class Api extends Controller
         $gmt_refund = $_GET['gmt_refund'];          // 交易退款时间
         $gmt_close = $_GET['gmt_close'];            //交易结束时间
         $fund_bill_list = $_GET['fund_bill_list'];  //支付金额信息
-
-
-
+        $where = [
+            'order_id' => $out_trade_no
+        ];
+        $str = [
+            'batch' => $trade_no,
+            'amount' => $receipt_amount,
+            'update_time' => strtotime($notify_time),
+            'back_time' => strtotime($notify_time),
+            'status' => 1,
+            'back_status' => 1,
+            'pay_info' => '收款方'.$seller_email.',付款方'.$buyer_logon_id
+        ];
+        model('order')->isUpdate( true, $where)->save( $str );
 
     }
 
