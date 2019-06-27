@@ -95,4 +95,5 @@ class Pay extends Controller
         $this->assign( 'way', $way);
         return $this->fetch();
     }
+
 }
