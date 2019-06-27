@@ -253,6 +253,8 @@ return [
             'notifyUrl' => 'http://dev.git.com/union-pay/demo/paynotify.php', //后台通知
             'frontFailUrl' => 'http://dev.git.com/union-pay/demo/payfail.php',
             'refundnotifyUrl' => 'http://dev.git.com.com/union-pay/demo/refundnotify.php',
+            'openReturnUrl' => 'http://dev.git.com/union-pay/demo/payreturn.php',// 前台开通并支付返回地址
+            'openNotifyUrl' => 'http://dev.git.com/union-pay/demo/payreturn.php',// 后台开通并支付返回地址
             'signCertPath' =>  './cert/acp_test_sign.pfx',
             'signCertPwd' => '000000', //签名证书密码
             'verifyCertPath' =>  './cert/acp_test_verify_sign.cer',  //v5.0.0 required
