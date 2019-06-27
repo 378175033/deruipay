@@ -154,6 +154,12 @@ class User extends Business
         return $this->fetch();
     }
 
+    /**
+     * withdraw
+     * 2019/6/27 0027 18:02
+     * @desc 提现列表
+     * mixed
+     */
     public function withdraw()
     {
         $id = $this->user['id'];

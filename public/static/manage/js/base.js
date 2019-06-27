@@ -18,9 +18,7 @@ toastr.options = {
 
 $('#clear').click( function () {
     $.post( "manage/Api/clear",{},function () {
-        layui.use( "layer",function () {
-            layui.layer.msg( "缓存清除成功！",{icon:1})
-        })
+        toastr.success( "成功清除缓存！");
     })
 })
 
