@@ -361,5 +361,10 @@ class Manage extends Controller
 
         return $this;
     }
+    /**
+     * @return string
+     * 生成16位订单号
+     */
+
 
 }
