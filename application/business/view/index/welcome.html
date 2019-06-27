@@ -1,15 +1,42 @@
 {include file='common:head'}
-<!--<div class="layui-container">-->
-    <!--<div class="layui-row">-->
-        <!--<div class="layui-col-md9">-->
-            <!--<div class="fl">-->
-                <!--<p class="">-->
-                    <!--<span>账户余额：</span>-->
-                <!--</p>-->
-                <!--<p>&yen;{$user.money}</p>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="layui-col-md3">-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
+<style>
+    .bgf {
+        background: #fff;
+    }
+    .clearfix {
+        zoom: 1;
+    }
+    .jbico {
+        background: #F03E41;
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        text-align: center;
+    }
+    .jbico i{
+        font-size: 64px;
+        color: #ffffff;
+        line-height: 100px;
+    }
+    .fl{float: left}
+    .fr{float: right}
+    .m30{
+        margin: 30px 2%;
+        overflow: hidden;
+    }
+</style>
+<div class="clearfix bgf m30">
+    <div class="fl" style="font-size: 36px">
+        <span class="jbico"><i class="layui-icon layui-icon-rmb"></i></span>
+        <span>可提现金额：</span>
+        <b>¥ {$user.money}</b>
+    </div>
+    <div class="fr" style="margin-right: 100px;line-height: 100px;height: 100px">
+        <a href="javascript:openIframe({title:'查看余额明细',content:'/business/user/accountLog'});" class="layui-btn"><i class="layui-icon">&#xe63c;</i> 余额明细</a>
+        <a href="javascript:openIframe({title:'余额提现申请',content:'/business/user/withdraw',area:['600px','400px']});" class="layui-btn layui-btn-danger">提现</a>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>

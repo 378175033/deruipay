@@ -12,47 +12,21 @@ use think\Model;
 
 class Withdraw extends Model
 {
-
-    public function getBusIdAttr($value)
+    /**
+     * 2019/6/27 0027 15:55
+     * @desc
+     * @ApiParams
+     * @ApiReturnParams
+     * @param $data
+     */
+    public function changeWithdraw( $data )
     {
-        $res = db('business')->where('id', $value)->value('name');
-        return $res;
-    }
-
-    public static function addWithdrawLog($value)
-    {
-        if ($value['status'] == 2) {  //成功
-            model('business')->where('id', $value['id'])->setInc('money', (int)$value['money']);
-            self::log_c($value);
-            self::addAccountLog($value);
-
+        //是否审核通过
+        $status = $data['status'];
+        if( $status == 1 ){ //审核未通过
+            //将余额返回账户
+            $old_money = model('business')->where( 'id',$data['bus_id'])->value( 'money');
+            model( "business")->changeMoney(  $data['money'], $old_money+$data['money'], $data['bus_id'], 4);
         }
-        if ($value['status'] == 1) {  //拒绝
-//            db('business')->where('id', $value['id'])->setDec('money', $value['money']);
-            self::log_c($value);
-        }
-    }
-
-    public static function addAccountLog($value)
-    {
-        $insert = [
-            'bus_id'    => $value['id'],
-            'account'   => $value['money'],
-            'desc'      => $value['check_desc'],
-            'info'      => 3
-        ];
-        model( 'account_log')->add( $insert );
-    }
-
-    public static function log_c($val)
-    {
-        $data = [
-            'bus_id' => $val['id'],
-            'money' => $val['money'],
-            'note' => $val['check_desc'],
-            'status' => $val['status'],
-            'create_time' => time()
-        ];
-        db('withdraw_log')->insert($data);
     }
 }

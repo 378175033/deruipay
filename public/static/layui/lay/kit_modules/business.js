@@ -32,15 +32,15 @@ layui.define(mods,
                 u.menuInit(i),
             "TABS" === i.loadType && u.tabsInit(),
             "" === location.hash && t.setUrlState("主页", "#/index/welcome"),
-                layui.sidebar.render({
-                    elem: "#ccleft",
-                    title: "这是左侧打开的栗子",
-                    shade: !0,
-                    direction: "left",
-                    dynamicRender: !0,
-                    url: "business/Index/welcome",
-                    width: "50%"
-                }),
+                // layui.sidebar.render({
+                //     elem: "#ccleft",
+                //     title: "这是左侧打开的栗子",
+                //     shade: !0,
+                //     direction: "left",
+                //     dynamicRender: !0,
+                //     url: "business/Index/welcome",
+                //     width: "50%"
+                // }),
                 a("#cc").on("click",
                     function() {
                         layui.sidebar.render({
@@ -92,14 +92,20 @@ layui.define(mods,
                                 iframe: !0
                             },
                             {
+                                path: "/order/withdraw",
+                                component: "business/order/withdraw",
+                                name: "订单列表",
+                                iframe: !0
+                            },
+                            {
                                 path: "/login_log/index",
                                 component: "business/login_log/index",
                                 name: "登录日志",
                                 iframe: !0
                             },
                             {
-                                path: "/order_log/index",
-                                component: "business/order_log/index",
+                                path: "/user/accountLog",
+                                component: "business/user/accountLog",
                                 name: "余额变动明细",
                                 iframe: !0
                             },
@@ -107,6 +113,12 @@ layui.define(mods,
                                 path: "/user/passageway",
                                 component: "business/user/passageway",
                                 name: "商户通道",
+                                iframe: !0
+                            },
+                            {
+                                path: "/user/account",
+                                component: "business/user/account",
+                                name: "收款账户管理",
                                 iframe: !0
                             },
                             {

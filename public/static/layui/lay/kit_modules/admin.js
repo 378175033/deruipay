@@ -6,7 +6,7 @@ var BaseUrl = "http:://www.demo.com/index.php/manage/";
 var list = [];
 layui.use("jquery",function () {
     var jqu = layui.jquery;
-    jqu.post('manage/Api/getmenus',{},function ( res ) {
+    jqu.post('manage/Api/getmenus?rand='+Math.random(),{},function ( res ) {
         list = res.data;
         for ( var i = 0; i< list.length; i++ ){
             list[i]['iframe'] = !0;
@@ -43,15 +43,15 @@ layui.define(mods,
                 u.menuInit(i),
             "TABS" === i.loadType && u.tabsInit(),
             "" === location.hash && t.setUrlState("主页", "#/Index/welcome"),
-                layui.sidebar.render({
-                    elem: "#ccleft",
-                    title: "这是左侧打开的栗子",
-                    shade: !0,
-                    direction: "left",
-                    dynamicRender: !0,
-                    url: "manage/Index/welcome",
-                    width: "50%"
-                }),
+                // layui.sidebar.render({
+                //     elem: "#ccleft",
+                //     title: "这是左侧打开的栗子",
+                //     shade: !0,
+                //     direction: "left",
+                //     dynamicRender: !0,
+                //     url: "manage/Index/welcome",
+                //     width: "50%"
+                // }),
                 a("#cc").on("click",
                     function() {
                         layui.sidebar.render({

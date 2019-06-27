@@ -14,12 +14,12 @@ class UserPassageway extends Model
     protected $autoWriteTimestamp = true;
 
 
-    // status属性读取器
-    protected function getStatusAttr($value)
-    {
-        $status = [0 => '不可用', 1 => '可用'];
-        return $status[$value];
-    }
+//    // status属性读取器
+//    protected function getStatusAttr($value)
+//    {
+//        $status = [0 => '不可用', 1 => '可用'];
+//        return $status[$value];
+//    }
 
 
     // status属性读取器

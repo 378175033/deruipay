@@ -29,7 +29,7 @@ class AccountLog extends Model
 
     public function getInfoAttr($value)
     {
-        $status = [0=>'订单录入',1=>'平台设置余额',2=>'平台设置冻结金额',3=>'申请提现'];
+        $status = [0=>'订单录入',1=>'平台设置余额',2=>'平台设置冻结金额',3=>'申请提现',4=>'申请提现返还'];
         return $status[$value];
     }
 }

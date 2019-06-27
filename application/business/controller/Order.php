@@ -20,6 +20,12 @@ class Order extends Business
         $this->model = model( "Order");
     }
 
+    /**
+     * 2019/6/27 0027 15:34
+     * @desc 普通订单
+     * @ApiParams
+     * @ApiReturnParams
+     */
     public function index()
     {
         if( $this->request->isPost() && $this->request->isAjax() )
@@ -81,6 +87,62 @@ class Order extends Business
         ];
         $way = db( "passageway")->field('id,name')->where( $where )->select();
         $this->assign( 'way', $way);
+        return $this->fetch();
+    }
+
+    /**
+     * 2019/6/27 0027 15:34
+     * @desc 提现订单
+     * @ApiParams
+     * @ApiReturnParams
+     */
+    public function withdraw()
+    {
+        if( $this->request->isPost() && $this->request->isAjax() )
+        {
+            $page = $this->request->param('page', 1, 'intval');
+            $per = $this->request->param('limit', 10, 'intval');
+            $where = [
+                'a.bus_id'   => $this->user['id'],
+                'a.delete_time'   => 0
+            ];
+            //订单创建日期筛选
+            $stime = $this->request->param('stime', 0);
+            $ltime = $this->request->param('ltime', 0);
+            if (empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $where['a.create_time'] = ['<=', $ltime];
+            }
+            if (!empty($stime) && empty($ltime)) {
+                $stime = strtotime($stime);
+                $where['a.create_time'] = ['>', $stime];
+            }
+            if (!empty($stime) && !empty($ltime)) {
+                $ltime = strtotime($ltime);
+                $stime = strtotime($stime);
+                $where['a.create_time'] = ['between', [$stime, $ltime]];
+            }
+            $this->model = model( "withdraw");
+            $join = [
+                [$this->pre."account c",'c.business_id = a.bus_id', 'left'],
+            ];
+            $field = "a.*,c.ali_name,c.ali_user,c.we_name,c.we_user,c.un_name,c.un_user,c.un_bank,c.un_branch";
+            $list = $this->model
+                ->alias( "a")
+                ->field( $field )
+                ->join( $join )
+                ->where( $where )
+                ->order( "id desc")
+                ->limit( ($page-1)*$per, $per)
+                ->select();
+            $sql = $this->model->getLastSql();
+            $count = $this->model
+                ->alias( "a")
+                ->join( $join )
+                ->where( $where )
+                ->count();
+            $this->success( "数据加载成功！",'',['list'=>$list,'count'=>$count,'sql'=>$sql]);
+        }
         return $this->fetch();
     }
 }

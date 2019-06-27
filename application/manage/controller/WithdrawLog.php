@@ -7,8 +7,6 @@
  */
 
 namespace app\manage\controller;
-
-
 use app\common\controller\Manage;
 
 class WithdrawLog extends Manage

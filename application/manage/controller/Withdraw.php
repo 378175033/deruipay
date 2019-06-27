@@ -20,9 +20,10 @@ class Withdraw extends Manage
         $this->table = "Withdraw";
         $this->model = model($this->table);
         $this->join = [
-            ['business b', 'b.id = a.bus_id', 'left']
+            ['business b', 'b.id = a.bus_id', 'left'],
+            ['account c', 'c.business_id = a.bus_id', 'left']
         ];
-        $this->field = "a.*,b.name";
+        $this->field = "a.*,b.name,c.ali_name,c.ali_user,c.we_name,c.we_user,c.un_name,c.un_user,c.un_bank,c.un_branch";
     }
 
     /**
@@ -40,11 +41,10 @@ class Withdraw extends Manage
             'id' => $id,
             'delete_time' => 0
         ];
-        $field = 'id,status,check_desc,check_time,money';
+        $field = 'id,bus_id,status,check_desc,check_time,money';
         $data = $this->model->where($where)->field($field)->find();
-
-        $bus_name = db('business')->where('id', $id)->value('name');
-        if (request()->post()) {
+        $bus_name = db('business')->where('id', $data['bus_id'])->value('name');
+        if ( request()->isPost() ) {
             $post_data = $this->request->param('');
             if (!isset($post_data['status'])) {
                 $this->error('请选择审核状态');
@@ -53,9 +53,10 @@ class Withdraw extends Manage
                 $this->error('已审核过,请勿重复审核');
             }
             $post_data['check_time'] = time();
+            $post_data['bus_id']    = $data['bus_id'];
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
             if ($result) {
-                \app\manage\model\Withdraw::addWithdrawLog($post_data);
+                $this->model->changeWithdraw( $post_data );
                 operaLog($this->admin_id . '对商户(' . $bus_name . ')提款审核');
                 $this->success("设置成功！");
             }

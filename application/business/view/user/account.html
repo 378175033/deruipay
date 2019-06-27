@@ -1,0 +1,124 @@
+{include file='common:head'}
+<div class="layui-col-md-offset1 layui-col-xs10 mt20">
+    <div class="layui-collapse" lay-filter="demo">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">支付宝</h2>
+            <div class="layui-colla-content layui-show layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="ali_name" value="{$data.ali_name|default=''}" placeholder="请输入账号">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">到账用户</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="ali_user" placeholder="请输入用户名" value="{$data.ali_user|default=''}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn submitBtn_add" lay-submit lay-filter="demo1">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">微信</h2>
+            <div class="layui-colla-content layui-show layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="we_name" value="{$data.we_name|default=''}" placeholder="请输入账号">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">到账用户</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="we_user" placeholder="请输入用户名" value="{$data.we_user|default=''}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn submitBtn_add" lay-submit lay-filter="demo2">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">银行卡</h2>
+            <div class="layui-colla-content layui-show layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="un_name" placeholder="请输入账号" value="{$data.un_name|default=''}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行</label>
+                    <div class="layui-input-block">
+                        <select name="un_bank">
+                            <option value="0">请选择银行</option>
+                            {php}
+                            $bank = [ '中国银行','招商银行','民生银行','建设银行','农业银行','中国邮政储蓄银行','工商银行','交通银行','华夏银行',
+                            '中信银行','平安银行','浦发银行','光大银行','兴业银行','北京银行','广发银行'];
+                            {/php}
+                            {volist name="bank" id="bk"}
+                                <option value="{$bk}" {eq name="data.un_bank" value="$bk"}selected{/eq}>{$bk}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户支行</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="un_branch" placeholder="请输入开户支行" value="{$data.un_branch|default=''}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">到账用户</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" name="un_user" placeholder="请输入用户名" value="{$data.un_user|default=''}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn submitBtn_add" lay-submit lay-filter="demo3">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['element','form'], function(){
+        var element = layui.element,
+            form=layui.form;
+        for( var i= 1; i < 4; i++){
+            form.on('submit(demo'+i+')', function(data){
+                $.post('',data.field,function (res) {
+                    if( res.code === 1 ){
+                        toastr.success( res.msg ,function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                })
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        }
+
+    });
+</script>

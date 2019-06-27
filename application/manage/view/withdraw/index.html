@@ -1,5 +1,10 @@
 {include file='common:head'}
-
+<style>
+    .layui-table-cell{
+        height: auto;
+        line-height: 21px;
+    }
+</style>
 <script type="text/html" id="status">
     <div>
         {{# if(d.status == 0){ }}
@@ -34,9 +39,14 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">流水号</label>
+                <label class="layui-form-label">提现账户类型</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="e-w_id" autocomplete="off" placeholder="请输入流水号" class="layui-input">
+                    <select name="e-w_id">
+                        <option value="0">提现账户类型</option>
+                        <option value="1">支付宝</option>
+                        <option value="2">微信</option>
+                        <option value="3">银行卡</option>
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
@@ -55,12 +65,6 @@
                     </select>
                 </div>
             </div>
-            <!--<div class="layui-inline">-->
-            <!--<label class="layui-form-label">用户ID</label>-->
-            <!--<div class="layui-input-inline">-->
-            <!--<input type="text" name="e-user_id" autocomplete="off" placeholder="请输入用户id" class="layui-input">-->
-            <!--</div>-->
-            <!--</div>-->
             <button class="layui-btn" lay-filter="query" lay-submit="">
                 <i class="layui-icon layui-icon-search"></i>查询
             </button>
@@ -120,9 +124,28 @@
             cols: [
                 [
                     {field: 'id',title: 'ID'},
-                    {field: 'bus_id',title: '商户名称'},
+                    {field: 'name',title: '商户名称'},
                     {field: 'money',title: '申请提款金额'},
-                    {field: 'w_id',title: '流水号'},
+                    {field: 'w_id',title: '提现账户信息',templet:function (d) {
+                            var type = d.w_id;
+
+                            var str ="";
+                            switch (type) {
+                                case "1":
+                                    str = "支付宝账号："+d.ali_name+'<br>到账用户：'+d.ali_user;
+                                    break;
+                                case "2":
+                                    str = "微信账号："+d.we_name+'<br>到账用户：'+d.we_user;
+                                    break;
+                                case "3":
+                                    str = "银行卡账号："+d.un_name+'<br>银行名称：'+d.un_bank+"<br>开户支行："+d.un_branch+'<br>到账用户：'+d.un_user;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return str;
+                        }
+                    },
                     {field: 'create_time',title: '商户发起时间'},
                     {field: 'check_desc',title: '审核描述'},
                     {field: 'status',title: '审核',toolbar:'#status'},

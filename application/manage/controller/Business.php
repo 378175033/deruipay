@@ -177,6 +177,9 @@ class Business extends Manage
                     //获取原冻结金额
                     $frozen = $this->model->where( 'id', $id)->value('frozen_money');
                     $dif =  $frozen - $data['frozen_money'];
+                    if( $dif == 0 ){
+                        $this->error( "冻结余额没有改变！");
+                    }
                     $data['money'] = $data['money'] + $dif;
                     if( $data['money'] < 0 ){
                         $this->error( "没有多余余额加入冻结金额！");
@@ -192,10 +195,12 @@ class Business extends Manage
                 $insert = [
                     'bus_id'    => $id,
                     'account'   => $dif,
+                    'now_account'=> $data['money'],
                     'desc'      => $data['desc'],
-                    'info'      => $info
+                    'info'      => $info,
+                    'create_time'   => time()
                 ];
-                model( 'account_log')->add( $insert );
+                model( 'account_log')->allowField( true )->isUpdate( false )->save( $insert );
                 $this->success( "操作成功！", "", $info."当前余额为:".$data['money']);
             }
             $this->error( "请稍后再试！");
@@ -355,25 +360,23 @@ class Business extends Manage
             $per = $this->request->param('limit', 10, 'intval');
             $this->order = $this->request->param('order', $this->order);
             $where = [
-                'p.status'    => 1,
-                'p.delete_time'   => 0
+                'a.status'    => 1,
+                'a.delete_time'   => 0
             ];
+            $ns = "(select * from ".config("database.prefix")."user_passageway where business_id =".$id.")";
             $list = model('passageway')
-                ->alias( 'p')
-                ->field("p.*")
+                ->alias('a')
+                ->field('a.id,a.name,a.pay_type,a.rate,b.rate uRate,b.cost,b.status,b.id uid,b.business_id')
                 ->join([
-                    [config('database.prefix').'user_passageway up','up.passageway_id = p.id','left']
+                    [ $ns.' b','b.passageway_id = a.id','left'],
                 ])
                 ->where( $where )
                 ->limit( ($page-1)*$per, $per)
-                ->order( $this->order )
+                ->order( 'a.id asc' )
                 ->select();
             $sql = $this->model->getLastSql();
             $count = model('passageway')
-                ->alias( 'p')
-                ->join([
-                    [config('database.prefix').'user_passageway up','up.passageway_id = p.id','left']
-                ])
+                ->alias('a')
                 ->where($where)
                 ->count();
             $data = [
@@ -385,6 +388,27 @@ class Business extends Manage
         }
         $this->assign('pay_type', config('pay_type'));
         $this->assign("id", $id);
+        return $this->fetch();
+    }
+
+    public function setPassageway()
+    {
+        $param = $this->request->param();
+        if( $this->request->isPost() && $this->request->isAjax() ){
+            $isUpdate = $param['id'] ? true : false;
+            $res = model( 'userPassageway')->allowField( true )->isUpdate( $isUpdate )->save( $param );
+            if( $res ){
+                $this->success( "设置成功！");
+            }
+            $this->error( "设置失败！");
+        }
+        $where = [
+            'business_id'   => $param['id'],
+            'passageway_id' => $param['uid']
+        ];
+        $data = model( 'userPassageway')->where( $where )->find();
+        $this->assign( 'data', $data);
+        $this->assign( 'param', $param);
         return $this->fetch();
     }
 }

@@ -8,7 +8,7 @@
 
 namespace app\manage\model;
 use think\Model;
-
+use think\Db;
 class Business extends Model
 {
     protected $autoWriteTimestamp = true;
@@ -19,5 +19,32 @@ class Business extends Model
     protected function getLastLoginTimeAttr( $value )
     {
         return date( 'Y-m-d H:i:s', $value);
+    }
+
+
+    public function changeMoney( $money, $now_money , $id ,$type = 0  )
+    {
+        $con = [
+            'money' => $now_money
+        ];
+        Db::startTrans();
+        try{
+            $where = ['id'=> $id];
+            //设置商户余额
+            Db::name('Business')->where( $where )->update( $con );
+            $data = [
+                'account'   => $money,
+                'bus_id'    => $id,
+                'now_account'   => $now_money,
+                'info'      => $type,
+                'create_time'   => time()
+            ];
+            //写入商户余额日志
+            Db::name( 'AccountLog')->insert( $data );
+            return true;
+        }catch ( \Exception $e){
+            Db::rollback();
+            return false;
+        };
     }
 }

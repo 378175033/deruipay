@@ -8,7 +8,7 @@
 
 namespace app\business\model;
 use think\Model;
-
+use think\Db;
 /**
  * 用户模型
  * Class User
@@ -41,6 +41,8 @@ class Business extends Model
      * @desc 用户登录信息校验
      * @ApiParams
      * @ApiReturnParams
+     * @param array
+     * @return array
      */
     public function doLogin( $data )
     {
@@ -80,5 +82,32 @@ class Business extends Model
             $msg['msg'] = "用户名不能为空！";
         }
         return $msg;
+    }
+
+
+    public function changeMoney( $money, $now_money , $id ,$type = 0  )
+    {
+        $con = [
+            'money' => $now_money
+        ];
+        Db::startTrans();
+        try{
+            $where = ['id'=> $id];
+            //设置商户余额
+            Db::name('Business')->where( $where )->update( $con );
+            $data = [
+                'account'   => $money,
+                'bus_id'    => $id,
+                'now_account'   => $now_money,
+                'info'      => $type,
+                'create_time'   => time()
+            ];
+            //写入商户余额日志
+            Db::name( 'AccountLog')->insert( $data );
+            return true;
+        }catch ( \Exception $e){
+            Db::rollback();
+            return false;
+        };
     }
 }
