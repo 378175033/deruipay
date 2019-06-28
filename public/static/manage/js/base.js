@@ -113,7 +113,8 @@ $(document).on('blur','.sort-order',function () {
 $(document).on('click','.btn-remove',function () {
     var id = parseInt( $(this).data('id') );
     var ptr = $(this).parents('tr');
-    $.post('remove',{id:id},function (res) {
+    var url = $(this).data('url');
+    $.post( url ? url : 'remove',{id:id},function (res) {
         if( res.code === 1 ){
             toastr.success( res.msg, function () {
                 ptr.remove();

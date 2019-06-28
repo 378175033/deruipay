@@ -30,11 +30,11 @@
 <script type="text/html" id="status">
     <div>
         {{# if(d.status == 0){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
         {{# } else if( d.status == 1 ){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-warm">未通过</a>
+        <a class="layui-btn layui-btn-xs layui-btn-warm">未通过</a>
         {{# }else{  }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=2',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs">通过</a>
+        <a class="layui-btn layui-btn-xs">通过</a>
         {{# } }}
     </div>
 </script>

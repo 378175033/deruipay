@@ -16,8 +16,11 @@
         <i class="layui-icon layui-icon-delete"></i>
     </a>
     {{# if (d.is_free == 0 ){  }}
-        <a href="javascript:openIframe({title: '{{d.name}}设置',content: '{{d.pay_type}}' });" class="layui-btn layui-btn-xs layui-btn-warm" data-id="{{ d.id }}" title="免签配置">
-            <i class="layui-icon layui-icon-set"></i>
+        <a href="javascript:openIframe({title: '添加{{d.name}}二维码',content: '{{d.pay_type}}' });" class="layui-btn layui-btn-xs layui-btn-primary" data-id="{{ d.id }}" title="添加{{d.name}}二维码">
+            <i class="layui-icon layui-icon-add-circle"></i>
+        </a>
+        <a href="javascript:openIframe({title: '查看{{d.name}}二维码',content: '{{d.pay_type}}'+'_list' });" class="layui-btn layui-btn-xs layui-btn-warm" data-id="{{ d.id }}" title="查看{{d.name}}二维码">
+            <i class="layui-icon layui-icon-list"></i>
         </a>
     {{# } }}
 </script>
@@ -62,7 +65,7 @@
                     {field: 'status',title: '是否可用',templet: '#status'},
                     {field: 'mini',title: '最小打款金额'},
                     {field: 'max',title: '最大打款金额'},
-                    {field: 'operation',title: '操作',toolbar: '#barDemo'}
+                    {field: 'operation',title: '操作',toolbar: '#barDemo',minWidth: 400}
                 ]
             ],
             response: {
