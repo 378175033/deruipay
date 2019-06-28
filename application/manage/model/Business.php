@@ -21,7 +21,15 @@ class Business extends Model
         return date( 'Y-m-d H:i:s', $value);
     }
 
-
+    /**
+     * 2019/6/28 0028 16:48
+     * @param $money 金额
+     * @param $now_money 余额
+     * @param $id 商户id
+     * @param int $type 支付类型
+     * @return bool
+     * 金额变动
+     */
     public function changeMoney( $money, $now_money , $id ,$type = 0  )
     {
         $con = [

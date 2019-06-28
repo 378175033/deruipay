@@ -17,5 +17,9 @@ return [
         ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
         ':name' => ['index/hello', ['method' => 'post']],
     ],
-    'manage' => 'manage/index/index'
+    'manage' => 'manage/index/index',
+
+    'pay'=>'index/pay/index',//支付页面
+
+    'notify'=> 'index/pay/aliPayNotify',//回调
 ];
