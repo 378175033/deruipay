@@ -59,15 +59,17 @@ class PayModl extends Manage
         return $passageway_list;
     }
 
+    public function free_wechat()
+    {
+        if( $this->request)
+        return $this->fetch();
+    }
 
-
-    /**
-     *支付宝转账接口  必须要企业号才行
-     *
-     */
-//    public function Transfer()
-//    {
-
-//}
+    public function process()
+    {
+        $data = $this->request->param();
+        $test = new \pay\qrcode\Test();
+        $this->success( "成功！",'',$test->index( $data ) );
+    }
 
 }

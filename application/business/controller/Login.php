@@ -86,6 +86,14 @@ class Login extends Controller
         return $captcha->check($code, $id);
     }
 
+    /**
+     * Created by PhpStorm
+     * User: Administrator
+     * Date: 2019/6/27 0027
+     * Time: 18:04
+     * @desc
+     * void
+     */
     public function logout()
     {
         session( 'business', null);

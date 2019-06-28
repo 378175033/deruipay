@@ -50,6 +50,23 @@ $(document).on('click', '.btn-update',function () {
     };
     openIframe( obj );
 });
+
+/**
+ * 图片预览
+ * @param file
+ * @returns {*}
+ */
+function getObjectURL(file) {
+    var url = null;
+    if (window.createObjectURL != undefined) {
+        url = window.createObjectURL(file);
+    } else if (window.URL != undefined) {
+        url = window.URL.createObjectURL(file);
+    } else if (window.webkitURL != undefined) {
+        url = window.webkitURL.createObjectURL(file);
+    }
+    return url;
+}
 /**
  * 切换状态
  */
@@ -57,16 +74,18 @@ $(document).on('click','.status-toggle',function () {
     var id = parseInt( $(this).data('id') );
     var value = parseInt ( $(this).data('value') );
     var that = $(this);
+    var notice = $(this).data('notice') ? $(this).data('notice') : "隐藏|显示";
+    notice = notice.split("|");
     $.post('changeStatus',{id:id,value:value},function ( res ) {
         if( res.code ===  1 ){
             toastr.success( res.msg ,function () {
                 if( value === 1 ){
                     that.removeClass('layui-btn-danger').addClass('layui-btn-normal');
-                    that.html('显示');
+                    that.html(notice[1]);
                     that.data('value', 0)
                 } else {
                     that.removeClass('layui-btn-normal').addClass('layui-btn-danger');
-                    that.html('隐藏');
+                    that.html(notice[0]);
                     that.data('value', 1)
                 }
             })
