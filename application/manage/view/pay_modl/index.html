@@ -15,13 +15,18 @@
     <a class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" title="移除数据">
         <i class="layui-icon layui-icon-delete"></i>
     </a>
+    {{# if (d.is_free == 0 ){  }}
+        <a href="javascript:openIframe({title: '{{d.name}}设置',content: '{{d.pay_type}}' });" class="layui-btn layui-btn-xs layui-btn-warm" data-id="{{ d.id }}" title="免签配置">
+            <i class="layui-icon layui-icon-set"></i>
+        </a>
+    {{# } }}
 </script>
 <script type="text/html" id="status">
     <div>
         {{#  if(d.status == 1){ }}
-        <a class="layui-btn layui-btn-normal layui-btn-xs status-toggle" data-value="0" data-id="{{ d.id }}">否</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs status-toggle" data-value="0" data-id="{{ d.id }}" data-notice="禁用|启用">启用</a>
         {{#  } else { }}
-        <a class="layui-btn layui-btn-danger layui-btn-xs status-toggle" data-value="1" data-id="{{ d.id }}">是</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs status-toggle" data-value="1" data-id="{{ d.id }}" data-notice="禁用|启用">禁用</a>
         {{#  } }}
     </div>
 </script>
@@ -48,10 +53,6 @@
             param: {},
             cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             //count: 50,
-            initSort: {
-                field: 'sort',
-                type: 'asc'
-            },
             cols: [
                 [
                     {field: 'id',title: 'ID'},

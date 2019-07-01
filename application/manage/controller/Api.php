@@ -8,6 +8,8 @@
 
 namespace app\manage\controller;
 use think\Controller;
+use think\Log;
+use app\manage\model\Business;
 
 class Api extends Controller
 {
@@ -164,7 +166,7 @@ class Api extends Controller
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
         $orderTitel = $data['title'];
         $goods = $data['money'];
-        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
+        $outTradeNo = $data['out_trade_no'];
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
         if( ismobile() ){
             $succ = "<script> window.location.href='".$succ['url']."'</script>";
@@ -185,46 +187,61 @@ class Api extends Controller
      * */
     public function succNotifyServer()
     {
-        if (!isset($_GET['notify_time'])) return 'error';
-        $notify_time = $_GET['notify_time'];         // 通知时间
-        $notify_type = $_GET['notify_type'];        // 通知类型
-        $AMOUNT = $_GET['notify_id'];               // 通知校验ID
-        $sign_type = $_GET['sign_type'];            // 签名类型
-        $sign = $_GET['sign'];                      // 签名
-        $trade_no = $_GET['trade_no'];              // 支付宝交易号
-        $app_id = $_GET['app_id'];                  //开发者的app_id
-        $out_trade_no= $_GET['out_trade_no'];       // 商户订单号
-        $out_biz_no = $_GET['out_biz_no'];          // 商户业务号
-        $buyer_id = $_GET['buyer_id'];              // 买家支付宝用户号
-        $buyer_logon_id = $_GET['buyer_logon_id'];  //买家支付宝账号
-        $seller_id = $_GET['seller_id'];            //	卖家支付宝用户号
-        $seller_email = $_GET['seller_email'];      //	卖家支付宝账号
-        $trade_status = $_GET['trade_status'];      //  交易状态
-        $total_amount = $_GET['total_amount'];      //  订单金额
-        $receipt_amount = $_GET['receipt_amount'];  //实收金额
-        $invoice_amount = $_GET['invoice_amount'];  //开票金额
-        $buyer_pay_amount = $_GET['buyer_pay_amount'];//	付款金额
-        $subject = $_GET['subject'];                //	订单标题
-        $body = $_GET['body'];                      //商品描述
-        $gmt_create = $_GET['gmt_create'];          // 交易创建时间
-        $gmt_payment = $_GET['gmt_payment'];        //交易付款时间
-        $gmt_refund = $_GET['gmt_refund'];          // 交易退款时间
-        $gmt_close = $_GET['gmt_close'];            //交易结束时间
-        $fund_bill_list = $_GET['fund_bill_list'];  //支付金额信息
-        $where = [
-            'order_id' => $out_trade_no
-        ];
-        $str = [
-            'batch' => $trade_no,
-            'amount' => $receipt_amount,
-            'update_time' => strtotime($notify_time),
-            'back_time' => strtotime($notify_time),
-            'status' => 1,
-            'back_status' => 1,
-            'pay_info' => '收款方'.$seller_email.',付款方'.$buyer_logon_id
-        ];
-        model('order')->isUpdate( true, $where)->save( $str );
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/service/AlipayTradeService.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
+        $out_trade_no = input('post.out_trade_no');
+        $transaction_id = input('post.trade_no');
+        $aop = new \AopClient;
+        $result = $aop->rsaCheckV1($_POST, '');
+        if ($result) {
+            if (input('trade_status') == 'TRADE_FINISHED' || input('trade_status') == 'TRADE_SUCCESS') {
+                // 处理支付成功后的逻辑业务
+                $order = db('order')->where(['out_trade_no' => $out_trade_no])->find();
+                if (!$order) {
+                    Log::write('order not exists');
+                    return 'order not exists';
+                }
+                //订单状态错误 1 未付款 其他状态均为已处理的状态
+                if ($order['status'] != 3) {
+                    Log::write('order is completed:' . $order['status']);
+                    return true;
+                }
+                if ($order['pay_fee'] != input('post.total_amount') * 100) {
+                    Log::write('total_amount is error:' . $order['pay_fee'] . ',' . input('post.total_amount'));
+                    return 'total_amount is error';
+                }
+                $seller_email = $_POST['seller_email'];      //	卖家支付宝账号
+                $notify_time = $_POST['notify_time'];         // 通知时间
+                $receipt_amount = $_POST['receipt_amount'];  //实收金额
+                $buyer_logon_id = $_POST['buyer_logon_id'];  //买家支付宝账号
+                $order['batch'] = $transaction_id;// 支付宝交易号（流水号）
+                $order['amount'] = $receipt_amount;
+                $order['update_time'] = strtotime($notify_time);
+                $order['back_time'] = strtotime($notify_time);
+                $order['status'] = 1;//支付状态
+                $order['back_status'] = 1;//回调状态
+                $order['pay_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;
+                $order['pay_id'] = $transaction_id;//支付流水号（退款需要）
+                //修改订单信息
+                db('order')->where(['out_trade_no' => $out_trade_no])->update($order);
+                //支付成功的逻辑
+                $this->accountLog($order);
+                return 'success';
+            }
+            return 'fail';
+        }
+    }
 
+    /**
+     * 2019/6/28 0028 16:52
+     * @param $order
+     * 回调成功的时候金额变动
+     */
+    public function accountLog($order){
+        $accountLog = db('account_log')->where('bus_id',$order['business_id'])->order('id desc')->find();
+        $Business = new Business();
+        $Business->changeMoney($order['amount'],$accountLog['now_account'],$order['business_id'],0);
     }
 
 }
