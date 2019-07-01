@@ -107,6 +107,7 @@ class PayModl extends Manage
                 'count' => $count,
                 'sql'   => $sql
             ];
+
             $this->success('获取成功！', '', $data);
         }
         $pay_type = $this->request->param( 'type', '');
