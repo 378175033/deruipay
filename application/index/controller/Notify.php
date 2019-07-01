@@ -27,7 +27,7 @@ class Notify extends Controller
 
         //为post为登录
         $api = new \app\manage\controller\Api();
-        return $api->succNotifyServer();
+        return $api->succNotifyServer($this->request->post());
     }
 
 }

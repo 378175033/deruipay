@@ -185,51 +185,45 @@ class Api extends Controller
     /**
      * 支付宝回调
      * */
-    public function succNotifyServer()
+    public function succNotifyServer($param)
     {
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/aop/AopClient.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/aop/request/AlipayTradeAppPayRequest.php";
-        Log::error('回调参数');
-        $aop = new \AopClient;
-        $aop->alipayrsaPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwg8LiXU5Cj0EFgaFEpbOo7cpRGNVbOxRLo4ZjfC/bgn1Aehe9lvSntxjwUcsujzn2m/EPnp6iFAfgGeXUE8/rLFumpPwtUxfyPUBVsoAAZ1zubMxkrySUzq9yKSPfhmug/cIzHwcjsv19QsmEm+o2so63uuNcsOe/eGQuSSy+RaiR7Gy8jIBhwYB/dt3KQL5gKm3V9W8OOYpK9dw5feNGinSpbET2T+14UWcVq2Lr7WQ5YFNs+ZekO1v+866o+WiG21IHcbFQJDXTW+DNVSXfsI9RxapB+VSgBApEXUaCCa+W5SEEbQNLfnxCMRLkBb4xBVnHCianjINZO0x2LWIcwIDAQAB";
-        $result = $aop->rsaCheckV1($_POST, "","RSA2");
-        Log::error($result);
-        if ($result) {
-            if (input('trade_status') == 'TRADE_FINISHED' || input('trade_status') == 'TRADE_SUCCESS') {
-                // 处理支付成功后的逻辑业务
-                $order = db('order')->where(['out_trade_no' => $out_trade_no])->find();
-                if (!$order) {
-                    Log::write('order not exists');
-                    return 'order not exists';
-                }
-                //订单状态错误 1 未付款 其他状态均为已处理的状态
-                if ($order['status'] != 3) {
-                    Log::write('order is completed:' . $order['status']);
-                    return true;
-                }
-                if ($order['pay_fee'] != input('post.total_amount') * 100) {
-                    Log::write('total_amount is error:' . $order['pay_fee'] . ',' . input('post.total_amount'));
-                    return 'total_amount is error';
-                }
-                $seller_email = $_POST['seller_email'];      //	卖家支付宝账号
-                $notify_time = $_POST['notify_time'];         // 通知时间
-                $receipt_amount = $_POST['receipt_amount'];  //实收金额
-                $buyer_logon_id = $_POST['buyer_logon_id'];  //买家支付宝账号
-                $order['batch'] = $transaction_id;// 支付宝交易号（流水号）
-                $order['amount'] = $receipt_amount;
-                $order['update_time'] = strtotime($notify_time);
-                $order['back_time'] = strtotime($notify_time);
-                $order['status'] = 1;//支付状态
-                $order['back_status'] = 1;//回调状态
-                $order['pay_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;
-                $order['pay_id'] = $transaction_id;//支付流水号（退款需要）
-                //修改订单信息
-                db('order')->where(['out_trade_no' => $out_trade_no])->update($order);
-                //支付成功的逻辑
-                $this->accountLog($order);
-                return 'success';
+        if ($param['trade_status'] == 'TRADE_FINISHED' || $param['trade_status'] == 'TRADE_SUCCESS') {
+            // 处理支付成功后的逻辑业务
+            $order = db('order')->where(['out_trade_no' => $param['out_trade_no']])->find();
+            if (!$order) {
+                Log::error('order not exists');
+                return 'order not exists';
             }
-            return 'fail';
+            //订单状态错误 1 未付款 其他状态均为已处理的状态
+            if ($order['status'] != 3) {
+                Log::error('order is completed:' . $order['status']);
+                return true;
+            }
+            if ($order['amount'] != $param['total_amount']) {
+                Log::error('total_amount is error:' . $order['amount'] . ',' . $param['total_amount']);
+                return 'total_amount is error';
+            }
+            $transaction_id = $param['trade_no'];
+            $seller_email = $param['seller_email'];      //	卖家支付宝账号
+            $notify_time = $param['notify_time'];         // 通知时间
+            $receipt_amount = $param['receipt_amount'];  //实收金额
+            $buyer_logon_id = $param['buyer_logon_id'];  //买家支付宝账号
+            $order['batch'] = $transaction_id;// 支付宝交易号（流水号）
+            $order['amount'] = $receipt_amount;
+            $order['update_time'] = strtotime($notify_time);
+            $order['back_time'] = strtotime($notify_time);
+            $order['status'] = 1;//支付状态
+            $order['back_status'] = 1;//回调状态
+            $order['pay_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;
+            $order['pay_id'] = $transaction_id;//支付流水号（退款需要）
+            //修改订单信息
+            db('order')->where(['out_trade_no' => $param['out_trade_no']])->update($order);
+            //支付成功的逻辑
+            $this->accountLog($order);
+            return 'success';
+
+        }else{
+            $this->error('支付失败');
         }
     }
 
