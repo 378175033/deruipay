@@ -17,4 +17,9 @@ class Daxiangpay extends controller
         $api = new api();
         $api->pay($data);
     }
+
+    public function notify()
+    {
+        
+    }
 }
