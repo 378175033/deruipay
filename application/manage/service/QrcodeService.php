@@ -52,8 +52,8 @@ class QrcodeService
         $this->_qr->setWriterByName(self::WRITE_NAME);
         $this->_qr->setMargin(self::MARGIN);
         $this->_qr->setEncoding($this->_encoding);
-        $h = new ErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
-        $this->_qr->setErrorCorrectionLevel($h);   // 容错率
+        $high = new ErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+        $this->_qr->setErrorCorrectionLevel($high);   // 容错率
         $this->_qr->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0)); //前景色
         $this->_qr->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0)); //背景色
         // 是否需要title
