@@ -9,13 +9,8 @@
  */
 namespace app\manage\controller;
 use app\common\controller\Manage;
-//use app\common\controller\AopClient;
-//use app\common\controller\AlipayFundTransToaccountTransferRequest;
-//use app\common\f2fpay\model\builder\AlipayTradePrecreateContentBuilder;
-//use app\common\f2fpay\model\builder\ExtendParams;
-//use app\common\f2fpay\model\builder\GoodsDetail;
-//
-//use app\common\f2fpay\service\AlipayTradeService;
+use app\manage\service\QrcodeService;
+
 
 class PayModl extends Manage
 {
@@ -27,22 +22,6 @@ class PayModl extends Manage
         $this->model = model("passageway");
 //        $this->pay_babay_config();
     }
-//    /**
-//    支付宝支付配置
-//     */
-//    public function pay_babay_config()
-//    {
-//        $aop = new AopClient ();
-//        $aop->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
-//        $aop->appId = '2019061965613516';
-//        $aop->rsaPrivateKey = "MIIEpAIBAAKCAQEAwg8LiXU5Cj0EFgaFEpbOo7cpRGNVbOxRLo4ZjfC/bgn1Aehe9lvSntxjwUcsujzn2m/EPnp6iFAfgGeXUE8/rLFumpPwtUxfyPUBVsoAAZ1zubMxkrySUzq9yKSPfhmug/cIzHwcjsv19QsmEm+o2so63uuNcsOe/eGQuSSy+RaiR7Gy8jIBhwYB/dt3KQL5gKm3V9W8OOYpK9dw5feNGinSpbET2T+14UWcVq2Lr7WQ5YFNs+ZekO1v+866o+WiG21IHcbFQJDXTW+DNVSXfsI9RxapB+VSgBApEXUaCCa+W5SEEbQNLfnxCMRLkBb4xBVnHCianjINZO0x2LWIcwIDAQABAoIBACrCt+8VFnmMEl9sFlyPQH9Qt9Yq8ULsG8NfaoAdYYE0znkaI/qzJwj8VTrcnR14mDpI0HxX7rIkvZxEt1Hp9ITwIAgNu0enyZ91ZVMjdbblY/+yXaUQyklusy0IHdpSfGL1x0mPu5c3mD3jtALx+cokL665RtTYCCu3TXWOgaVjFiog8V3E0cEl1ekPxGH9+BuWqeIhq61KmbluJWtsvKauCj8XbEXfJ7Q1SLlbUOjJYT9bWWsfUPE7TBFbUSuC9KK8NQYebXwwBExNAMIU5mbwYKIcWKAD2skNw0RVk2g5bUPQcMd4Vl++BS9DMvTCt9wL8gNWT3RSVgnaJpsQBXECgYEA4Jou0pkHm/RvuOT8Si5PtMSKf4i9HlLzd3TEpI6/mHBDwydDptbYNAwHfH2zQMkynw2JDqg0NL9VMHATJUmrPm6wB+lzajXUw4VO0g48xC8lTzi1nYGnr6Zg//0T3Gjt4cvAoeO/Q05w5Su8quEgVEBsSaKn8zdjIqqCL4iXQ2sCgYEA3S/OFaRF3WRci/LaOM7ECWjOw1yoFlaVGABKHCyig2D5WWEBh+6T3k9UsUVhJEVUaPC5Y6Tq8Vj5UVCR5a2LT9fodN3O8I+S/peMr4m73YZXUoafriX0jMyXfSQJLRF1tfKOZlIHedU/G2e9OOiVPOJ4PWoJ4nm6HcwWua4vmRkCgYAbwLF8cFBSYvfTHuhVujc7HPYIIDtOHe3bmuAZfVILYgPdf2KKoQ2CEOJz7YxSuwm4QZHn77zTr7i1DYQwHVQ9mKvDroMGYrRxnG1K41t62mB/04ANgFHaEHL37quflo+eUPDykBO4G18z0h2z97Fo97TpvGGIWhWz2OHRQc1/FQKBgQCejOALP2AdXQ3B++lVg1Ge9RQRkl+i85mYRMza+VvdFSxoV1MDn487cl5hXDxQBaqGNtiNhvAq5P6CvWB35TjRmRE2hLEMW76g5P2h7vdNyjjaHUplSSvNqfKFb8lsFvHr5N0Sl4ZoXOYJvQk0u/QOWsCaNWK0h1FUfrFjlGrmMQKBgQC0nIaylG7kqwOvcj2oNR5EjfELQgx7BGGhYUoKXy4WgWi+kDWV4vuIeImt9xJ3xGx5aX77tnp8iUIcVEHYzAieH3O41uBkBpXCPb71+XHBhBFnXULfPslO8o4OROWBXEQPlevaQjTb3nxGmXhTOcBEt5zdH2xa+p8jqGegHXXuAg==";
-//        $aop->alipayrsaPublicKey='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl6G/RR5YKwdr22i88XNVsydgx2JF+ekqfBI+viHBnS5ClLct8PyM54ETCytOQgybz4HyM8zNzaeQIrRiyl2Xn0oK7aNyVbL7rvsI4dbk8WPZjZIoNF4OyERJO/yP6UQuGGwdiYtYDZ20pE38OfMaeusCb4FhXtuzbrTyx1FngU0goXozYaarBh4iz2fNSn3bUKkg3Gj5uKb2Hy54WOJf+T04elsJ5moX8cKYNyl+X/kLEIHXKyn1WPT4/aSCPwKD6q1c/G+BZ8xrsg5NOFEFoYg1+H7XkNol3uhwrEjd+3EQg1i8seONcp7o1ObY09nxHX2gZOn6fX/pp5YIEizhUwIDAQAB';
-//        $aop->apiVersion = '1.0';
-//        $aop->signType = 'RSA2';
-//        $aop->postCharset='UTF-8';
-//        $aop->format='json';
-//        return self::$payBabay = $aop;
-//    }
 
     /**
      *  支付
@@ -59,12 +38,120 @@ class PayModl extends Manage
         return $passageway_list;
     }
 
-    public function free_wechat()
+    /**
+     * Created by PhpStorm
+     * User: 赵蓝
+     * Date: 2019/6/28 0028
+     * Time: 17:41
+     * @desc
+     * @return mixed
+     */
+    public function free_pay()
     {
-        if( $this->request)
+        if( $this->request->isPost() && $this->request->isAjax() )
+        {
+            //保存固定金额二维码
+            $data = $this->request->param();
+            if( empty( $data['pay_url'] ) ) $this->error( "二维码链接不能为空！");
+            if( empty( $data['price'] ) ) $this->error( "定额二维码价格不能为空！");
+            $res = model( 'Qrcode')->allowField( true )->isUpdate( false )->save( $data );
+            if( $res ){
+                $this->success( "保存成功！");
+            }
+            $this->error( "保存失败！");
+        }
+        $pay_type = $this->request->param( 'type', '');
+        switch ( $pay_type ){
+            case "free_wechat":
+                $type = 1;
+                break;
+            case "free_alipay":
+                $type = 2;
+                break;
+            default:
+                $type = 0;
+                $this->error( "参数信息错误！");
+                break;
+        }
+        $this->assign( "type", $type);
         return $this->fetch();
     }
 
+    /**
+     * Created by PhpStorm
+     * User: 赵蓝
+     * Date: 2019/6/28 0028
+     * Time: 17:47
+     * @desc
+     * @throws \think\Exception
+     * @return mixed
+     */
+    public function free_pay_list()
+    {
+        if( $this->request->isPost() && $this->request->isAjax() )
+        {
+            $where = [
+                'type'  => $this->request->param('type', 0, 'intval')
+            ];
+            $page = $this->request->param('page', 1, 'intval');
+            $per = $this->request->param('limit', 10, 'intval');
+            $list = model( 'qrcode')
+                ->where( $where )
+                ->limit( ($page-1)*$per, $per)
+                ->order( 'id desc')
+                ->select();
+            $sql = $this->model->getLastSql();
+            $count = model( 'qrcode')->where($where)->count();
+            $data = [
+                'list' => $list,
+                'count' => $count,
+                'sql'   => $sql
+            ];
+
+
+
+            $this->success('获取成功！', '', $data);
+        }
+        $pay_type = $this->request->param( 'type', '');
+        switch ( $pay_type ){
+            case "free_wechat":
+                $type = 1;
+                break;
+            case "free_alipay":
+                $type = 2;
+                break;
+            default:
+                $type = 0;
+                $this->error( "参数信息错误！");
+                break;
+        }
+        $this->assign( 'type', $type);
+        return $this->fetch();
+    }
+
+    /**
+     * Created by PhpStorm
+     * User: 赵蓝
+     * Date: 2019/6/28 0028
+     * Time: 17:47
+     * @desc
+     * @param $url
+     * @return \think\Response
+     */
+    public function enQrcode($url){
+        $qr_code = new QrcodeService(['generate'=>"display","size",200]);
+        $content = $qr_code->createServer($url);
+        return response($content,200,['Content-Length'=>strlen($content)])->contentType('image/png');
+    }
+
+    /**
+     * Created by PhpStorm
+     * User: 赵蓝
+     * Date: 2019/6/28 0028
+     * Time: 17:47
+     * @desc
+     * @return void
+     */
     public function process()
     {
         $data = $this->request->param();

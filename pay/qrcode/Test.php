@@ -2,6 +2,7 @@
 
 namespace pay\qrcode;
 
+include_once('../pay/qrcode/lib/QrReader.php');
 
 class Test{
     public function index( $data )
