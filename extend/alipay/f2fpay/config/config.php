@@ -18,7 +18,7 @@ $config = array (
 		'app_id' => "2017061607505957",
 
 		//异步通知地址,只有扫码支付预下单可用
-		'notify_url' => "index/notify/aliPayNotify",
+		'notify_url' => "http://103.224.251.23/index/notify/aliPayNotify",
 
 		//最大查询重试次数
 		'MaxQueryRetry' => "10",
