@@ -215,7 +215,6 @@ class Api extends Controller
             $order['status'] = 1;//支付状态
             $order['back_status'] = 1;//回调状态
             $order['pay_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;
-            $order['pay_id'] = $transaction_id;//支付流水号（退款需要）
             //修改订单信息
             db('order')->where(['out_trade_no' => $param['out_trade_no']])->update($order);
             //支付成功的逻辑
