@@ -235,7 +235,7 @@ class Api extends Controller
     public function accountLog($order){
         $accountLog = db('account_log')->where('bus_id',$order['business_id'])->order('id desc')->find();
         $Business = new Business();
-        $Business->changeMoney($order['amount'],$accountLog['now_account'],$order['business_id'],0);
+        $Business->changeMoney($order['amount'],$accountLog['now_account']+$order['amount'],$order['business_id'],0);
     }
 
 }
