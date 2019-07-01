@@ -105,15 +105,4 @@ class Pay extends Business
         $this->assign( 'way', $way);
         return $this->fetch();
     }
-
-    /**
-     * 2019/6/28 0028 10:31
-     * @param Request $request
-     * 支付宝回调
-     */
-    public function aliPayNotify()
-    {
-        $api = new \app\manage\controller\Api();
-        return $api->succNotifyServer();
-    }
 }
