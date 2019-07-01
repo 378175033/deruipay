@@ -24,6 +24,7 @@ class Notify extends Controller
     public function aliPayNotify()
     {
         Log::info($this->request->post());
+
         //为post为登录
         $api = new \app\manage\controller\Api();
         return $api->succNotifyServer();
