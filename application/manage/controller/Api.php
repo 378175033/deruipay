@@ -187,16 +187,13 @@ class Api extends Controller
      * */
     public function succNotifyServer()
     {
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/service/AlipayTradeService.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/qrpay_test.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/aop/AopClient.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/aop/request/AlipayTradeAppPayRequest.php";
         Log::error('回调参数');
-
-        $out_trade_no = input('post.out_trade_no');
-        Log::error($out_trade_no);
-        $transaction_id = input('post.trade_no');
         $aop = new \AopClient;
-        $result = $aop->rsaCheckV1($_POST, '');
+        $aop->alipayrsaPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwg8LiXU5Cj0EFgaFEpbOo7cpRGNVbOxRLo4ZjfC/bgn1Aehe9lvSntxjwUcsujzn2m/EPnp6iFAfgGeXUE8/rLFumpPwtUxfyPUBVsoAAZ1zubMxkrySUzq9yKSPfhmug/cIzHwcjsv19QsmEm+o2so63uuNcsOe/eGQuSSy+RaiR7Gy8jIBhwYB/dt3KQL5gKm3V9W8OOYpK9dw5feNGinSpbET2T+14UWcVq2Lr7WQ5YFNs+ZekO1v+866o+WiG21IHcbFQJDXTW+DNVSXfsI9RxapB+VSgBApEXUaCCa+W5SEEbQNLfnxCMRLkBb4xBVnHCianjINZO0x2LWIcwIDAQAB";
+        $result = $aop->rsaCheckV1($_POST, "","RSA2");
+        Log::error($result);
         if ($result) {
             if (input('trade_status') == 'TRADE_FINISHED' || input('trade_status') == 'TRADE_SUCCESS') {
                 // 处理支付成功后的逻辑业务
