@@ -36,15 +36,17 @@ class Setting extends Manage
             if( !$validate->check( $data ) ){
                 $this->error( $validate->getError() );
             }
-//            foreach ( $data as $key => $val ){
-//                $this->model->allowFiled( true )->save( ['vvalue'=>$val],['vkey'=> $key]);
-//            }
+            foreach ( $data as $key => $val ){
+                $this->model->allowField( true )->save( ['vvalue'=>$val],['vkey'=> $key]);
+            }
             $this->success( "提交成功！");
         }
         //获取后端配置信息
         $data = $this->model->select();
         $res = [];
+
         foreach ( $data as $val ){
+
             $res[ $val['vkey'] ] = $val['vvalue'];
         }
         $this->assign( 'data', $res );
@@ -54,8 +56,12 @@ class Setting extends Manage
     public function getSettings(){
         $data = $this->model->select();
         $res = [];
+        $time = [
+            "lastheart","lastpay","jkstate"
+        ];
         foreach ( $data as $val ){
-            $res[ $val['vkey'] ] = $val['vvalue'];
+            $v = in_array( $val['vkey'], $time ) && !empty( $val['vvalue'])? date("Y-m-d H:i:s", $val['vvalue'] ) : $val['vvalue'];
+            $res[ $val['vkey'] ] = $v;
         }
         $this->success( "成功！",1,$res);
     }

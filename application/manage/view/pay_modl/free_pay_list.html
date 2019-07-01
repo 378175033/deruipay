@@ -24,7 +24,7 @@
         table.render({
             elem: '#table',
             method: 'post',
-            url: '{:url("free_wechat_list")}',
+            url: '{:url("free_pay_list")}?type={$type}',
             limit: 9999,
             page : true,
             limits: [10,15,20,50,100], //每页条数的选择项

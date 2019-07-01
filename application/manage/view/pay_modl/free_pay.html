@@ -8,7 +8,7 @@
     }
 </style>
 <div class="layui-upload">
-    <button type="button" class="layui-btn layui-btn-normal" id="testList">选择微信有金额的二维码</button>
+    <button type="button" class="layui-btn layui-btn-normal" id="testList">选择{$type == 1 ? '微信' : '支付宝'}有金额的二维码</button>
     <button type="button" class="layui-btn" onclick="saveqr()">保存二维码</button>
     <table class="layui-hide" id="test" lay-filter="wxqrlist"></table>
 </div>
@@ -66,7 +66,7 @@
             ,choose: function(obj){
                 imgs = [];
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
-                toastr.error("等待所有二维码识别完毕后手动输入金额，输入完成后点击保存二维码")
+                toastr.success("等待所有二维码识别完毕后手动输入金额，输入完成后点击保存二维码")
                 //读取本地文件
                 obj.preview(function(index, file, result){
                     qrcode.decode(getObjectURL(file),result);
@@ -116,7 +116,7 @@
             });
             return;
         }
-        $.post("","type=1&pay_url="+encodeURIComponent(obj[index].url)+"&price="+obj[index].money,function (data) {
+        $.post("","type={$type}&pay_url="+encodeURIComponent(obj[index].url)+"&price="+obj[index].money,function (data) {
             console.log( data )
             up(obj,index+1)
         });

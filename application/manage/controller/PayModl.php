@@ -46,7 +46,7 @@ class PayModl extends Manage
      * @desc
      * @return mixed
      */
-    public function free_wechat()
+    public function free_pay()
     {
         if( $this->request->isPost() && $this->request->isAjax() )
         {
@@ -59,8 +59,21 @@ class PayModl extends Manage
                 $this->success( "保存成功！");
             }
             $this->error( "保存失败！");
-
         }
+        $pay_type = $this->request->param( 'type', '');
+        switch ( $pay_type ){
+            case "free_wechat":
+                $type = 1;
+                break;
+            case "free_alipay":
+                $type = 2;
+                break;
+            default:
+                $type = 0;
+                $this->error( "参数信息错误！");
+                break;
+        }
+        $this->assign( "type", $type);
         return $this->fetch();
     }
 
@@ -73,12 +86,12 @@ class PayModl extends Manage
      * @throws \think\Exception
      * @return mixed
      */
-    public function free_wechat_list()
+    public function free_pay_list()
     {
         if( $this->request->isPost() && $this->request->isAjax() )
         {
             $where = [
-                'type'  => 1
+                'type'  => $this->request->param('type', 0, 'intval')
             ];
             $page = $this->request->param('page', 1, 'intval');
             $per = $this->request->param('limit', 10, 'intval');
@@ -96,6 +109,20 @@ class PayModl extends Manage
             ];
             $this->success('获取成功！', '', $data);
         }
+        $pay_type = $this->request->param( 'type', '');
+        switch ( $pay_type ){
+            case "free_wechat":
+                $type = 1;
+                break;
+            case "free_alipay":
+                $type = 2;
+                break;
+            default:
+                $type = 0;
+                $this->error( "参数信息错误！");
+                break;
+        }
+        $this->assign( 'type', $type);
         return $this->fetch();
     }
 
