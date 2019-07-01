@@ -21,6 +21,14 @@ class ComposerStaticInit2bc4f313dba415539e266f7ac2c87dcd
         array (
             'app\\' => 4,
         ),
+        'S' => 
+        array (
+            'Symfony\\Component\\OptionsResolver\\' => 34,
+        ),
+        'E' => 
+        array (
+            'Endroid\\QrCode\\' => 15,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -39,6 +47,14 @@ class ComposerStaticInit2bc4f313dba415539e266f7ac2c87dcd
         'app\\' => 
         array (
             0 => __DIR__ . '/../..' . '/application',
+        ),
+        'Symfony\\Component\\OptionsResolver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/options-resolver',
+        ),
+        'Endroid\\QrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/endroid/qr-code/src',
         ),
     );
 
