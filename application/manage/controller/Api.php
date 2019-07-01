@@ -191,6 +191,7 @@ class Api extends Controller
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/service/AlipayTradeService.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/qrpay_test.php";
         Log::error('回调参数');
+
         $out_trade_no = input('post.out_trade_no');
         Log::error($out_trade_no);
         $transaction_id = input('post.trade_no');
