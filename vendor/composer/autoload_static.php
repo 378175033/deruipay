@@ -11,10 +11,6 @@ class ComposerStaticInit2bc4f313dba415539e266f7ac2c87dcd
     );
 
     public static $prefixLengthsPsr4 = array (
-        'z' => 
-        array (
-            'zhangv\\unionpay\\' => 16,
-        ),
         't' => 
         array (
             'think\\composer\\' => 15,
@@ -28,10 +24,6 @@ class ComposerStaticInit2bc4f313dba415539e266f7ac2c87dcd
     );
 
     public static $prefixDirsPsr4 = array (
-        'zhangv\\unionpay\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/zhangv/union-pay/src',
-        ),
         'think\\composer\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-installer/src',

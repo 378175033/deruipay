@@ -18,10 +18,7 @@
     "require": {
         "php": ">=5.4.0",
         "topthink/framework": "5.0.*",
-        "topthink/think-captcha": "1.*",
-        "zhangv/union-pay": "^0.8.13",
-        "chen-see/chen-pay": "^1.2",
-        "endroid/qrcode": "2.5.1"
+        "topthink/think-captcha": "1.*"
     },
     "autoload": {
         "psr-4": {
