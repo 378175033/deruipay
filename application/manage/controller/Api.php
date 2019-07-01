@@ -161,9 +161,9 @@ class Api extends Controller
      */
     public function Face( $data )
     {
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/service/AlipayTradeService.php";
-        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/vendor/dangmianfu_demo_php/f2fpay/qrpay_test.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/model/builder/AlipayTradePrecreateContentBuilder.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/service/AlipayTradeService.php";
+        require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/qrpay_test.php";
         $orderTitel = $data['title'];
         $goods = $data['money'];
         $outTradeNo = $data['out_trade_no'];
