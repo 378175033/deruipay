@@ -26,8 +26,8 @@ class QrcodeService
     protected $_file_name       = './static/qrcode';    // 写入文件路径
     const MARGIN           = 10;                        // 二维码内容相对于整张图片的外边距
     const WRITE_NAME       = 'png';                     // 写入文件的后缀名
-    const FOREGROUND_COLOR = array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0);          // 前景色
-    const BACKGROUND_COLOR = array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0);    // 背景色
+//    const FOREGROUND_COLOR = array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0);          // 前景色
+//    const BACKGROUND_COLOR = array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0);    // 背景色
 
     public function __construct($config) {
         isset($config['generate'])      &&  $this->_generate        = $config['generate'];
@@ -53,8 +53,8 @@ class QrcodeService
         $this->_qr->setMargin(self::MARGIN);
         $this->_qr->setEncoding($this->_encoding);
         $this->_qr->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);   // 容错率
-        $this->_qr->setForegroundColor(self::FOREGROUND_COLOR); //前景色
-        $this->_qr->setBackgroundColor(self::BACKGROUND_COLOR); //背景色
+        $this->_qr->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0)); //前景色
+        $this->_qr->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0)); //背景色
         // 是否需要title
         if ($this->_title) {
             $this->_qr->setLabel($this->_title_content, 16, null, LabelAlignment::CENTER);
