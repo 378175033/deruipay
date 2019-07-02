@@ -5,6 +5,7 @@ namespace app\manage\controller;
 use think\Controller;
 use daxiangpay\daxiangpay as api;
 use think\Request;
+use think\log;
 
 class Daxiangpay extends controller
 {
@@ -22,6 +23,7 @@ class Daxiangpay extends controller
 
     public function notify(Request $request)
     {
+        Ob_start();
         $api = new api();
         dump($request->param());
         $paidInfo = $request->post();
@@ -44,5 +46,8 @@ class Daxiangpay extends controller
             echo $paidInfo['paystate'];
             echo '非支付成功状态';
         }
+        $content = Ob_get_contents();
+        Ob_end_clean();
+        Log::write($content);
     }
 }
