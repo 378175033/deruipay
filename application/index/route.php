@@ -7,6 +7,5 @@
  */
 
 return [
-    'appHeart' => 'index/FreeApi/appHeart',//心跳监控接口
-    'appPush'  => 'index/FreeApi/appPush'//App推送付款数据接口
+
 ];

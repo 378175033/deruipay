@@ -20,4 +20,6 @@ return [
     'manage' => 'manage/index/index',
 
     'pay'=>'index/pay/index',//支付页面
+    'appHeart' => 'index/FreeApi/appHeart',//心跳监控接口
+    'appPush'  => 'index/FreeApi/appPush'//App推送付款数据接口
 ];
