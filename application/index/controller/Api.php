@@ -133,10 +133,18 @@ class Api extends Controller
         $url = db( 'qrcode')->where( $where )->value( "pay_url");
         $vkey = $type == 1 ? 'wxpay' : 'zfbpay';
         $url = $url ? $url : db('setting')->where('vkey',$vkey)->value( 'vvalue');
-        //获取二维码
-        if( $url ){
-            $this->success("获取二维码成功！",'', $url);
-        }
-        $this->error( "不存在的二维码，请前往上传！");
+        $api = new FreeApi();
+        $payId = time().rand(1000,9999);
+        $api->payId = $payId;
+        $api->type = $type;
+        $api->price = $money;
+        $param = "";
+        $key = "ThisIsTest";
+        $api->param = $param;
+        $api->sign = md5($payId.$param.$type.$money.$key);
+        $this->is_Html = "";
+//        $api->sign = $payId.$param.$type.$money.$key;
+        $res = $api->createOrder();
+        $this->error( $res );
     }
 }
