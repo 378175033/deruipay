@@ -133,6 +133,10 @@ class Api extends Controller
         $url = db( 'qrcode')->where( $where )->value( "pay_url");
         $vkey = $type == 1 ? 'wxpay' : 'zfbpay';
         $url = $url ? $url : db('setting')->where('vkey',$vkey)->value( 'vvalue');
-        $this->error( $url );
+        //获取二维码
+        if( $url ){
+            $this->success("获取二维码成功！",'', $url);
+        }
+        $this->error( "不存在的二维码，请前往上传！");
     }
 }
