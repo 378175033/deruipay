@@ -44,6 +44,8 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
+                <!--商户订单号-->
+                <input type="hidden" name="payId" value="{:time()}">
                 <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
@@ -117,8 +119,8 @@
             }
         });
         form.on('submit(formDemo)', function(data){
-            console.log(data.field)
             $.post('',data.field,function (res) {
+                console.log( res )
                 if( res.code === 1 ){
                     $('.layui-card-body').html( res.data );
                 } else {
