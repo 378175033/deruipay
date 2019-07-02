@@ -276,7 +276,7 @@ return [
         'CC_PAY_POST_URL' => 'http://ds.desheng520.com/api/pay/',
 
         'callbackurl' => 'http://103.224.251.23/manage/daxiangpay/notify',
-//        'callbackurl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/back.php',
+//        'callbackurl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/back.php ',
         's2surl' => 'http://103.224.251.23/manage/daxiangpay/notify',
 //        's2surl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/s2s.php',
 //支持的银行列表（不同的通道，支持的银行不同，请在商户中心查询所支持的银行）
