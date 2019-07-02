@@ -120,4 +120,22 @@ EOF;
 EOF;
         echo $EOF;
     }
+
+    public function signChk($paidInfo)
+    {
+        $sign = $paidInfo['sign'];
+        unset($paidInfo['sign']);
+        ksort($paidInfo);
+        reset($paidInfo);
+        $paidInfo2Str = implode('',$paidInfo);
+        $paidInfo2Str .= $this->config['CC_PAY_API_KEY'];
+        $signChk = md5($paidInfo2Str);
+        $signChk = strtolower($signChk);
+
+        if($sign == $signChk){
+            return $paidInfo;
+        }else{
+            return false;
+        }
+    }
 }
