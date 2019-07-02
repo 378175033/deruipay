@@ -23,9 +23,18 @@ class Daxiangpay extends controller
 
     public function notify(Request $request)
     {
-        Ob_start();
         $api = new api();
-        dump($request->param());
+        /**
+        '/manage/daxiangpay/notify' => '',
+        'amount' => '0.01',
+        'merid' => '18086',
+        'orderid' => '20190702174810142695',
+        'paystate' => 'success',
+        'paytypekey' => 'fast',
+        'tradeid' => 'DS2019070217480961955',
+        'sign' => 'd08ef88623fdda60f0d5caa59fee9b87',
+        'attach' => '6Ieq5a6a5LmJ5pWw5o2u',
+         */
         $paidInfo = $request->post();
         $attach = $paidInfo['attach'];
         if (strlen($attach) > 0) {
@@ -46,8 +55,5 @@ class Daxiangpay extends controller
             echo $paidInfo['paystate'];
             echo '非支付成功状态';
         }
-        $content = Ob_get_contents();
-        Ob_end_clean();
-        Log::write($content);
     }
 }

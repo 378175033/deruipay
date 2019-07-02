@@ -31,8 +31,7 @@ class daxiangpay
             'paytypekey' => $this->config['CC_PAY_PAY_TYPE_KEY'],    //通道类型
             'orderid' => date('YmdHis') . mt_rand(100000, 999999),    //订单号
             'amount' => number_format($data['amount'], 2, '.', ''),    //支付金额，必须格式化为小数点后2位。例如1元，应当填写为 1.00
-//            'callbackurl' => $this->config['callbackurl'],     //支付后，浏览器跳转回来所要到达的页面
-            'callbackurl' => 'https://www.baidu.com',     //支付后，浏览器跳转回来所要到达的页面
+            'callbackurl' => $this->config['callbackurl'],     //支付后，浏览器跳转回来所要到达的页面
             's2surl' => $this->config['s2surl'],     //支付成功后，接收 支付服务器通知支付结果情况 的页面
         );
 
