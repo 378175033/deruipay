@@ -20,6 +20,4 @@ return [
     'manage' => 'manage/index/index',
 
     'pay'=>'index/pay/index',//支付页面
-
-    'notify'=> 'index/pay/aliPayNotify',//回调
 ];
