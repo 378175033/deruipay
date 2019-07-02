@@ -36,9 +36,6 @@ class Business extends Manage
                 $this->error( "请输入6-12位由数字字母下划线组成的密码！");
             }
             $data = $this->request->param();
-            if( $data['frozen_money'] > $data['money'] ){
-                $this->error( "冻结金额不能超过账户余额！");
-            }
             $data['salt'] = getSalt();
             $data['password'] = encode_password( $password, $data['salt'] );
             $data['create_time'] = time();
@@ -50,7 +47,7 @@ class Business extends Manage
                 }
             }
             $data['shop_sn'] = $this->model->max("shop_sn")+1;
-            $res = $this->model->allowField( true )->data($data)->isUpdate( false )->save();
+            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile'] )->data($data)->isUpdate( false )->save();
             if ($res) {
                 $this->success('新增成功');
             }
@@ -81,16 +78,13 @@ class Business extends Manage
                 $data['salt'] = getSalt();
                 $data['password'] = encode_password( $password, $data['salt'] );
             };
-            if( $data['frozen_money'] > $data['money'] ){
-                $this->error( "冻结金额不能超过账户余额！");
-            }
             if( $this->isValidate ){
                 $validate = validate($this->table);
                 if (!$validate->check($data)) {
                     $this->error($validate->getError());
                 }
             }
-            $res = $this->model->allowField( true )->data($data)->isUpdate( true )->save();
+            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile'] )->data($data)->isUpdate( true )->save();
             if ($res) {
                 operaLog($this->admin_id.'更新商户:'.$data['name'].'信息');
                 $this->success('更新成功');

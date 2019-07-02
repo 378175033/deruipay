@@ -85,6 +85,26 @@ class Pay extends Business
                         $this->error( $res['msg'] );
                     }
                     break;
+                case "free_wechat":
+                    $data['type'] = "1";
+                    $api = new Api();
+                    $res = $api->free_pay( $data );
+                    if( $res['code'] == 1 ){
+                        $this->success( "二维码获取成功！",'', $res['data']);
+                    } else {
+                        $this->error( $res['msg'] );
+                    }
+                    break;
+                case "free_alipay":
+                    $data['type'] = "2";
+                    $api = new Api();
+                    $res = $api->free_pay( $data );
+                    if( $res['code'] == 1 ){
+                        $this->success( "二维码获取成功！",'', $res['data']);
+                    } else {
+                        $this->error( $res['msg'] );
+                    }
+                    break;
                 default:
                     $this->error( "暂无该支付方式！请重新选取");
             }
@@ -104,5 +124,54 @@ class Pay extends Business
             ->select();
         $this->assign( 'way', $way);
         return $this->fetch();
+    }
+
+    /**
+     * 2019/6/28 0028 10:31
+     * @param Request $request
+     * 支付宝回调
+     */
+    public function aliPayNotify()
+    {
+        $api = new \app\manage\controller\Api();
+        return $api->succNotifyServer();
+    }
+
+    public function freeList()
+    {
+        if( $this->request->isPost() && $this->request->isAjax() ){
+            $id = $this->request->param( 'id',0,'intval');
+            if( empty( $id ) ) $this->error( "参数错误！");
+            $where = [ 'id'    => $id,'is_free'   => 0];
+            $type = db( 'passageway')->where( $where)->value( 'pay_type');
+            if( !$type ) $this->error( "该支付方式不存在或没有变化！");
+            $business_id = $this->user['id'];
+            $where = [
+                'business_id'   => $business_id,
+                'delete_time'   => 0,
+                'status'        => 1,
+                'passageway_id' => $id
+            ];
+            $n = db( 'user_passageway')->where( $where )->count();
+            if( $n < 1 ) $this->error( "该商户未开启此通道！");
+            switch( $type ){
+                case "free_wechat":
+                    $where = ['type'=>1];
+                    break;
+                case "free_alipay":
+                    $where = ['type'=>2];
+                    break;
+                default:
+                    $this->error( "未定义支付方式！");
+                    break;
+            }
+            $list = db('qrcode')->where( $where )->select();
+            $str = "<input type='radio' title='不定额测试' lay-filter='randM'  name='mt' checked value='0'>";
+            foreach ( $list as $key => $val ){
+                $str .= "<input type='radio' data-price='".$val['price']."' title='定额测试(&yen;".$val['price'].")' name='mt' lay-filter='randM' value='".$val['id']."'>";
+            }
+            $this->success( $str );
+        }
+        $this->error( "请求方式错误");
     }
 }

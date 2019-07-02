@@ -28,7 +28,6 @@ class Setting extends Manage
                 ['key','require',"请输入通讯密钥"],
                 ['notifyUrl','require|url',"请输入异步回调地址|异步回调地址不合法"],
                 ['returnUrl','require|url',"请输入支付完成后跳转地址|支付完成后跳转地址不合法"],
-                ['close','require',"请输入创建的订单几分钟后失效"],
                 ['close','require',"请输入创建的订单几分钟后失效"]
             ];
             $validate = new Validate();
@@ -57,7 +56,7 @@ class Setting extends Manage
         $data = $this->model->select();
         $res = [];
         $time = [
-            "lastheart","lastpay","jkstate"
+            "lastheart","lastpay"
         ];
         foreach ( $data as $val ){
             $v = in_array( $val['vkey'], $time ) && !empty( $val['vvalue'])? date("Y-m-d H:i:s", $val['vvalue'] ) : $val['vvalue'];

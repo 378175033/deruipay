@@ -78,7 +78,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">监控端状态</label>
                     <div class="layui-input-block">
-                        <input class="layui-input"  readonly value="{$data.jkstate|default='监控端已掉线，请您检查App是否正常运行'}">
+                        <input class="layui-input" id="jkstate" readonly>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -124,6 +124,7 @@
 <script type="text/javascript" src="__JS__/qrcode.js"></script>
 <script>
     $.post("getSettings",function (data) {
+        console.log( data )
         if (data.code==1){
             if (data.data.jkstate == -1){
                 $("#jkstate").val("监控端未绑定，请您扫码绑定");
