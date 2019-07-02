@@ -56,7 +56,7 @@ class Setting extends Manage
         $data = $this->model->select();
         $res = [];
         $time = [
-            "lastheart","lastpay","jkstate"
+            "lastheart","lastpay"
         ];
         foreach ( $data as $val ){
             $v = in_array( $val['vkey'], $time ) && !empty( $val['vvalue'])? date("Y-m-d H:i:s", $val['vvalue'] ) : $val['vvalue'];
