@@ -124,6 +124,7 @@
 <script type="text/javascript" src="__JS__/qrcode.js"></script>
 <script>
     $.post("getSettings",function (data) {
+        console.log( data )
         if (data.code==1){
             if (data.data.jkstate == -1){
                 $("#jkstate").val("监控端未绑定，请您扫码绑定");
