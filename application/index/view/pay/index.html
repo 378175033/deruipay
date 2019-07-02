@@ -19,18 +19,23 @@
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
             <div class="layui-input-block">
-                <input type="number" class="layui-input" name="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
+                <input type="number" class="layui-input" name="money" id="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">支付方式</label>
             <div class="layui-input-block">
-                <select name="type" id="" lay-verify="type">
+                <select name="type" lay-verify="type" lay-filter="type">
                     <option value="0">-请选择支付方式-</option>
                     {volist name="way" id="w"}
                     <option value="{$w.id}">{$w.name}</option>
                     {/volist}
                 </select>
+            </div>
+        </div>
+        <div class="layui-form-item" id="moreType" style="display: none">
+            <label class="layui-form-label">选择支付方式</label>
+            <div class="layui-input-block">
             </div>
         </div>
         <div class="layui-card">
@@ -91,11 +96,29 @@
                 }
             }
         });
+        form.on('select(type)', function(data){
+            $.post( "{:url('freeList')}",{id:data.value},function (res) {
+                if( res.code === 1 ){
+                    $('#moreType').show().find('.layui-input-block').html( res.msg );
+                    form.render();
+                } else {
+                    $('#moreType').hide();
+                }
+            })
+        });
 
+        form.on('radio(randM)', function(data){
+            console.log( data.elem.dataset.price )
+            if( data.value === "0" ){
+                $('#money').attr( 'readonly', false);
+            } else {
+                var price = data.elem.dataset.price;
+                $('#money').attr( 'readonly', true).val( price );
+            }
+        });
         form.on('submit(formDemo)', function(data){
             console.log(data.field)
             $.post('',data.field,function (res) {
-                console.log( res );
                 if( res.code === 1 ){
                     $('.layui-card-body').html( res.data );
                 } else {

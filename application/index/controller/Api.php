@@ -120,4 +120,19 @@ class Api extends Controller
         $html_form = $acpService::createAutoFormHtml( $params, $uri );
         echo  $html_form;
     }
+
+    public function free_pay( $data )
+    {
+        $type = $data['type'];
+        $money = $data['money'];
+        //查看是否定额支付
+        $where =[
+            'type'  => $type,
+            'price' => round( $money, 2)
+        ];
+        $url = db( 'qrcode')->where( $where )->value( "pay_url");
+        $vkey = $type == 1 ? 'wxpay' : 'zfbpay';
+        $url = $url ? $url : db('setting')->where('vkey',$vkey)->value( 'vvalue');
+        $this->error( $url );
+    }
 }
