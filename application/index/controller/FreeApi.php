@@ -190,4 +190,19 @@ class FreeApi extends Controller
             return json($this->getReturn(1,"没有等待清理的订单"));
         }
     }
+
+    /**
+     * @desc 定义返回数据格式
+     * Created by PhpStorm
+     * User: zhaolan
+     * Date: 2019/7/2 0002 11:38
+     * @param int $code
+     * @param string $msg
+     * @param null $data
+     * @return array
+     */
+    public function getReturn($code = 1, $msg = "成功", $data = null)
+    {
+        return array("code" => $code, "msg" => $msg, "data" => $data);
+    }
 }
