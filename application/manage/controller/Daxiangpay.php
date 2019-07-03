@@ -125,10 +125,40 @@ class Daxiangpay extends controller
             $orderId = $paidInfo['orderid'];    //发起支付时发送过去的 订单号
             $amount = floatval($paidInfo['amount']);    //支付金额
             $tradeId = $paidInfo['tradeid'];    //支付平台的流水号
+            $order = db('order')->where(['order_id' => $orderId])->find();
+            if (!$order) {
+                Log::error('order not exists');
+                return 'order not exists';
+            }
+            $transaction_id =$tradeId;
+            $order['batch'] = $transaction_id;// 支付宝交易号（流水号）
+            $order['amount'] = $amount;
+            $order['update_time'] = time();
+            $order['back_time'] = time();
+            $order['status'] = 1;//支付状态
+            $order['back_status'] = 1;//回调状态
+            $order['back_info'] = json_encode($paidInfo,true);//回调参数
+
+            //修改订单信息
+            db('order')->where(['order_id' => $orderId])->update($order);
+            //支付成功的逻辑
+            $this->accountLog($order);
 
         } else {
             echo $paidInfo['paystate'];
             echo '非支付成功状态';
         }
+    }
+
+    /**
+     * 2019/6/28 0028 16:52
+     * @param $order
+     * 回调成功的时候金额变动
+     */
+    public function accountLog($order){
+
+        $accountLog = db('account_log')->where('bus_id',$order['business_id'])->order('id desc')->find();
+        $Business = new \app\manage\model\Business();
+        $Business->changeMoney($order['amount'],$accountLog['now_account']+$order['amount'],$order['business_id'],0);
     }
 }
