@@ -15,11 +15,6 @@
         .layui-bank,.bankContent{
             display: none;
         }
-        .bank li{
-            float: left;
-            width:120px;
-            margin: 0 5px;
-        }
     </style>
 </head>
 <body>
@@ -47,40 +42,15 @@
             </div>
         </div>
         <div class="layui-form-item layui-bank">
-            <span>请选择支付银行</span>
-            <ul class="bank">
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="工商银行" value="工商银行" checked>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="建设银行" value="建设银行">
-
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="农业银行" value="建设银行">
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="中国银行" value="建设银行">
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="交通银行" value="建设银行">
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <input type="radio"  name="union" lay-verify="union" title="招商银行" value="建设银行">
-                    </a>
-                </li>
-            </ul>
+            <label class="layui-form-label">银行</label>
+            <div class="layui-input-block">
+                <select name="type" lay-verify="type" lay-filter="type">
+                    <option value="0">-请选择银行-</option>
+                    {volist name="banks" id="bank" key="key"}
+                    <option value="{$key}">{$bank}</option>
+                    {/volist}
+                </select>
+            </div>
         </div>
         <div class="layui-form-item bankContent">
             <div class="layui-form-item">

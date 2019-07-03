@@ -130,6 +130,8 @@ class Pay extends Business
             ->where($where)
             ->select();
         $this->assign( 'way', $way);
+        $banks = config('daxiangpay')['PAY_BANK_LIST'];
+        $this->assign('banks',$banks);
         return $this->fetch();
     }
 
