@@ -9,9 +9,11 @@
 namespace app\index\controller;
 use app\common\controller\Business;
 use think\Config;
+use daxiangpay\daxiangpay as api;
 use think\Db;
 use think\Log;
 use think\Request;
+use think\Validate;
 
 class Pay extends Business
 {
@@ -23,12 +25,12 @@ class Pay extends Business
     public function index()
     {
         $business = $this->user;
-        if( $this->request->isAjax() && $this->request->isPost() ){
-            $money = $this->request->post("money",0);
-            if( empty( $money ) ) $this->error( "请输入支付金额！");
-            if( $money < 0 ) $this->error( "支付金额不合法！");
-            $type = $this->request->post( "type", 0, 'intval');
-            if( empty( $type ) ) $this->error( "请选择支付方式！");
+        $request = $this->request;
+        if( $request->isAjax() && $request->isPost() ){
+            $money = $request->post("money",0);
+            $type = $request->post( "type", 0, 'intval');
+
+            $this->verify($request,$type);
             $where = [
                 'a.delete_time'   => 0,
                 'a.status'      => 1,
@@ -61,6 +63,18 @@ class Pay extends Business
                 'money' => $money,
                 'out_trade_no'=>$outTradeNo,
             ];
+            if($type == 10){
+                $data = [
+                    'amount' => $money,
+                    'bankname' => $request->post('union'),
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('phone'),
+                    'type' => $request->post('type'),
+                    'screen' => 1
+                ];
+            }
             switch ( $passage[0]['pay_type'] ){
                 case 'alipay':
                     $api = new \app\manage\controller\Api();
@@ -75,15 +89,8 @@ class Pay extends Business
 
                     break;
                 case 'union':
-                    $api = new \app\manage\controller\Pay();
-                    $data = ['accNo'=>'6216261000000000018','money'=> $money*100];
-                    $customerInfo = ['smsCode' => '111111'];
-                    $res = $api->pay( $data, $customerInfo );
-                    if( $res['code'] == 1 ){
-                        $this->success( "获取二维码成功！", '', $res['data']);
-                    } else{
-                        $this->error( $res['msg'] );
-                    }
+                    $api = new api();
+                    $api->pay($data);
                     break;
                 case "free_wechat":
                     $data['type'] = "1";
@@ -124,6 +131,48 @@ class Pay extends Business
             ->select();
         $this->assign( 'way', $way);
         return $this->fetch();
+    }
+
+
+    public function verify($request,$type){
+        $rule = [
+            'money'  => 'require|gt:0',
+            'type'  => 'require|integer',
+        ];
+        $field = [
+            'money'  => '支付金额',
+            'type'  => '支付方式',
+        ];
+        if($type == 10){
+            $rule['union'] = 'require';
+            $rule['bank_code'] = 'require|min:12';
+            $rule['name'] = 'require';
+            $rule['mobile'] = 'require|min:11|max:11';
+            $rule['idCard'] = 'require|min:15|max:18';
+
+            $field['union'] = '银行名称';
+            $field['bank_code'] = '银行卡号';
+            $field['name'] = '开户人名称';
+            $field['mobile'] = '银行预留手机号';
+            $field['idCard'] = '身份证号码';
+        }
+
+        $validate = new Validate($rule, [] , $field);
+        $result   = $validate->check($request->post());
+        if(!$result){
+            $this->error($validate->getError());
+        }
+        if($type == 10){
+            if(!preg_match_all("/^1[34578]\d{9}$/", $request->post("mobile"), $mobiles)){
+                $this->error('银行预留手机号规则错误！');
+            }
+            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
+                $this->error('银行卡号规则错误！');
+            }
+            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', $request->post("idCard"),$match)){
+                $this->error('身份证号输入不合法！');
+            }
+        }
     }
 
     /**

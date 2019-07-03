@@ -12,6 +12,14 @@
         .layui-layer-msg{
             display: none;
         }
+        .layui-bank,.bankContent{
+            display: none;
+        }
+        .bank li{
+            float: left;
+            width:120px;
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +44,69 @@
         <div class="layui-form-item" id="moreType" style="display: none">
             <label class="layui-form-label">选择支付方式</label>
             <div class="layui-input-block">
+            </div>
+        </div>
+        <div class="layui-form-item layui-bank">
+            <span>请选择支付银行</span>
+            <ul class="bank">
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="工商银行" value="工商银行" checked>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="建设银行" value="建设银行">
+
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="农业银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="中国银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="交通银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="招商银行" value="建设银行">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-form-item bankContent">
+            <div class="layui-form-item">
+                <label class="layui-form-label">开户人姓名：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name"  lay-verify="name" placeholder="请输入开户人姓名"  class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">银联卡号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="bank_code"   lay-verify="bank_code" placeholder="请输入银联卡号"  class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">银行预留手机号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证号码：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
+                </div>
             </div>
         </div>
         <div class="layui-card">
@@ -95,10 +166,46 @@
                 if( value === "0"){
                     toastr.error( "请选择支付方式" );
                     return "请选择支付方式";
+                }else if(value === "10"){
+                    form.verify({
+                        name:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入开户人姓名" );
+                                return "请输入开户人姓名";
+                            }
+                        },
+                        bank_code:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入银行卡号" );
+                                return "请输入银行卡号";
+                            }
+                        },
+                        phone:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入银行预留手机号" );
+                                return "请输入银行预留手机号";
+                            }
+                        },
+                        idCard:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入身份证号码" );
+                                return "请输入身份证号码";
+                            }
+                        }
+                    })
                 }
-            }
+            },
+
         });
         form.on('select(type)', function(data){
+
+            if(data.value == 10){
+                $(".layui-bank").show();
+                $(".bankContent").show();
+            }else{
+                $(".layui-bank").hide();
+                $(".bankContent").hide();
+            }
             $.post( "{:url('freeList')}",{id:data.value},function (res) {
                 if( res.code === 1 ){
                     $('#moreType').show().find('.layui-input-block').html( res.msg );
@@ -108,7 +215,6 @@
                 }
             })
         });
-
         form.on('radio(randM)', function(data){
             console.log( data.elem.dataset.price )
             if( data.value === "0" ){
