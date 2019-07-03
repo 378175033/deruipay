@@ -152,7 +152,7 @@ class Pay extends Business
             $rule['mobile'] = 'require|min:11|max:11';
             $rule['idCard'] = 'require|min:15|max:18';
 
-            $field['union'] = '银行名称';
+            $field['bank_type'] = '银行名称';
             $field['bank_code'] = '银行卡号';
             $field['name'] = '开户人名称';
             $field['mobile'] = '银行预留手机号';

@@ -19,6 +19,25 @@
 </head>
 <body>
     <form class="layui-form" style="width: 95%;margin: 60px auto">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="name"  lay-verify="name" placeholder="请输入开户人姓名"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-block">
+                <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证号码：</label>
+            <div class="layui-input-block">
+                <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
             <div class="layui-input-block">
@@ -44,7 +63,7 @@
         <div class="layui-form-item layui-bank">
             <label class="layui-form-label">银行</label>
             <div class="layui-input-block">
-                <select name="type" lay-verify="type" lay-filter="type">
+                <select name="bank_type" lay-verify="bank_type" lay-filter="bank_type">
                     <option value="0">-请选择银行-</option>
                     {volist name="banks" id="bank" key="key"}
                     <option value="{$key}">{$bank}</option>
@@ -54,28 +73,9 @@
         </div>
         <div class="layui-form-item bankContent">
             <div class="layui-form-item">
-                <label class="layui-form-label">开户人姓名：</label>
-                <div class="layui-input-block">
-                    <input type="text" name="name"  lay-verify="name" placeholder="请输入开户人姓名"  class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
                 <label class="layui-form-label">银联卡号：</label>
                 <div class="layui-input-block">
                     <input type="text" name="bank_code"   lay-verify="bank_code" placeholder="请输入银联卡号"  class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">银行预留手机号：</label>
-                <div class="layui-input-block">
-                    <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">身份证号码：</label>
-                <div class="layui-input-block">
-                    <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
                 </div>
             </div>
         </div>
@@ -138,33 +138,39 @@
                     return "请选择支付方式";
                 }else if(value === "10"){
                     form.verify({
-                        name:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入开户人姓名" );
-                                return "请输入开户人姓名";
-                            }
-                        },
                         bank_code:function ( value ) {
                             if( value === ""){
                                 toastr.error( "请输入银行卡号" );
                                 return "请输入银行卡号";
                             }
                         },
-                        phone:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入银行预留手机号" );
-                                return "请输入银行预留手机号";
-                            }
-                        },
-                        idCard:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入身份证号码" );
-                                return "请输入身份证号码";
+                        bank_type:function ( value ) {
+                            if( value === "0"){
+                                toastr.error( "请选择银行" );
+                                return "请选择银行";
                             }
                         }
                     })
                 }
             },
+            name:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入开户人姓名" );
+                    return "请输入开户人姓名";
+                }
+            },
+            mobile:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入银行预留手机号" );
+                    return "请输入银行预留手机号";
+                }
+            },
+            idCard:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入身份证号码" );
+                    return "请输入身份证号码";
+                }
+            }
 
         });
         form.on('select(type)', function(data){
