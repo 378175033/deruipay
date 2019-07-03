@@ -1,26 +1,101 @@
 <?php
-
 namespace app\manage\controller;
-
 use think\Controller;
 use daxiangpay\daxiangpay as api;
 use think\Request;
 use think\log;
+use think\Db;
+use think\Exception;
+use think\Loader;
+use think\Validate;
 
 class Daxiangpay extends controller
 {
-    public function testpay()
-    {
-        $data = ['amount' => '0.01', 'bankname' => '建设银行', 'bankcardid' => '6217003810031856423', 'bankfullname' => '胡译锋', 'bankidc' => '510902199301219536', 'bankmobile' => '15708432599', 'screen' => 1];
-        $this->pay($data);
+
+    public function index(){
+
+        if($this->request->isAjax() && $this->request->isPost()){
+            $request = $this->request;
+            $rule = [
+                'money'  => 'require|gt:0',
+                'type'  => 'require|integer',
+                'union'  => 'require',
+                'bank_code'  => 'require|min:12',
+                'name'  => 'require',
+                'phone'   => 'require|min:11|max:11',
+                'idCard'   => 'require|min:15|max:18',
+            ];
+
+            $field = [
+                'money'  => '支付金额',
+                'type'  => '支付方式',
+                'union'  => '银行名称',
+                'bank_code'  => '银行卡号',
+                'name'  => '开户人名称',
+                'phone'   => '银行预留手机号',
+                'idCard'   => '身份证号码',
+            ];
+
+            $validate = new Validate($rule, [] , $field);
+            $result   = $validate->check($this->request->post());
+            if(!$result){
+                $this->error($validate->getError());
+            }
+
+            if(!preg_match_all("/^1[34578]\d{9}$/", $request->post("phone"), $mobiles)){
+                $this->error('银行预留手机号规则错误！');
+            }
+            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
+                $this->error('银行卡号规则错误！');
+            }
+            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', $request->post("idCard"),$match)){
+                $this->error('身份证号输入不合法！');
+            }
+            $data = [
+                'amount' => $request->post('money'),
+                'bankname' => $request->post('union'),
+                'bankcardid' => $request->post('bank_code'),
+                'bankfullname' => $request->post('name'),
+                'bankidc' => $request->post('idCard'),
+                'bankmobile' => $request->post('phone'),
+                'type' => $request->post('type'),
+                'screen' => 1
+            ];
+            try{
+                Db::startTrans();
+                $this->addOrder($data);//往订单写入数据
+                $api = new api();
+                $api->pay($data);
+                Db::commit();
+            }catch (Exception $e){
+                $this->error($e->getMessage());
+                Db::rollback();
+            }
+
+        }
+        return $this->fetch();
     }
 
-    public function pay($data)
-    {
-        $api = new api();
-        $api->pay($data);
-    }
 
+    public function addOrder($data){
+        //$business = $this->user;
+        $str = [
+            //'out_trade_no' => $outTradeNo,
+            'business_id' => 1,
+            'order_id' => generate16Num(),
+//            'user_passageway_id' => $passage['0']['id'],
+            'user_passageway_id' => 10,
+            'pay_from' => 1,
+            'amount' => $data['amount'],
+            'create_time' => time(),
+            'status' => 3,
+            'back_status' => 0,
+        ];
+        $order_add = Db('order')->insert($str);
+        if(!$order_add){
+            $this->error('写入订单参数失败');
+        }
+    }
     public function notify(Request $request)
     {
         $api = new api();

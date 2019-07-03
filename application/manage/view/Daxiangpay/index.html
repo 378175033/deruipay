@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>银联支付</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/toastr/build/toastr.css">
+    <style>
+        .layui-layer-msg{
+            display: none;
+        }
+        .layui-header{
+            font-size: 20px;
+            line-height: 60px;
+            background-color: #009688;
+            min-height: 60px;
+            color: #FFF;
+        }
+        .layui-header dev{
+            height: 60px;
+        }
+        .layui-bank,.bankContent{
+            display: none;
+        }
+        .bank li{
+            float: left;
+            width:120px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="layui-header layui-row">
+        <div style="float: left;width: 20%;text-align: center"><i class="layui-icon layui-icon-left"></i></div>
+        <div class="header_name" style="float: left;padding-left: 20%">
+            <span>银联支付</span>
+        </div>
+    </header>
+    <form class="layui-form" style="width: 95%;margin: 30px auto">
+        <div class="layui-form-item" pane>
+            <input type="number" class="layui-input" name="money" placeholder="请输入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <select  lay-filter="pay_type"  name="type"  lay-verify="type">
+                <option value="0">-请选择支付方式-</option>
+                <option value="1">银联支付</option>
+            </select>
+        </div>
+        <div class="layui-form-item layui-bank">
+            <span>请选择支付银行</span>
+            <ul class="bank">
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="工商银行" value="工商银行" checked>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="建设银行" value="建设银行">
+
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="农业银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="中国银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="交通银行" value="建设银行">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <input type="radio"  name="union" lay-verify="union" title="招商银行" value="建设银行">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-form-item bankContent">
+            <div class="layui-form-item">
+                <label class="layui-form-label">开户人姓名：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" required  lay-verify="name" placeholder="请输入开户人姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">银联卡号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="bank_code" required  lay-verify="bank_code" placeholder="请输入银联卡号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">银行预留手机号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="phone" required  lay-verify="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证号码：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="idCard" required  lay-verify="idCard" placeholder="请输入身份证号码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">短信验证码：</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="phone" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input code">-->
+                <!--</div>-->
+                <!--<div class="layui-word-aux">-->
+                    <!--<button type="button" class="layui-btn layui-btn-primary">发送验证码</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+        <div class="layui-form-item layui-footer" style="">
+            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="formDemo">确认支付</button>
+        </div>
+    </form>
+
+</body>
+<script type="text/javascript" src="/static/index/js/jquery.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/toastr/toastr.js"></script>
+<script>
+    function validationNumber(e, num) {
+        var regu = /^[0-9]+\.?[0-9]*$/;
+        if (e.value != "") {
+            if (!regu.test(e.value)) {
+                alert("请输入正确的数字");
+                e.value = e.value.substring(0, e.value.length - 1);
+                e.focus();
+            } else {
+                if (num == 0) {
+                    if (e.value.indexOf('.') > -1) {
+                        e.value = e.value.substring(0, e.value.length - 1);
+                        e.focus();
+                    }
+                }
+                if (e.value.indexOf('.') > -1) {
+                    if (e.value.split('.')[1].length > num) {
+                        e.value = e.value.substring(0, e.value.length - 1);
+                        e.focus();
+                    }
+                }
+            }
+        }
+    }
+    layui.use(['form'], function() {
+        var form = layui.form;
+        var flag = true;
+        //自定义验证规则
+        form.verify({
+            money: function(value) {
+                if( value ===  "" ){
+                    toastr.error( "请输入支付金额" );
+                    return "请输入支付金额";
+                }
+            },
+            type:function ( value ) {
+                if( value === "0"){
+                    toastr.error( "请选择支付方式" );
+                    return "请选择支付方式";
+                }
+            },
+            name:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入开户人姓名" );
+                    return "请输入开户人姓名";
+                }
+            },
+            bank_code:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入银行卡号" );
+                    return "请输入银行卡号";
+                }
+            },
+            phone:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入银行预留手机号" );
+                    return "请输入银行预留手机号";
+                }
+            },
+            idCard:function ( value ) {
+                if( value === ""){
+                    toastr.error( "请输入身份证号码" );
+                    return "请输入身份证号码";
+                }
+            }
+        });
+
+        form.on('submit(formDemo)', function(data){
+            $.post('',data.field,function (res) {
+
+                console.log(res.code);
+                if( res.code === 1 ){
+                    $('.layui-card-body').html( res.data );
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.on('select(pay_type)', function(data){
+            if(data.value == 1){
+                $(".layui-bank").show();
+                $(".bankContent").show();
+            }else{
+                $(".layui-bank").hide();
+                $(".bankContent").hide();
+            }
+
+        });
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //移动端
+            $(".code").css('float','left');
+            $(".code").css('width','55%');
+        }else{
+            $(".code").css('float','none');
+            $(".code").css('width','100%');
+        }
+
+    });
+
+</script>
+</html>
