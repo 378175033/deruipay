@@ -26,6 +26,7 @@ class Pay extends Business
     {
         $business = $this->user;
         $request = $this->request;
+        $banks = config('daxiangpay')['PAY_BANK_LIST'];
         if( $request->isAjax() && $request->isPost() ){
             $money = $request->post("money",0);
             $type = $request->post( "type", 0, 'intval');
@@ -45,19 +46,7 @@ class Pay extends Business
                         ->where($where)
                         ->select();
             $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-            $str = [
-                'out_trade_no' => $outTradeNo,
-                'business_id' => $business['id'],
-                'order_id' => generate16Num(),
-                'user_passageway_id' => $passage['0']['id'],
-                'pay_from' => 1,
-                'amount' => $money,
-                'create_time' => time(),
-                'status' => 3,
-                'back_status' => 0,
-            ];
-            $order_add = Db('order')->insert($str);
-            if (!$order_add) $this->error( "拉取支付失败");
+
             $data = [
                 'title' => '测试支付1',
                 'money' => $money,
@@ -66,15 +55,29 @@ class Pay extends Business
             if($type == 10){
                 $data = [
                     'amount' => $money,
-                    'bankname' => $request->post('union'),
+                    'bankname' => $banks[$request->post('bank_type')],
                     'bankcardid' => $request->post('bank_code'),
                     'bankfullname' => $request->post('name'),
                     'bankidc' => $request->post('idCard'),
-                    'bankmobile' => $request->post('phone'),
+                    'bankmobile' => $request->post('mobile'),
                     'type' => $request->post('type'),
                     'screen' => 1
                 ];
             }
+            $str = [
+                'out_trade_no' => $outTradeNo,
+                'business_id' => $business['id'],
+                'order_id' => $outTradeNo,
+                'user_passageway_id' => $passage['0']['id'],
+                'pay_from' => 1,
+                'amount' => $money,
+                'create_time' => time(),
+                'status' => 3,
+                'back_status' => 0,
+                'pay_info' => json_encode($data,true),
+            ];
+            $order_add = Db('order')->insert($str);
+            if (!$order_add) $this->error( "拉取支付失败");
             switch ( $passage[0]['pay_type'] ){
                 case 'alipay':
                     $api = new \app\manage\controller\Api();
@@ -146,7 +149,7 @@ class Pay extends Business
             'type'  => '支付方式',
         ];
         if($type == 10){
-            $rule['union'] = 'require';
+            $rule['bank_type'] = 'require';
             $rule['bank_code'] = 'require|min:12';
             $rule['name'] = 'require';
             $rule['mobile'] = 'require|min:11|max:11';

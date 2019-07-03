@@ -189,7 +189,7 @@ class Api extends Controller
     {
         if ($param['trade_status'] == 'TRADE_FINISHED' || $param['trade_status'] == 'TRADE_SUCCESS') {
             // 处理支付成功后的逻辑业务
-            $order = db('order')->where(['out_trade_no' => $param['out_trade_no']])->find();
+            $order = db('order')->where(['order_id' => $param['out_trade_no']])->find();
             if (!$order) {
                 Log::error('order not exists');
                 return 'order not exists';
@@ -214,7 +214,7 @@ class Api extends Controller
             $order['back_time'] = strtotime($notify_time);
             $order['status'] = 1;//支付状态
             $order['back_status'] = 1;//回调状态
-            $order['pay_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;
+            $order['back_info'] = '收款方' . $seller_email . ',付款方' . $buyer_logon_id;//回调参数
 
             //修改订单信息
             db('order')->where(['out_trade_no' => $param['out_trade_no']])->update($order);

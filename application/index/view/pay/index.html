@@ -23,7 +23,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">姓名：</label>
             <div class="layui-input-block">
-                <input type="text" name="name"  lay-verify="name" placeholder="请输入开户人姓名"  class="layui-input">
+                <input type="text" name="name"  lay-verify="name" placeholder="请输入姓名"  class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -155,14 +155,14 @@
             },
             name:function ( value ) {
                 if( value === ""){
-                    toastr.error( "请输入开户人姓名" );
-                    return "请输入开户人姓名";
+                    toastr.error( "请输入姓名" );
+                    return "请输入姓名";
                 }
             },
             mobile:function ( value ) {
                 if( value === ""){
-                    toastr.error( "请输入银行预留手机号" );
-                    return "请输入银行预留手机号";
+                    toastr.error( "请输入手机号" );
+                    return "请输入手机号";
                 }
             },
             idCard:function ( value ) {
@@ -201,6 +201,7 @@
             }
         });
         form.on('submit(formDemo)', function(data){
+            console.log(data);
             $.post('',data.field,function (res) {
                 console.log( res )
                 if( res.code === 1 ){
@@ -208,8 +209,11 @@
                 } else {
                     toastr.error( res.msg )
                 }
-            })
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+            if(data.field.type != 10){
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            }
+
         });
     });
 </script>
