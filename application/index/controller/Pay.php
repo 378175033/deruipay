@@ -9,7 +9,7 @@
 namespace app\index\controller;
 use app\common\controller\Business;
 use think\Config;
-use daxiangpay\daxiangpay as api;
+use daxiangpay\daxiangpay;
 use think\Db;
 use think\Log;
 use think\Request;
@@ -89,7 +89,7 @@ class Pay extends Business
 
                     break;
                 case 'union':
-                    $api = new api();
+                    $api = new daxiangpay();
                     $api->pay($data);
                     break;
                 case "free_wechat":
