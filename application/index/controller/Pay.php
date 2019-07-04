@@ -144,6 +144,7 @@ class Pay extends Business
                 'bankidc'=> $request->param('idCard'),
                 'bankmobile'=> $request->param('mobile'),
             ];
+
             $order = Db('order')->where('pay_info',json_encode($payInfo,true))
                 ->where('status',3)
                 ->order('id','desc')->find();
