@@ -150,6 +150,11 @@ class Daxiangpay extends controller
         }
     }
 
+    public function callbacknotify(Request $request)
+    {
+        Log::record($request);
+    }
+
     /**
      * 2019/6/28 0028 16:52
      * @param $order
