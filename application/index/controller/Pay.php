@@ -135,6 +135,7 @@ class Pay extends Business
             }
             $data['order_id'] = $order['order_id'];
             $data['screen']= 1;
+            Log::info($data);
             $api->pay($data);
         }else{
             //获取支付通道
