@@ -52,7 +52,7 @@ class Pay extends Business
                 'out_trade_no'=>$outTradeNo,
             ];
             $str = [
-                'out_trade_no' => $outTradeNo,
+                'out_trade_no' => $request->post('key'),
                 'business_id' => $business['id'],
                 'order_id' => $outTradeNo,
                 'user_passageway_id' => $passage['0']['id'],
@@ -62,7 +62,6 @@ class Pay extends Business
                 'status' => 3,
                 'back_status' => 0,
                 'pay_info' => json_encode($data,true),
-                'key'=> $request->post('key'),
             ];
             if($type == 10){
                 $data = [
@@ -130,7 +129,7 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
-            $order = Db('order')->where('key',$request->param('key'))->find();
+            $order = Db('order')->where('out_trade_no',$request->param('key'))->find();
             if(!$order){
                 $this->error('查无订单');
             }
