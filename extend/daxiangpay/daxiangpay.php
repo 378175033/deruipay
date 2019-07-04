@@ -22,7 +22,7 @@ class daxiangpay
         $this->config = config('daxiangpay');
     }
 
-    public function pay($data)
+    public function pay($data, $tag=true)
     {
         //组织发起支付所需要的数据
         $payInfo = array(
@@ -57,7 +57,7 @@ class daxiangpay
         }
 
         $payInfo = $this->encryption($payInfo);
-        $this->post($payInfo);
+        $tag&&$this->post($payInfo);
     }
 
     protected function encryption($payInfo): array
