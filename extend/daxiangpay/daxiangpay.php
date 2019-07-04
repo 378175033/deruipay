@@ -57,7 +57,9 @@ class daxiangpay
         }
 
         $payInfo = $this->encryption($payInfo);
-        $tag&&$this->post($payInfo);
+        if($tag){
+            $this->post($payInfo);
+        }
     }
 
     protected function encryption($payInfo): array

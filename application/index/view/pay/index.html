@@ -79,6 +79,7 @@
                 </div>
             </div>
         </div>
+        <input type="text" class="Ikey" name="Ikey" lay-verify="Ikey" style="display: none">
         <div class="layui-card">
             <div class="layui-card-body" style="text-align: center">
             </div>
@@ -174,10 +175,12 @@
 
         });
         form.on('select(type)', function(data){
-
+            var key = Math.random().toString(36).substr(2);
+            $('.Ikey').val(key);
             if(data.value == 10){
                 $(".layui-bank").show();
                 $(".bankContent").show();
+
             }else{
                 $(".layui-bank").hide();
                 $(".bankContent").hide();
@@ -200,10 +203,7 @@
                 $('#money').attr( 'readonly', true).val( price );
             }
         });
-        var key = Math.random().toString(36).substr(2);
-
         form.on('submit(formDemo)', function(data){
-            data.field.key = key;
             $.post('',data.field,function (res) {
                 console.log( res )
                 if( res.code === 1 ){
