@@ -137,7 +137,14 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
-            $order = Db('order')->where('pay_info',json_encode($data,true))->find();
+            $payInfo = [
+                'bankname'=> $banks[$request->param('bank_type')],
+                'bankcardid'=> $request->param('bank_code'),
+                'bankfullname'=> $request->param('name'),
+                'bankidc'=> $request->param('idCard'),
+                'bankmobile'=> $request->param('mobile'),
+            ];
+            $order = Db('order')->where('pay_info',json_encode($payInfo,true))->find();
             if(!$order){
                 $this->error('查无订单');
             }
