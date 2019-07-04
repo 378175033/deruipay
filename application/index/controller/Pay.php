@@ -133,7 +133,7 @@ class Pay extends Business
             if(!$order){
                 $this->error('查无订单');
             }
-            $data['order_id'] = $order['order_id'];
+            //$data['order_id'] = $order['order_id'];
             $data['screen']= 1;
             $api->pay($data);
         }else{
