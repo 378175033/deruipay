@@ -27,6 +27,7 @@ class Pay extends Business
         $business = $this->user;
         $request = $this->request;
         $banks = config('daxiangpay')['PAY_BANK_LIST'];
+        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         if( $request->isAjax() && $request->isPost() ){
             $money = $request->post("money",0);
             $type = $request->post( "type", 0, 'intval');
@@ -45,7 +46,6 @@ class Pay extends Business
                         ])
                         ->where($where)
                         ->select();
-            $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
             $data = [
                 'title' => '测试支付1',
                 'money' => $money,
@@ -129,6 +129,7 @@ class Pay extends Business
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
             $data['screen']= 1;
+            $data['order_id'] = $outTradeNo;
             $api->pay($data);
         }else{
             //获取支付通道
