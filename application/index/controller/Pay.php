@@ -46,7 +46,6 @@ class Pay extends Business
                         ->where($where)
                         ->select();
             $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-
             $data = [
                 'title' => '测试支付1',
                 'money' => $money,
