@@ -185,12 +185,12 @@ class Pay extends Business
             if(!preg_match_all("/^1[34578]\d{9}$/", $request->post("mobile"), $mobiles)){
                 $this->error('银行预留手机号规则错误！');
             }
-            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
-                $this->error('银行卡号规则错误！');
-            }
-//            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")),$match)){
-//                $this->error('身份证号输入不合法！');
+//            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
+//                $this->error('银行卡号规则错误！');
 //            }
+            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")),$match)){
+                $this->error('身份证号输入不合法！');
+            }
         }
     }
 
