@@ -320,7 +320,7 @@ class FreeApi extends Controller
                 "timeOut" => $time['vvalue'],
                 "date" => $createDate
             );
-            //todo 整合当前order表与pay_order表 二维码链接
+            //todo 整合当前order表与pay_order表
             $code = "<img src='/manage/Pay_modl/enQrcode?url=".$payUrl."'>";
             $this->success( $code,'', $code);
         }
