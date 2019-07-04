@@ -118,7 +118,8 @@ class Pay extends Business
                 default:
                     $this->error( "暂无该支付方式！请重新选取");
             }
-        }elseif ($request->param('type') == 10){
+        }
+        elseif ($request->param('type') == 10){
             $api = new daxiangpay();
             $banks = config('daxiangpay')['PAY_BANK_LIST'];
             $data  =$request->param();
@@ -187,9 +188,9 @@ class Pay extends Business
             if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
                 $this->error('银行卡号规则错误！');
             }
-            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', $request->post("idCard"),$match)){
-                $this->error('身份证号输入不合法！');
-            }
+//            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")),$match)){
+//                $this->error('身份证号输入不合法！');
+//            }
         }
     }
 
