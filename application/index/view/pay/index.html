@@ -200,8 +200,10 @@
                 $('#money').attr( 'readonly', true).val( price );
             }
         });
+        var key = Math.random().toString(36).substr(2);
+
         form.on('submit(formDemo)', function(data){
-            console.log(data);
+            data.field.key = key;
             $.post('',data.field,function (res) {
                 console.log( res )
                 if( res.code === 1 ){

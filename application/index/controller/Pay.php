@@ -62,6 +62,7 @@ class Pay extends Business
                 'status' => 3,
                 'back_status' => 0,
                 'pay_info' => json_encode($data,true),
+                'key'=> $request->post('key'),
             ];
             if($type == 10){
                 $data = [
@@ -75,14 +76,6 @@ class Pay extends Business
                     'screen' => 1,
                     'order_id'=>$outTradeNo,
                 ];
-                $bankInfo = [
-                    'bankname' => $banks[$request->post('bank_type')],
-                    'bankcardid' => $request->post('bank_code'),
-                    'bankfullname' => $request->post('name'),
-                    'bankidc' => $request->post('idCard'),
-                    'bankmobile' => $request->post('mobile'),
-                ];
-                $str['pay_info'] = json_encode($bankInfo,true);
             }
 
             $order_add = Db('order')->insert($str);
@@ -137,17 +130,7 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
-            $payInfo = [
-                'bankname'=> $banks[$request->param('bank_type')],
-                'bankcardid'=> $request->param('bank_code'),
-                'bankfullname'=> $request->param('name'),
-                'bankidc'=> $request->param('idCard'),
-                'bankmobile'=> $request->param('mobile'),
-            ];
-            sleep(0.1);
-            $order = Db('order')->where('pay_info',json_encode($payInfo,true))
-                ->where('status',3)
-                ->order('id','desc')->find();
+            $order = Db('order')->where('key',$request->param('key'))->find();
             if(!$order){
                 $this->error('查无订单');
             }
