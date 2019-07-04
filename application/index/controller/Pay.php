@@ -7,6 +7,7 @@
  */
 
 namespace app\index\controller;
+
 use app\common\controller\Business;
 use think\Config;
 use daxiangpay\daxiangpay;
@@ -28,31 +29,31 @@ class Pay extends Business
         $request = $this->request;
         $banks = config('daxiangpay')['PAY_BANK_LIST'];
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-        if( $request->isAjax() && $request->isPost() ){
-            $money = $request->post("money",0);
-            $type = $request->post( "type", 0, 'intval');
+        if ($request->isAjax() && $request->isPost()) {
+            $money = $request->post("money", 0);
+            $type = $request->post("type", 0, 'intval');
 
-            $this->verify($request,$type);
+            $this->verify($request, $type);
             $where = [
-                'a.delete_time'   => 0,
-                'a.status'      => 1,
-                'a.id'            => $type,
+                'a.delete_time' => 0,
+                'a.status' => 1,
+                'a.id' => $type,
                 'b.business_id' => $business['id'],
             ];
             $passage = db::name('passageway')
-                        ->alias('a')
-                        ->join([
-                            ['user_passageway b','a.id = b.passageway_id','left']
-                        ])
-                        ->where($where)
-                        ->select();
+                ->alias('a')
+                ->join([
+                    ['user_passageway b', 'a.id = b.passageway_id', 'left']
+                ])
+                ->where($where)
+                ->select();
             $data = [
                 'title' => '测试支付1',
                 'money' => $money,
-                'out_trade_no'=>$outTradeNo,
+                'out_trade_no' => $outTradeNo,
             ];
             $str = [
-                'out_trade_no' => $request->post('Ikey')?$request->post('Ikey'):$outTradeNo,
+                'out_trade_no' => $request->post('Ikey') ? $request->post('Ikey') : $outTradeNo,
                 'business_id' => $business['id'],
                 'order_id' => $outTradeNo,
                 'user_passageway_id' => $passage['0']['id'],
@@ -61,9 +62,9 @@ class Pay extends Business
                 'create_time' => time(),
                 'status' => 3,
                 'back_status' => 0,
-                'pay_info' => json_encode($data,true),
+                'pay_info' => json_encode($data, true),
             ];
-            if($type == 10){
+            if ($type == 10) {
                 $data = [
                     'money' => $money,
                     'bankname' => $banks[$request->post('bank_type')],
@@ -73,20 +74,20 @@ class Pay extends Business
                     'bankmobile' => $request->post('mobile'),
                     'type' => $request->post('type'),
                     'screen' => 1,
-                    'order_id'=>$outTradeNo,
+                    'order_id' => $outTradeNo,
                 ];
             }
 
             $order_add = Db('order')->insert($str);
-            if (!$order_add) $this->error( "拉取支付失败");
-            switch ( $passage[0]['pay_type'] ){
+            if (!$order_add) $this->error("拉取支付失败");
+            switch ($passage[0]['pay_type']) {
                 case 'alipay':
                     $api = new \app\manage\controller\Api();
-                    $res = $api->Face( $data );
-                    if( $res['code'] == 1 ){
-                        $this->success( "获取二维码成功！", '', $res['data']);
-                    } else{
-                        $this->error( $res['msg'] );
+                    $res = $api->Face($data);
+                    if ($res['code'] == 1) {
+                        $this->success("获取二维码成功！", '', $res['data']);
+                    } else {
+                        $this->error($res['msg']);
                     }
                     break;
                 case 'wechat':
@@ -99,78 +100,78 @@ class Pay extends Business
                 case "free_wechat":
                     $data['type'] = "1";
                     $api = new Api();
-                    $res = $api->free_pay( $data );
-                    if( $res['code'] == 1 ){
-                        $this->success( "二维码获取成功！",'', $res['data']);
+                    $res = $api->free_pay($data);
+                    if ($res['code'] == 1) {
+                        $this->success("二维码获取成功！", '', $res['data']);
                     } else {
-                        $this->error( $res['msg'] );
+                        $this->error($res['msg']);
                     }
                     break;
                 case "free_alipay":
                     $data['type'] = "2";
                     $api = new Api();
-                    $res = $api->free_pay( $data );
-                    if( $res['code'] == 1 ){
-                        $this->success( "二维码获取成功！",'', $res['data']);
+                    $res = $api->free_pay($data);
+                    if ($res['code'] == 1) {
+                        $this->success("二维码获取成功！", '', $res['data']);
                     } else {
-                        $this->error( $res['msg'] );
+                        $this->error($res['msg']);
                     }
                     break;
                 default:
-                    $this->error( "暂无该支付方式！请重新选取");
+                    $this->error("暂无该支付方式！请重新选取");
             }
-        }
-        elseif ($request->param('type') == 10){
+        } elseif ($request->param('type') == 10) {
             $api = new daxiangpay();
             $banks = config('daxiangpay')['PAY_BANK_LIST'];
-            $data  =$request->param();
-            $data['bankname']= $banks[$request->param('bank_type')];
-            $data['bankcardid']= $request->param('bank_code');
-            $data['bankfullname']= $request->param('name');
-            $data['bankidc']= $request->param('idCard');
-            $data['bankmobile']= $request->param('mobile');
+            $data = $request->param();
+            $data['bankname'] = $banks[$request->param('bank_type')];
+            $data['bankcardid'] = $request->param('bank_code');
+            $data['bankfullname'] = $request->param('name');
+            $data['bankidc'] = $request->param('idCard');
+            $data['bankmobile'] = $request->param('mobile');
 
-            $order = Db('order')->where('out_trade_no',$request->param('Ikey'))->find();
-            if(!$order){
+            $order = Db('order')->where('out_trade_no', $request->param('Ikey'))->find();
+            if (!$order) {
                 $this->error('查无订单');
             }
             $data['order_id'] = $order['order_id'];
-            $data['screen']= 1;
+            $data['screen'] = 1;
             Log::info($data);
             $api->pay($data);
-        }else{
+        } else {
             //获取支付通道
             $where = [
-                'p.delete_time'   => 0,
-                'p.status'        => 1,
-                'user_passageway.status'       => 1,
-                'user_passageway.business_id'  => $business['id'],
+                'p.delete_time' => 0,
+                'p.status' => 1,
+                'user_passageway.status' => 1,
+                'user_passageway.business_id' => $business['id'],
             ];
             $way = db('passageway')
                 ->field('p.id,p.name')
                 ->alias('p')
-                ->join('user_passageway','user_passageway.passageway_id = p.id')
+                ->join('user_passageway', 'user_passageway.passageway_id = p.id')
                 ->where($where)
                 ->select();
-            $this->assign( 'way', $way);
+            $this->assign('way', $way);
             $banks = config('daxiangpay')['PAY_BANK_LIST'];
-            $this->assign('banks',$banks);
+            $this->assign('banks', $banks);
             return $this->fetch();
 
         }
     }
 
 
-    public function verify($request,$type){
+    public function verify($request, $type)
+    {
         $rule = [
-            'money'  => 'require|gt:0',
-            'type'  => 'require|integer',
+            'money' => 'require|gt:0',
+            'type' => 'require|integer',
         ];
         $field = [
-            'money'  => '支付金额',
-            'type'  => '支付方式',
+            'money' => '支付金额',
+            'type' => '支付方式',
         ];
-        if($type == 10){
+        if ($type == 10) {
             $rule['bank_type'] = 'require';
             $rule['bank_code'] = 'require|min:12';
             $rule['name'] = 'require';
@@ -184,19 +185,19 @@ class Pay extends Business
             $field['idCard'] = '身份证号码';
         }
 
-        $validate = new Validate($rule, [] , $field);
-        $result   = $validate->check($request->post());
-        if(!$result){
+        $validate = new Validate($rule, [], $field);
+        $result = $validate->check($request->post());
+        if (!$result) {
             $this->error($validate->getError());
         }
-        if($type == 10){
-            if(!preg_match_all("/^1[34578]\d{9}$/", $request->post("mobile"), $mobiles)){
+        if ($type == 10) {
+            if (!preg_match_all("/^1[34578]\d{9}$/", $request->post("mobile"), $mobiles)) {
                 $this->error('银行预留手机号规则错误！');
             }
 //            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
 //                $this->error('银行卡号规则错误！');
 //            }
-            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")),$match)){
+            if (!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")), $match)) {
                 $this->error('身份证号输入不合法！');
             }
         }
@@ -215,39 +216,39 @@ class Pay extends Business
 
     public function freeList()
     {
-        if( $this->request->isPost() && $this->request->isAjax() ){
-            $id = $this->request->param( 'id',0,'intval');
-            if( empty( $id ) ) $this->error( "参数错误！");
-            $where = [ 'id'    => $id,'is_free'   => 0];
-            $type = db( 'passageway')->where( $where)->value( 'pay_type');
-            if( !$type ) $this->error( "该支付方式不存在或没有变化！");
+        if ($this->request->isPost() && $this->request->isAjax()) {
+            $id = $this->request->param('id', 0, 'intval');
+            if (empty($id)) $this->error("参数错误！");
+            $where = ['id' => $id, 'is_free' => 0];
+            $type = db('passageway')->where($where)->value('pay_type');
+            if (!$type) $this->error("该支付方式不存在或没有变化！");
             $business_id = $this->user['id'];
             $where = [
-                'business_id'   => $business_id,
-                'delete_time'   => 0,
-                'status'        => 1,
+                'business_id' => $business_id,
+                'delete_time' => 0,
+                'status' => 1,
                 'passageway_id' => $id
             ];
-            $n = db( 'user_passageway')->where( $where )->count();
-            if( $n < 1 ) $this->error( "该商户未开启此通道！");
-            switch( $type ){
+            $n = db('user_passageway')->where($where)->count();
+            if ($n < 1) $this->error("该商户未开启此通道！");
+            switch ($type) {
                 case "free_wechat":
-                    $where = ['type'=>1];
+                    $where = ['type' => 1];
                     break;
                 case "free_alipay":
-                    $where = ['type'=>2];
+                    $where = ['type' => 2];
                     break;
                 default:
-                    $this->error( "未定义支付方式！");
+                    $this->error("未定义支付方式！");
                     break;
             }
-            $list = db('qrcode')->where( $where )->select();
+            $list = db('qrcode')->where($where)->select();
             $str = "<input type='radio' title='不定额测试' lay-filter='randM'  name='mt' checked value='0'>";
-            foreach ( $list as $key => $val ){
-                $str .= "<input type='radio' data-price='".$val['price']."' title='定额测试(&yen;".$val['price'].")' name='mt' lay-filter='randM' value='".$val['id']."'>";
+            foreach ($list as $key => $val) {
+                $str .= "<input type='radio' data-price='" . $val['price'] . "' title='定额测试(&yen;" . $val['price'] . ")' name='mt' lay-filter='randM' value='" . $val['id'] . "'>";
             }
-            $this->success( $str );
+            $this->success($str);
         }
-        $this->error( "请求方式错误");
+        $this->error("请求方式错误");
     }
 }
