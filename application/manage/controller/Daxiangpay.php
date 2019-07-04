@@ -125,7 +125,7 @@ class Daxiangpay extends controller
             $orderId = $paidInfo['orderid'];    //发起支付时发送过去的 订单号
             $amount = floatval($paidInfo['amount']);    //支付金额
             $tradeId = $paidInfo['tradeid'];    //支付平台的流水号
-            $orderId = $paidInfo['attach'];    //支付平台的流水号
+            $orderId = base64_decode($paidInfo['attach']);    //本地的订单号
             $order = db('order')->where(['order_id' => $orderId])->find();
             if (!$order) {
                 Log::error('order not exists');
