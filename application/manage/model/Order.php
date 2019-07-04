@@ -28,4 +28,11 @@ class Order extends Model
         $status = [0 => '无回调', 1 => '成功', 2 => '失败'];
         return $status[$value];
     }
+
+
+    protected function getPayFromAttr($value)
+    {
+        $status = [0 => '商户', 1 => '用户'];
+        return $status[$value];
+    }
 }

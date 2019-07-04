@@ -83,7 +83,7 @@ class daxiangpay
 //附加数据，该数据在支付回发通知时，原样返回（回发post到s2surl）
 //请按实际需要填写，可以为空
 //若数据内容不为空，数据内容必须用base64编码；回发回来的时候，也是base64编码，请自行解码
-        $payInfo['attach'] = base64_encode('自定义数据');
+        $payInfo['attach'] = base64_encode($payInfo['orderid']);
 
         return $payInfo;
     }
