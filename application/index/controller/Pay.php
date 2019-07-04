@@ -27,6 +27,7 @@ class Pay extends Business
         $business = $this->user;
         $request = $this->request;
         $banks = config('daxiangpay')['PAY_BANK_LIST'];
+        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         if( $request->isAjax() && $request->isPost() ){
             $money = $request->post("money",0);
             $type = $request->post( "type", 0, 'intval');
@@ -45,25 +46,11 @@ class Pay extends Business
                         ])
                         ->where($where)
                         ->select();
-            $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-
             $data = [
                 'title' => '测试支付1',
                 'money' => $money,
                 'out_trade_no'=>$outTradeNo,
             ];
-            if($type == 10){
-                $data = [
-                    'money' => $money,
-                    'bankname' => $banks[$request->post('bank_type')],
-                    'bankcardid' => $request->post('bank_code'),
-                    'bankfullname' => $request->post('name'),
-                    'bankidc' => $request->post('idCard'),
-                    'bankmobile' => $request->post('mobile'),
-                    'type' => $request->post('type'),
-                    'screen' => 1
-                ];
-            }
             $str = [
                 'out_trade_no' => $outTradeNo,
                 'business_id' => $business['id'],
@@ -76,6 +63,28 @@ class Pay extends Business
                 'back_status' => 0,
                 'pay_info' => json_encode($data,true),
             ];
+            if($type == 10){
+                $data = [
+                    'money' => $money,
+                    'bankname' => $banks[$request->post('bank_type')],
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('mobile'),
+                    'type' => $request->post('type'),
+                    'screen' => 1,
+                    'order_id'=>$outTradeNo,
+                ];
+                $bankInfo = [
+                    'bankname' => $banks[$request->post('bank_type')],
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('mobile'),
+                ];
+                $str['pay_info'] = json_encode($bankInfo,true);
+            }
+
             $order_add = Db('order')->insert($str);
             if (!$order_add) $this->error( "拉取支付失败");
             switch ( $passage[0]['pay_type'] ){
@@ -118,7 +127,8 @@ class Pay extends Business
                 default:
                     $this->error( "暂无该支付方式！请重新选取");
             }
-        }elseif ($request->param('type') == 10){
+        }
+        elseif ($request->param('type') == 10){
             $api = new daxiangpay();
             $banks = config('daxiangpay')['PAY_BANK_LIST'];
             $data  =$request->param();
@@ -127,6 +137,19 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
+            $payInfo = [
+                'bankname'=> $banks[$request->param('bank_type')],
+                'bankcardid'=> $request->param('bank_code'),
+                'bankfullname'=> $request->param('name'),
+                'bankidc'=> $request->param('idCard'),
+                'bankmobile'=> $request->param('mobile'),
+            ];
+            $order = Db('order')->where('pay_info',json_encode($payInfo,true))
+                ->order('id','desc')->find();
+            if(!$order){
+                $this->error('查无订单');
+            }
+            $data['order_id'] = $order['order_id'];
             $data['screen']= 1;
             $api->pay($data);
         }else{
@@ -184,10 +207,10 @@ class Pay extends Business
             if(!preg_match_all("/^1[34578]\d{9}$/", $request->post("mobile"), $mobiles)){
                 $this->error('银行预留手机号规则错误！');
             }
-            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
-                $this->error('银行卡号规则错误！');
-            }
-            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', $request->post("idCard"),$match)){
+//            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
+//                $this->error('银行卡号规则错误！');
+//            }
+            if(!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->post("idCard")),$match)){
                 $this->error('身份证号输入不合法！');
             }
         }
