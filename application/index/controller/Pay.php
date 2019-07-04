@@ -56,7 +56,7 @@ class Pay extends Business
                 'business_id' => $business['id'],
                 'order_id' => $outTradeNo,
                 'user_passageway_id' => $passage['0']['id'],
-                'pay_from' => 1,
+                'pay_from' => ismobile()?2:1,
                 'amount' => $money,
                 'create_time' => time(),
                 'status' => 3,
