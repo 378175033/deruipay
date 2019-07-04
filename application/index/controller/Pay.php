@@ -51,19 +51,6 @@ class Pay extends Business
                 'money' => $money,
                 'out_trade_no'=>$outTradeNo,
             ];
-            if($type == 10){
-                $data = [
-                    'money' => $money,
-                    'bankname' => $banks[$request->post('bank_type')],
-                    'bankcardid' => $request->post('bank_code'),
-                    'bankfullname' => $request->post('name'),
-                    'bankidc' => $request->post('idCard'),
-                    'bankmobile' => $request->post('mobile'),
-                    'type' => $request->post('type'),
-                    'screen' => 1,
-                    'order_id'=>$outTradeNo,
-                ];
-            }
             $str = [
                 'out_trade_no' => $outTradeNo,
                 'business_id' => $business['id'],
@@ -76,6 +63,28 @@ class Pay extends Business
                 'back_status' => 0,
                 'pay_info' => json_encode($data,true),
             ];
+            if($type == 10){
+                $data = [
+                    'money' => $money,
+                    'bankname' => $banks[$request->post('bank_type')],
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('mobile'),
+                    'type' => $request->post('type'),
+                    'screen' => 1,
+                    'order_id'=>$outTradeNo,
+                ];
+                $bankInfo = [
+                    'bankname' => $banks[$request->post('bank_type')],
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('mobile'),
+                ];
+                $str['pay_info'] = json_encode($bankInfo,true);
+            }
+
             $order_add = Db('order')->insert($str);
             if (!$order_add) $this->error( "拉取支付失败");
             switch ( $passage[0]['pay_type'] ){
@@ -128,8 +137,12 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
+            $order = Db('order')->where('pay_info',json_encode($data,true))->find();
+            if(!$order){
+                $this->error('查无订单');
+            }
+            $data['order_id'] = $order['order_id'];
             $data['screen']= 1;
-            $data['order_id'] = $outTradeNo;
             $api->pay($data);
         }else{
             //获取支付通道
