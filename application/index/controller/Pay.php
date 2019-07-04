@@ -61,7 +61,8 @@ class Pay extends Business
                     'bankidc' => $request->post('idCard'),
                     'bankmobile' => $request->post('mobile'),
                     'type' => $request->post('type'),
-                    'screen' => 1
+                    'screen' => 1,
+                    'order_id'=>$outTradeNo,
                 ];
             }
             $str = [
