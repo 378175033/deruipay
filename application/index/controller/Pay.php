@@ -57,7 +57,7 @@ class Pay extends Business
                 'business_id' => $business['id'],
                 'order_id' => $outTradeNo,
                 'user_passageway_id' => $passage['0']['id'],
-                'pay_from' => ismobile()?2:1,
+                'pay_from' => 0,
                 'amount' => $money,
                 'create_time' => time(),
                 'status' => 3,
@@ -73,7 +73,7 @@ class Pay extends Business
                     'bankidc' => $request->post('idCard'),
                     'bankmobile' => $request->post('mobile'),
                     'type' => $request->post('type'),
-                    'screen' => 1,
+                    'screen' => ismobile()?2:1,
                     'order_id' => $outTradeNo,
                 ];
             }
@@ -135,7 +135,7 @@ class Pay extends Business
                 $this->error('查无订单');
             }
             $data['order_id'] = $order['order_id'];
-            $data['screen'] = 1;
+            $data['screen'] = ismobile()?2:1;
             Log::info($data);
             $api->pay($data);
         } else {
