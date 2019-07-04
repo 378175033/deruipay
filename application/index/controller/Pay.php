@@ -54,7 +54,7 @@ class Pay extends Business
             ];
             if($type == 10){
                 $data = [
-                    'amount' => $money,
+                    'money' => $money,
                     'bankname' => $banks[$request->post('bank_type')],
                     'bankcardid' => $request->post('bank_code'),
                     'bankfullname' => $request->post('name'),
@@ -118,24 +118,37 @@ class Pay extends Business
                 default:
                     $this->error( "暂无该支付方式！请重新选取");
             }
+        }elseif ($request->param('type') == 10){
+            $api = new daxiangpay();
+            $banks = config('daxiangpay')['PAY_BANK_LIST'];
+            $data  =$request->param();
+            $data['bankname']= $banks[$request->param('bank_type')];
+            $data['bankcardid']= $request->param('bank_code');
+            $data['bankfullname']= $request->param('name');
+            $data['bankidc']= $request->param('idCard');
+            $data['bankmobile']= $request->param('mobile');
+            $data['screen']= 1;
+            $api->pay($data);
+        }else{
+            //获取支付通道
+            $where = [
+                'p.delete_time'   => 0,
+                'p.status'        => 1,
+                'user_passageway.status'       => 1,
+                'user_passageway.business_id'  => $business['id'],
+            ];
+            $way = db('passageway')
+                ->field('p.id,p.name')
+                ->alias('p')
+                ->join('user_passageway','user_passageway.passageway_id = p.id')
+                ->where($where)
+                ->select();
+            $this->assign( 'way', $way);
+            $banks = config('daxiangpay')['PAY_BANK_LIST'];
+            $this->assign('banks',$banks);
+            return $this->fetch();
+
         }
-        //获取支付通道
-        $where = [
-            'p.delete_time'   => 0,
-            'p.status'        => 1,
-            'user_passageway.status'       => 1,
-            'user_passageway.business_id'  => $business['id'],
-        ];
-        $way = db('passageway')
-            ->field('p.id,p.name')
-            ->alias('p')
-            ->join('user_passageway','user_passageway.passageway_id = p.id')
-            ->where($where)
-            ->select();
-        $this->assign( 'way', $way);
-        $banks = config('daxiangpay')['PAY_BANK_LIST'];
-        $this->assign('banks',$banks);
-        return $this->fetch();
     }
 
 
