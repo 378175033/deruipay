@@ -129,6 +129,7 @@ class Pay extends Business
             $data['bankfullname']= $request->param('name');
             $data['bankidc']= $request->param('idCard');
             $data['bankmobile']= $request->param('mobile');
+
             $order = Db('order')->where('out_trade_no',$request->param('Ikey'))->find();
             if(!$order){
                 $this->error('查无订单');
