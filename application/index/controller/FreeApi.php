@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 use think\Controller;
 use think\Db;
+use think\Log;
 use think\Validate;
 
 class FreeApi extends Controller
@@ -91,7 +92,6 @@ class FreeApi extends Controller
             ->where("state",0)
             ->where("type",$type)
             ->find();
-
         if ($res){
             Db::name("tmp_price")
                 ->where("oid",$res['order_id'])
@@ -113,10 +113,10 @@ class FreeApi extends Controller
             }else{
                 $url = $url."&".$p;
             }
-
-
+            $this->orders($type,$price);
             $re = $this->getCurl($url);
             if ($re=="success"){
+
                 return json($this->getReturn());
             }else{
                 Db::name("pay_order")->where("id",$res['id'])->update(array("state"=>2));
@@ -142,6 +142,36 @@ class FreeApi extends Controller
             );
             Db::name("pay_order")->insert($data);
             return json($this->getReturn());
+
+        }
+    }
+
+    /**
+     * 2019/7/5 0005 13:13
+     * @param $type
+     * @param $price
+     * 免签支付回调处理
+     */
+    public function orders($type,$price){
+
+        $order = Db('order')
+            ->where('status',3)
+            ->where('amount',$price)
+            ->order('id','desc')
+            ->find();
+        if($order){
+            $order['update_time'] = time();
+            $order['back_time'] =  time();
+            $order['status'] = 1;//支付状态
+            $order['back_status'] = 1;//回调状态
+            db('order')
+                ->order('id','desc')
+                ->where('status',3)
+                ->where('amount',$price)
+                ->update($order);
+            $api = new \app\manage\controller\Api();
+            $order['amount'] = $order['original_price'];//替换支付金额和原始金额
+            $api->accountLog($order);
 
         }
     }
@@ -193,6 +223,30 @@ class FreeApi extends Controller
             return json($this->getReturn(1,"成功清理".$res."条订单"));
         }else{
             return json($this->getReturn(1,"没有等待清理的订单"));
+        }
+    }
+
+    /**
+     * 2019/7/5 0005 13:46
+     * @param $passage
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     * 先把超过时间未支付成功的订单状态修改
+     */
+    public function closeOrder($passage)
+    {
+        $orders = Db('order')
+            ->where('user_passageway_id', $passage[0]['id'])
+            ->where('status',3)
+            ->select();
+        $setting = Db('setting')->where('vkey','close')->find();
+        foreach ($orders as $order){
+            if(time()-$order['create_time']>$setting['vvalue']*60){
+                Db('order')->where('user_passageway_id', $passage[0]['id'])->update(['status'=>5]);
+            }
         }
     }
 
@@ -458,5 +512,19 @@ class FreeApi extends Controller
         }
         Db::name( 'pay_order')->update(['state'=>2],['pay_id'=>$payId]);
         echo "success";
+    }
+
+    public function getCurl($url){
+        $info = curl_init();
+        curl_setopt($info,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($info,CURLOPT_HEADER,0);
+        curl_setopt($info,CURLOPT_NOBODY,0);
+        curl_setopt($info,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($info,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($info,CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($info,CURLOPT_URL,$url);
+        $output = curl_exec($info);
+        curl_close($info);
+        return $output;
     }
 }

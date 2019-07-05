@@ -77,7 +77,17 @@ class Pay extends Controller
                     'order_id' => $outTradeNo,
                 ];
             }
-
+            if($type == 11 || $type == 12){
+                $freeApi = new FreeApi();
+                $freeApi->closeOrder($passage);
+                $count = Db('order')->whereIn('user_passageway_id',$passage[0]['id'])->where('status',3)->count();
+                $str['original_price'] = $money;
+                $pay_money = $money-rand(1,5)/100*$count;
+                if($pay_money<=0){
+                    $pay_money = 0.01;
+                }
+                $str['amount'] = $pay_money;
+            }
             $order_add = Db('order')->insert($str);
             if (!$order_add) $this->error("拉取支付失败");
             switch ($passage[0]['pay_type']) {
