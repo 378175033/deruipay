@@ -14,7 +14,14 @@
         width: 24%;
         text-align: center;
     }
+    .fast-action li a i{
+        display: block;
+        height: 70px;
+        line-height: 70px;
+        font-size: 48px;
+    }
 </style>
+<link rel="stylesheet" href="http://at.alicdn.com/t/font_1283160_phlqj68hbw.css">
 <div class="layui-container mt20">
     <div class="layui-row">
         <div class="layui-col-md9 layui-card">
@@ -22,14 +29,29 @@
             <div class="layui-card-body">
                 <ul class="fast-action">
                     <li>
-                        <a href="">
-                            <i class="layui-icon layui-icon-eye"></i>
+                        <a href="{:url('order/index')}">
+                            <i class="fa fa-icon-test"></i>
                             <span>订单查看</span>
                         </a>
                     </li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
+                    <li>
+                        <a href="{:url('withdraw/index')}">
+                            <i class="fa fa-shenhe"></i>
+                            <span>提现订单</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:url('Notice/index')}">
+                            <i class="fa fa-gonggao"></i>
+                            <span>系统公告</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:url('business/index')}">
+                            <i class="fa fa-Business-Man"></i>
+                            <span>商户管理</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
