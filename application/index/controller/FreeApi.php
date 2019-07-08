@@ -36,8 +36,9 @@ class FreeApi extends Controller
      */
     public function appHeart(){
         $this->closeEndOrder();
-        $res2 = Db::name("setting")->where("vkey","key")->find();
-        $key = $res2['vvalue'];
+        $key = getSetting('key');
+//        $res2 = Db::name("setting")->where("vkey","key")->find();
+//        $key = $res2['vvalue'];
         $t = input("t");
         $_sign = $t.$key;
         if (md5($_sign)!=input("sign")){
@@ -66,9 +67,11 @@ class FreeApi extends Controller
      */
     public function appPush()
     {
+        Log::info($this->request->param());
         $this->closeEndOrder();
-        $res2 = Db::name("setting")->where("vkey","key")->find();
-        $key = $res2['vvalue'];
+//        $res2 = Db::name("setting")->where("vkey","key")->find();
+//        $key = $res2['vvalue'];
+        $key = getSetting('key');
         $t = input("t");
         $type = input("type");
         $price = input("price");
@@ -100,8 +103,8 @@ class FreeApi extends Controller
 
             $url = $res['notify_url'];
 
-            $res2 = Db::name("setting")->where("vkey","key")->find();
-            $key = $res2['vvalue'];
+//            $res2 = Db::name("setting")->where("vkey","key")->find();
+//            $key = $res2['vvalue'];
 
             $p = "payId=".$res['pay_id']."&param=".$res['param']."&type=".$res['type']."&price=".$res['price']."&reallyPrice=".$res['really_price'];
 
@@ -115,7 +118,6 @@ class FreeApi extends Controller
             }
             $this->orders($type,$price);
             $re = $this->getCurl($url);
-            $this->success("cc","index/pay/pay_success");
             if ($re=="success"){
 
                 return json($this->getReturn());
@@ -154,27 +156,29 @@ class FreeApi extends Controller
      * 免签支付回调处理
      */
     public function orders($type,$price){
-
-        $order = Db('order')
-            ->where('status',3)
-            ->where('amount',$price)
-            ->order('id','desc')
-            ->find();
-        if($order){
-            $data['update_time'] = time();
-            $data['back_time'] =  time();
-            $data['status'] = 1;//支付状态
-            $data['back_status'] = 1;//回调状态
-            db('order')
-                ->order('id','desc')
-                ->where('status',3)
-                ->where('amount',$price)
-                ->update($data);
-            $api = new \app\manage\controller\Api();
-            $order['amount'] = $order['original_price'];//替换支付金额和原始金额
-            $api->accountLog($order);
-
+        $tmpPrice = Db::name('tmp_price')->where('price',$price*"100".'-'.$type)->find();
+        if(!$tmpPrice){
+            $this->error('查无数据');
         }
+        $order = db('order')
+            ->where('status',3)
+            ->where('order_id',$tmpPrice['oid'])
+            ->find();
+        if(!$order){
+            $this->error('查无订单信息');
+        }
+        $data['update_time'] = time();
+        $data['back_time'] =  time();
+        $data['status'] = 1;//支付状态
+        $data['back_status'] = 1;//回调状态
+        db('order')
+            ->where('status',3)
+           ->where('order_id',$tmpPrice['oid'])
+            ->update($data);
+        $api = new \app\manage\controller\Api();
+        $api->accountLog($order);
+
+
     }
 
     /**
@@ -190,14 +194,16 @@ class FreeApi extends Controller
      * @return \think\response\Json
      */
     public function closeEndOrder(){
-        $res = Db::name("setting")->where("vkey","lastheart")->find();
-        $lastheart = $res['vvalue'];
+//        $res = Db::name("setting")->where("vkey","lastheart")->find();
+//        $lastheart = $res['vvalue'];
+        $lastheart =getSetting('lastheart');
         if ((time()-$lastheart)>60){
             Db::name("setting")->where("vkey","jkstate")->update(array("vvalue"=>0));
         }
-        $time = Db::name("setting")->where("vkey", "close")->find();
+        //$time = Db::name("setting")->where("vkey", "close")->find();
+        $time = getSetting('close');
 
-        $closeTime = time()-60*$time['vvalue'];
+        $closeTime = time()-60*$time;
         $close_date = time();
         $res = Db::name("pay_order")
             ->where("create_date <=".$closeTime)
@@ -243,9 +249,9 @@ class FreeApi extends Controller
             ->where('user_passageway_id', $passage[0]['id'])
             ->where('status',3)
             ->select();
-        $setting = Db('setting')->where('vkey','close')->find();
+        $time = getSetting('close');
         foreach ($orders as $order){
-            if(time()-$order['create_time']>$setting['vvalue']*60){
+            if(time()-$order['create_time']>$time*60){
                 Db('order')->where('user_passageway_id', $passage[0]['id'])->update(['status'=>5]);
             }
         }
@@ -278,31 +284,36 @@ class FreeApi extends Controller
      * @throws \think\exception\PDOException
      * @return \think\response\Json
      */
-    public function createOrder()
+    public function createOrder($data)
     {
         $this->closeEndOrder();
         $this->checkParam();
-        $key = Db::name("setting")->where("vkey", "key")->value('vvalue');
-        $notify_url = Db::name("setting")->where("vkey", "notifyUrl")->value('vvalue');
-        $return_url = Db::name("setting")->where("vkey", "returnUrl")->value('vvalue');
+        $key = getSetting('key');
+        $notify_url = getSetting('notifyUrl');
+        $return_url = getSetting('returnUrl');
+//        $key = Db::name("setting")->where("vkey", "key")->value('vvalue');
+//        $notify_url = Db::name("setting")->where("vkey", "notifyUrl")->value('vvalue');
+//        $return_url = Db::name("setting")->where("vkey", "returnUrl")->value('vvalue');
         $_sign = md5($this->payId . $this->param . $this->type . $this->price . $key);
 //        $_sign = $this->payId . $this->param . $this->type . $this->price . $key;
         if ($this->sign != $_sign) {
             $this->error( "签名错误！");
         }
-        $jkstate = Db::name("setting")->where("vkey", "jkstate")->find();
-        $jkstate = $jkstate['vvalue'];
+        $jkstate = getSetting('jkstate');
+//        $jkstate = Db::name("setting")->where("vkey", "jkstate")->find();
+        //$jkstate = $jkstate['vvalue'];
         if ($jkstate!="1"){
             $this->error( "监控端状态异常，请检查！");
         }
         $reallyPrice = bcmul($this->price ,100);
-        $payQf = Db::name("setting")->where("vkey", "payQf")->find();
-        $payQf = $payQf['vvalue'];
+        $payQf = getSetting('payQf');
+        //$payQf = Db::name("setting")->where("vkey", "payQf")->find();
+        //$payQf = $payQf['vvalue'];
         $orderId = date("YmdHms") . rand(1, 9) . rand(1, 9) . rand(1, 9) . rand(1, 9);
         $ok = false;
         for ($i = 0; $i < 10; $i++) {
             $tmpPrice = $reallyPrice . "-" . $this->type;
-            $row = Db::name( "tmp_price")->insert( [ "price"=> $tmpPrice, "oid" => $orderId]);
+            $row = Db::name( "tmp_price")->insert( [ "price"=> $tmpPrice, "oid" => $data['out_trade_no']]);
             if ($row) {
                 $ok = true;
                 break;
@@ -318,11 +329,13 @@ class FreeApi extends Controller
         }
         $reallyPrice = bcdiv($reallyPrice, 100,2);
         if ($this->type == 1) {
-            $payUrl = Db::name("setting")->where("vkey", "wxpay")->find();
-            $payUrl = $payUrl['vvalue'];
+            $payUrl = getSetting('wxpay');
+//            $payUrl = Db::name("setting")->where("vkey", "wxpay")->find();
+            //$payUrl = $payUrl['vvalue'];
         } else if ($this->type == 2) {
-            $payUrl = Db::name("setting")->where("vkey", "zfbpay")->find();
-            $payUrl = $payUrl['vvalue'];
+            $payUrl = getSetting('zfbpay');
+            //$payUrl = Db::name("setting")->where("vkey", "zfbpay")->find();
+            //$payUrl = $payUrl['vvalue'];
         }
         if ($payUrl == "") {
             $this->error( "请您先进入后台配置程序");
@@ -346,7 +359,7 @@ class FreeApi extends Controller
             "create_date" => $createDate,
             "is_auto" => $isAuto,
             "notify_url" => $notify_url,
-            "order_id" => $orderId,
+            "order_id" => $data['out_trade_no'],
             "param" => $this->param,
             "pay_date" => 0,
             "pay_id" => $this->payId,
@@ -362,22 +375,21 @@ class FreeApi extends Controller
             return $this->fetch();
 //            echo "<script>window.location.href = 'payPage/pay.html?orderId=" . $orderId . "'</script>";
         } else {
-            $time = Db::name("setting")->where("vkey", "close")->find();
             $data = array(
                 "payId" => $this->payId,
-                "orderId" => $orderId,
+                "orderId" => $data['out_trade_no'],
                 "payType" => $this->type,
                 "price" => $this->price,
                 "reallyPrice" => $reallyPrice,
                 "payUrl" => $payUrl,
                 "isAuto" => $isAuto,
                 "state" => 0,
-                "timeOut" => $time['vvalue'],
+                "timeOut" => getSetting(),//过期时间
                 "date" => $createDate
             );
             //todo 整合当前order表与pay_order表
             $code = "<img src='/manage/Pay_modl/enQrcode?url=".$payUrl."'>";
-            $msg = ['msg'=>$code,'time'=> closeDown()];
+            $msg = ['msg'=>$code,'time'=> getSetting()];
             $this->success( $msg,'', $code);
         }
     }
@@ -404,7 +416,8 @@ class FreeApi extends Controller
 
         $res = Db::name("pay_order")->where("order_id", input("orderId"))->find();
         if ($res){
-            $time = Db::name("setting")->where("vkey", "close")->find();
+            $time = getSetting('close');
+//            $time = Db::name("setting")->where("vkey", "close")->find();
 
             $data = array(
                 "payId" => $res['pay_id'],
@@ -415,7 +428,7 @@ class FreeApi extends Controller
                 "payUrl" => $res['pay_url'],
                 "isAuto" => $res['is_auto'],
                 "state" => $res['state'],
-                "timeOut" => $time['vvalue'],
+                "timeOut" => $time,
                 "date" => $res['create_date']
             );
             return json($this->getReturn(1, "成功", $data));
@@ -434,9 +447,9 @@ class FreeApi extends Controller
             if ($res['state']==-1){
                 return json($this->getReturn(-1, "订单已过期"));
             }
-
-            $res2 = Db::name("setting")->where("vkey","key")->find();
-            $key = $res2['vvalue'];
+            $key = getSetting('key');
+//            $res2 = Db::name("setting")->where("vkey","key")->find();
+            //$key = $res2['vvalue'];
 
             $res['price'] = number_format($res['price'],2,".","");
             $res['really_price'] = number_format($res['really_price'],2,".","");
@@ -472,7 +485,8 @@ class FreeApi extends Controller
      */
     public function returnInfo()
     {
-        $key = Db::name("setting")->where("vkey","key")->value( 'vvalue');//通讯密钥
+        $key = getSetting('key');
+        //$key = Db::name("setting")->where("vkey","key")->value( 'vvalue');//通讯密钥
         $payId = $_GET['payId'];//商户订单号
         $param = $_GET['param'];//创建订单的时候传入的参数
         $type = $_GET['type'];//支付方式 ：微信支付为1 支付宝支付为2
@@ -499,7 +513,8 @@ class FreeApi extends Controller
      */
     public function notify()
     {
-        $key = Db::name("setting")->where("vkey","key")->value( 'vvalue');//通讯密钥
+        $key = getSetting('key');
+        //$key = Db::name("setting")->where("vkey","key")->value( 'vvalue');//通讯密钥
         $payId = $_GET['payId'];//商户订单号
         $param = $_GET['param'];//创建订单的时候传入的参数
         $type = $_GET['type'];//支付方式 ：微信支付为1 支付宝支付为2

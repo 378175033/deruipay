@@ -53,7 +53,7 @@ function generate16Num()
  * 2019/7/8 0008 10:43
  * 过期时间查询
  */
-function closeDown(){
-    $setting = DB('setting')->where('vkey','close')->find();
+function getSetting($vlaue='close'){
+    $setting = DB('setting')->where('vkey',$vlaue)->find();
     return $setting['vvalue'];
 }

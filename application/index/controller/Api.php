@@ -144,7 +144,7 @@ class Api extends Controller
         $api->sign = md5($payId.$param.$type.$money.$key);
         $this->is_Html = "";
 //        $api->sign = $payId.$param.$type.$money.$key;
-        $res = $api->createOrder();
+        $res = $api->createOrder($data);
         $this->error( $res );
     }
 }
