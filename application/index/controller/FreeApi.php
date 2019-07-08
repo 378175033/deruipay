@@ -160,15 +160,15 @@ class FreeApi extends Controller
             ->order('id','desc')
             ->find();
         if($order){
-            $order['update_time'] = time();
-            $order['back_time'] =  time();
-            $order['status'] = 1;//支付状态
-            $order['back_status'] = 1;//回调状态
+            $data['update_time'] = time();
+            $data['back_time'] =  time();
+            $data['status'] = 1;//支付状态
+            $data['back_status'] = 1;//回调状态
             db('order')
                 ->order('id','desc')
                 ->where('status',3)
                 ->where('amount',$price)
-                ->update($order);
+                ->update($data);
             $api = new \app\manage\controller\Api();
             $order['amount'] = $order['original_price'];//替换支付金额和原始金额
             $api->accountLog($order);
