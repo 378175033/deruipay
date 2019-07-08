@@ -57,7 +57,7 @@ final class QrReader
 
     public $result;
 
-    function __construct($imgsource, $sourcetype = QrReader::SOURCE_TYPE_FILE, $isUseImagickIfAvailable = true)
+    function __construct($imgsource, $sourcetype = QrReader::SOURCE_TYPE_FILE, $isUseImagickIfAvailable = false)
     {
 
         try {

@@ -24,6 +24,6 @@ class Index extends Manage
 
     public function welcome()
     {
-        echo 123;
+        return $this->fetch();
     }
 }
