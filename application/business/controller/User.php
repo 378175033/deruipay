@@ -26,6 +26,35 @@ class User extends Business
      */
     public function profile()
     {
+        if( $this->request->isAjax() && $this->request->isPost() ){
+            $act = $this->request->param('act', '');
+            if( empty( $act ) ){
+                $this->error( "请求方式错误！");
+            }
+            switch ( $act ){
+                case 'ckPass'://校验原密码
+                    $value = $this->request->param('value','');
+                    if( compare_password( $this->user['password'],$value, $this->user['salt'] ) ){
+                        $this->success("密码一致");
+                    }
+                    $this->error("与原密码不一致请重新输入！");
+                    break;
+                case 'rePass'://重新设置密码
+                    $password = $this->request->param('value','');
+                    if( !preg_match('/^\w{6,12}$/', $password) ){
+                        $this->error( "请输入6-12位由数字字母下划线组成的密码！");
+                    }
+                    $data['salt'] = getSalt();
+                    $data['password'] = encode_password( $password, $data['salt'] );
+                    $id = $this->user['id'];
+                    $res = $this->model->allowField(['password','salt'])->save($data,['id'=>$id]);
+                    if( $res ){
+                        $this->success( "密码设置成功！");
+                    }
+                    $this->error( "数据写入错误！");
+                    break;
+            }
+        }
         return $this->fetch();
     }
 
