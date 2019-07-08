@@ -220,7 +220,6 @@ class Api extends Controller
             db('order')->where(['out_trade_no' => $param['out_trade_no']])->update($order);
             //支付成功的逻辑
             $this->accountLog($order);
-            $this->success('cc','index/pay/pay_success');
             return 'success';
 
         }else{
