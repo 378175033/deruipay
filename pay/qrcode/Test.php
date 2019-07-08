@@ -8,7 +8,7 @@ class Test{
     public function index( $data )
     {
         ini_set ('memory_limit', '256M');
-        if(!isset($_SESSION['think'])){
+        if( !session( "?userInfo")){
             echo "error";
             exit();
         }
