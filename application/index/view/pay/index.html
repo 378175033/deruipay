@@ -12,32 +12,13 @@
         .layui-layer-msg{
             display: none;
         }
-        .layui-bank,.bankContent{
+        .layui-bank,.bankContent,.bank_pay{
             display: none;
         }
     </style>
 </head>
 <body>
     <form class="layui-form" style="width: 95%;margin: 60px auto">
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">姓名：</label>
-            <div class="layui-input-block">
-                <input type="text" name="name"  lay-verify="name" placeholder="请输入姓名"  class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">手机号：</label>
-            <div class="layui-input-block">
-                <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">身份证号码：</label>
-            <div class="layui-input-block">
-                <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
-            </div>
-        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
             <div class="layui-input-block">
@@ -53,6 +34,24 @@
                     <option value="{$w.id}">{$w.name}</option>
                     {/volist}
                 </select>
+            </div>
+        </div>
+        <div class="layui-form-item bankContent">
+            <label class="layui-form-label">姓名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="name"  lay-verify="name" placeholder="请输入姓名"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item bankContent">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-block">
+                <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item bankContent">
+            <label class="layui-form-label">身份证号码：</label>
+            <div class="layui-input-block">
+                <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" id="moreType" style="display: none">
@@ -80,6 +79,10 @@
             </div>
         </div>
         <input type="text" class="Ikey" name="Ikey" lay-verify="Ikey" style="display: none">
+        <div class="layui-form-item" id="time" style="text-align: center;display: none">
+            <strong id="minute_show">00分</strong>
+            <strong id="second_show">00秒</strong>
+        </div>
         <div class="layui-card">
             <div class="layui-card-body" style="text-align: center">
             </div>
@@ -150,28 +153,29 @@
                                 toastr.error( "请选择银行" );
                                 return "请选择银行";
                             }
+                        },
+                        name:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入姓名" );
+                                return "请输入姓名";
+                            }
+                        },
+                        mobile:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入手机号" );
+                                return "请输入手机号";
+                            }
+                        },
+                        idCard:function ( value ) {
+                            if( value === ""){
+                                toastr.error( "请输入身份证号码" );
+                                return "请输入身份证号码";
+                            }
                         }
                     })
                 }
             },
-            name:function ( value ) {
-                if( value === ""){
-                    toastr.error( "请输入姓名" );
-                    return "请输入姓名";
-                }
-            },
-            mobile:function ( value ) {
-                if( value === ""){
-                    toastr.error( "请输入手机号" );
-                    return "请输入手机号";
-                }
-            },
-            idCard:function ( value ) {
-                if( value === ""){
-                    toastr.error( "请输入身份证号码" );
-                    return "请输入身份证号码";
-                }
-            }
+
 
         });
         form.on('select(type)', function(data){
@@ -205,11 +209,14 @@
         });
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
-                console.log( res )
                 if( res.code === 1 ){
+                    if(data.field.type == 11 || data.field.type == 12){
+                        $('#time').css('display','block');
+                        timer(res.msg.time*60);
+                    }
                     $('.layui-card-body').html( res.data );
                 } else {
-                    toastr.error( res.msg )
+                    toastr.error( res.msg.msg )
                 }
             });
             if(data.field.type != 10){
@@ -217,6 +224,31 @@
             }
 
         });
+
+        function timer(intDiff){
+            window.setInterval(function(){
+                var day=0,
+                    hour=0,
+                    minute=0,
+                    second=0;//时间默认值       
+                if(intDiff > 0){
+                    day = Math.floor(intDiff / (60 * 60 * 24));
+                    hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+                    minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+                    second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+                }
+                if (minute <= 9) minute = '0' + minute;
+                if (second <= 9) second = '0' + second;
+                if(minute ==0 && second == 0){
+                    $('#time').css('display','none');
+                    $('.layui-card-body').css('display','none');
+                }
+                $('#minute_show').html('<s></s>'+minute+'分');
+                $('#second_show').html('<s></s>'+second+'秒');
+
+                intDiff--;
+            }, 1000);
+        }
     });
 </script>
 </html>

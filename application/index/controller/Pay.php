@@ -260,4 +260,11 @@ class Pay extends Controller
         }
         $this->error("请求方式错误");
     }
+
+    public function pay_success()
+    {
+        dump(123);
+        die;
+        //$this->fetch();
+    }
 }

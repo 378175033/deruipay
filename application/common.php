@@ -48,3 +48,12 @@ function generate16Num()
     $uid = date('Ymd') . str_pad(mt_rand(1, 99999), 8,mt_rand(1, 99999), STR_PAD_LEFT);
     return $uid;
 }
+
+/**
+ * 2019/7/8 0008 10:43
+ * 过期时间查询
+ */
+function closeDown(){
+    $setting = DB('setting')->where('vkey','close')->find();
+    return $setting['vvalue'];
+}

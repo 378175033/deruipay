@@ -115,6 +115,7 @@ class FreeApi extends Controller
             }
             $this->orders($type,$price);
             $re = $this->getCurl($url);
+            $this->success("cc","index/pay/success");
             if ($re=="success"){
 
                 return json($this->getReturn());
@@ -376,7 +377,8 @@ class FreeApi extends Controller
             );
             //todo 整合当前order表与pay_order表
             $code = "<img src='/manage/Pay_modl/enQrcode?url=".$payUrl."'>";
-            $this->success( $code,'', $code);
+            $msg = ['msg'=>$code,'time'=> closeDown()];
+            $this->success( $msg,'', $code);
         }
     }
     public function checkParam()
