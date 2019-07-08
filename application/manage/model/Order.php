@@ -46,4 +46,13 @@ class Order extends Model
         return $value;
     }
 
+
+    public function getBusinessIdAttr($value){
+       $business = Db::name('business')->field(['id','name'])->find($value);
+       if($business){
+           return $business['name'];
+       }
+       return $value;
+    }
+
 }
