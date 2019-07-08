@@ -95,15 +95,16 @@ function msg( $msg = '', $status = 0, $url = '')
 }
 
 /**
- * 2019/6/6 0006 13:28
- * @desc 获取IP的真实地址
- * @$ip 默认为空，IP地址
+ * @desc
+ * Created by PhpStorm
+ * User: zhaolan
+ * Date: 2019/7/8 0008 16:30
+ * @param string $ip
+ * @return mixed
  */
-function GetIpLookup(){
-//    $ip = '125.70.179.81';
-    $ip = request()->ip();
+function GetIpLookup( $ip = ""){
     if(empty($ip)){
-        return '请输入IP地址';
+        $ip = request()->ip();
     }
     $ak = "M7kfUpOtIIYGY4uS6M1KD13sw0y2yUyT";
     $url = "http://api.map.baidu.com/location/ip?ip=".$ip."&ak=".$ak;
