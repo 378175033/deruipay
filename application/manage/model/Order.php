@@ -7,6 +7,7 @@
  */
 
 namespace app\manage\model;
+use think\Db;
 use think\Model;
 
 
@@ -35,4 +36,14 @@ class Order extends Model
         $status = [0 => '商户', 1 => '用户'];
         return $status[$value];
     }
+    public function getUserPassagewayIdAttr($value){
+
+        $userPassageway = Db::name('user_passageway')->where('id',$value)->find();
+        if($userPassageway){
+            $passageway = Db::name('passageway')->find($userPassageway['passageway_id']);
+            return $passageway['name'];
+        }
+        return $value;
+    }
+
 }

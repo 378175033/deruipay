@@ -9,6 +9,7 @@
 namespace app\manage\controller;
 
 use app\common\controller\Manage;
+use think\Db;
 
 /**
  * @desc 后端首页
@@ -85,9 +86,10 @@ class Order extends Manage
             !empty($business_id) && $where['business_id'] = $business_id;
             $passageway_id = $this->request->param('passageway_id');
             if (!empty($passageway_id)) {
-                $passageway = model('user_passageway')->where(['passageway_id' => $passageway_id])->field("business_id")->select();
+                $passageway = model('user_passageway')->where(['passageway_id' => $passageway_id])->field(["id","business_id"])->select();
                 if (!empty($passageway)) {
                     $where['business_id'] = ['in', array_column($passageway, 'business_id')];
+                    $where['user_passageway_id'] = ['in', array_column($passageway, 'id')];
                 } else {
                     $this->error('通道错误');
                 }
@@ -111,7 +113,7 @@ class Order extends Manage
             ];
             $this->success('获取成功！', '', $data);
         }
-        $passageway_list = controller('PayModl')->get4select();
+        $passageway_list = Db::name('passageway')->field(['id','name'])->select();
         $this->assign('passageway_list', $passageway_list);
         return $this->fetch();
     }

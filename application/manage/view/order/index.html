@@ -52,8 +52,8 @@
                 <div class="layui-input-inline">
                     <select name="passageway_id" lay-search="">
                         <option value="">选取通道</option>
-                        {volist name="passageway_list" key="k" id="passageway"}
-                        <option value="{$k}">{$k}.{$passageway}</option>
+                        {volist name="passageway_list"  id="passageway"}
+                        <option value="{$passageway.id}">{$passageway.name}</option>
                         {/volist}
                     </select>
                 </div>
@@ -137,7 +137,7 @@
                     {field: 'bank_id', title: '银行id'},
                     {field: 'batch', title: '订单流水号'},
                     {field: 'order_id', title: '订单编号'},
-                    {field: 'name', title: '用户通道编号'},
+                    {field: 'user_passageway_id', title: '用户通道'},
                     {field: 'business_id', title: '商户id'},
                     {field: 'amount', title: '金额'},
                     {field: 'commission', title: '费率'},
@@ -158,7 +158,7 @@
                 statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
             },
             parseData: function (res) { //res 即为原始返回的数据
-                console.log(res)
+                console.log(res.data.list);
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
