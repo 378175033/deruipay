@@ -115,7 +115,7 @@ class FreeApi extends Controller
             }
             $this->orders($type,$price);
             $re = $this->getCurl($url);
-            $this->success("cc","index/pay/success");
+            $this->success("cc","index/pay/pay_success");
             if ($re=="success"){
 
                 return json($this->getReturn());
