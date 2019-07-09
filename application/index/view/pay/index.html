@@ -218,18 +218,20 @@
         });
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
-                clearInterval(status);
-                status = setInterval(function(){
-                    $.post('/status',{Ikey:data.field.Ikey},function (res) {
-                        console.log( res );
-                        if(res.code === 1){
-                            layer.msg( "支付成功！");
-                            setTimeout(function () {
-                                location.href = res.url;
-                            },1500)
-                        }
-                    })
-                },3000);
+                if(data.field.type == 11 || data.field.type == 12){
+                    clearInterval(status);
+                    status = setInterval(function(){
+                        $.post('/status',{Ikey:data.field.Ikey},function (res) {
+                            console.log( res );
+                            if(res.code === 1){
+                                layer.msg( "支付成功！");
+                                setTimeout(function () {
+                                    location.href = res.url;
+                                },1500)
+                            }
+                        })
+                    },3000);
+                }
                 if( res.code === 1 ){
                     if(data.field.type == 11 || data.field.type == 12){
                         $('#time').css('display','block');
