@@ -25,6 +25,13 @@ class Order extends Model
         return $status[$value];
     }
 
+
+    protected function getBackStatusAttr($value)
+    {
+        $status = [0 => '无回调', 1 => '成功', 2 => '失败'];
+        return $status[$value];
+    }
+
     public function getUserPassagewayIdAttr($value){
 
         $userPassageway = Db::name('user_passageway')->where('id',$value)->find();
@@ -42,5 +49,16 @@ class Order extends Model
             return $business['name'];
         }
         return $value;
+    }
+
+
+    public function getBackTimeAttr($value){
+        if($value){
+            $value = date('Y-m-d H:i:s',$value);
+            return $value;
+       }
+
+       return null;
+
     }
 }

@@ -32,6 +32,7 @@ class Order extends Business
         {
             $page = $this->request->param('page', 1, 'intval');
             $per = $this->request->param('limit', 10, 'intval');
+            $passageway_id = $this->request->param('passageway_id');
             $where = [
                 'a.business_id'   => $this->user['id'],
                 'a.delete_time'   => 0
@@ -52,6 +53,16 @@ class Order extends Business
                 $stime = strtotime($stime);
                 $where['a.create_time'] = ['between', [$stime, $ltime]];
             }
+
+            if (!empty($passageway_id)) {
+                $passageway = db('user_passageway')->where(['passageway_id' => $passageway_id])->field(["id","business_id"])->select();
+                if (!empty($passageway)) {
+                    $where['a.business_id'] = ['in', array_column($passageway, 'business_id')];
+                    $where['a.user_passageway_id'] = ['in', array_column($passageway, 'id')];
+                } else {
+                    $this->error('通道错误');
+                }
+            }
             //订单支付方式筛选
             $way = $this->request->param('way', 0, 'intval');
             if( !empty( $way ) ) $where['p.id'] = $way;
@@ -64,7 +75,7 @@ class Order extends Business
             $join = [
                 [$this->pre."passageway p",'p.id = a.user_passageway_id', 'left'],
             ];
-            $field = "a.id,p.name,a.create_time,a.order_id,a.batch,a.amount,a.commission,a.service_charges,a.pay_time,a.status,a.user_passageway_id,a.business_id,a.pay_from";
+            $field = "a.id,p.name,a.create_time,a.order_id,a.batch,a.amount,a.commission,a.service_charges,a.pay_time,a.status,a.user_passageway_id,a.business_id,a.pay_from,a.back_time,a.back_status";
             $list = $this->model
                 ->alias( "a")
                 ->field( $field )
@@ -85,8 +96,8 @@ class Order extends Business
             'delete_time'   => 0,
             'status'        => 1
         ];
-        $way = db( "passageway")->field('id,name')->where( $where )->select();
-        $this->assign( 'way', $way);
+        $passageway_list = db( "passageway")->field('id,name')->where( $where )->select();
+        $this->assign( 'passageway_list', $passageway_list);
         return $this->fetch();
     }
 

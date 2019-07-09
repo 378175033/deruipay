@@ -12,6 +12,17 @@
                     <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
                 </div>
             </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">通道</label>
+                <div class="layui-input-inline">
+                    <select name="passageway_id" lay-search="">
+                        <option value="">选取通道</option>
+                        {volist name="passageway_list"  id="passageway"}
+                        <option value="{$passageway.id}">{$passageway.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">
                 <i class="layui-icon layui-icon-search"></i>查询
             </button>
@@ -78,7 +89,7 @@
                     {field: 'create_time', title: '创建时间'},
                     {field: 'pay_from', title: '付款人'},
                     //{field: 'pay_info', title: '付款信息'},
-                    {field: 'pay_time', title: '付款时间'},
+                    //{field: 'pay_time', title: '付款时间'},
                     {field: 'status', title: '订单状态'},
                     {field: 'back_time', title: '回调时间'},
                     //{field: 'back_info', title: ' 回调信息'},
