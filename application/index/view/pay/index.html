@@ -97,6 +97,7 @@
         </div>
 
         <input type="text" id="clock" size="35" style="display: none"/>
+        <div class="video"></div>
     </form>
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
@@ -222,6 +223,8 @@
                     $.post('/status',{Ikey:data.field.Ikey},function (res) {
                         console.log( res );
                         if(res.code === 1){
+                            $('.video').html('<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>');
+                            clearInterval(status);
                             layer.msg( "支付成功！");
                             setTimeout(function () {
                                 location.href = res.url;
