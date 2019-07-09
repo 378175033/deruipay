@@ -143,8 +143,6 @@ class Api extends Controller
         $key = getSetting('key');
         $api->param = $param;
         $api->sign = md5($payId.$param.$type.$money.$key);
-        Log::info('签名1');
-        Log::info($payId.'-'.$param.'-'.$type.'-'.$money.'-'.$key);
         $this->is_Html = "";
 //        $api->sign = $payId.$param.$type.$money.$key;
         $res = $api->createOrder($data);
