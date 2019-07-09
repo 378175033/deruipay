@@ -191,6 +191,11 @@
                 $(".layui-bank").hide();
                 $(".bankContent").hide();
             }
+            if(data.value != 11 || data.value != 12){
+                $('#time').hide();
+            }else{
+                $('#time').show();
+            }
             $.post( "{:url('freeList')}",{id:data.value},function (res) {
                 if( res.code === 1 ){
                     $('#moreType').show().find('.layui-input-block').html( res.msg );
@@ -233,7 +238,12 @@
                     }
                     $('.layui-card-body').html( res.data );
                 } else {
-                    toastr.error( res.msg.msg )
+                    if(res.msg.msg){
+                        toastr.error( res.msg.msg )
+                    }else{
+                        toastr.error( res.msg )
+                    }
+
                 }
             });
             if(data.field.type != 10){
