@@ -47,8 +47,9 @@ class Pay extends Controller
                 ])
                 ->where($where)
                 ->select();
+            $name = Db::name('business')->where('id',$business)->value('name');
             $data = [
-                'title' => $business['name'],
+                'title' => $name,
                 'money' => $money,
                 'out_trade_no' => $outTradeNo,
             ];
