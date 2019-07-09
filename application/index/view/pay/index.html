@@ -127,6 +127,7 @@
     }
 
     var ot = "";
+    var status = "";
     layui.use(['form'], function() {
         var form = layui.form;
         var flag = true;
@@ -206,7 +207,6 @@
             })
         });
         form.on('radio(randM)', function(data){
-            console.log( data.elem.dataset.price )
             if( data.value === "0" ){
                 $('#money').attr( 'readonly', false);
             } else {
@@ -216,9 +216,9 @@
         });
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
-                window.clearInterval(data.field.Ikey);
-                setInterval(function() {
-                    $.post('index/pay/orderStatus',{Ikey:data.field.Ikey},function (res) {
+                clearInterval(status);
+                status = setInterval(function(){
+                    $.post('/status',{Ikey:data.field.Ikey},function (res) {
                         console.log( res );
                         if(res.code === 1){
                             layer.msg( "支付成功！");
