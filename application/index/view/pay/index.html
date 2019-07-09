@@ -18,6 +18,13 @@
     </style>
 </head>
 <body>
+    <div class="layui-container">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-col-md8"></div>
+            </div>
+        </div>
+    </div>
     <form class="layui-form" style="width: 95%;margin: 60px auto">
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
@@ -59,17 +66,7 @@
             <div class="layui-input-block">
             </div>
         </div>
-        <div class="layui-form-item layui-bank">
-            <label class="layui-form-label">银行</label>
-            <div class="layui-input-block">
-                <select name="bank_type" lay-verify="bank_type" lay-filter="bank_type">
-                    <option value="0">-请选择银行-</option>
-                    {volist name="banks" id="bank" key="key"}
-                    <option value="{$key}">{$bank}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
+
         <div class="layui-form-item bankContent">
             <div class="layui-form-item">
                 <label class="layui-form-label">银联卡号：</label>
@@ -102,181 +99,6 @@
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__TOASTR__/toastr.js"></script>
 <script>
-    function validationNumber(e, num) {
-        var regu = /^[0-9]+\.?[0-9]*$/;
-        if (e.value != "") {
-            if (!regu.test(e.value)) {
-                alert("请输入正确的数字");
-                e.value = e.value.substring(0, e.value.length - 1);
-                e.focus();
-            } else {
-                if (num == 0) {
-                    if (e.value.indexOf('.') > -1) {
-                        e.value = e.value.substring(0, e.value.length - 1);
-                        e.focus();
-                    }
-                }
-                if (e.value.indexOf('.') > -1) {
-                    if (e.value.split('.')[1].length > num) {
-                        e.value = e.value.substring(0, e.value.length - 1);
-                        e.focus();
-                    }
-                }
-            }
-        }
-    }
 
-    var ot = "";
-    var status = "";
-    layui.use(['form'], function() {
-        var form = layui.form;
-        var flag = true;
-        //自定义验证规则
-        form.verify({
-            money: function(value) {
-                if( value ===  "" ){
-                    toastr.error( "请输入支付金额" );
-                    return "请输入支付金额";
-                }
-            },
-            type:function ( value ) {
-                if( value === "0"){
-                    toastr.error( "请选择支付方式" );
-                    return "请选择支付方式";
-                }else if(value === "10"){
-                    form.verify({
-                        bank_code:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入银行卡号" );
-                                return "请输入银行卡号";
-                            }
-                        },
-                        bank_type:function ( value ) {
-                            if( value === "0"){
-                                toastr.error( "请选择银行" );
-                                return "请选择银行";
-                            }
-                        },
-                        name:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入姓名" );
-                                return "请输入姓名";
-                            }
-                        },
-                        mobile:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入手机号" );
-                                return "请输入手机号";
-                            }
-                        },
-                        idCard:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入身份证号码" );
-                                return "请输入身份证号码";
-                            }
-                        }
-                    })
-                }
-            },
-
-
-        });
-        form.on('select(type)', function(data){
-            var key = Math.random().toString(36).substr(2);
-            $('.Ikey').val(key);
-            if(data.value == 10){
-                $(".layui-bank").show();
-                $(".bankContent").show();
-
-            }else{
-                $(".layui-bank").hide();
-                $(".bankContent").hide();
-            }
-            if(data.value != 11 || data.value != 12){
-                $('#time').hide();
-            }else{
-                $('#time').show();
-            }
-            $.post( "{:url('freeList')}",{id:data.value},function (res) {
-                if( res.code === 1 ){
-                    $('#moreType').show().find('.layui-input-block').html( res.msg );
-                    form.render();
-                } else {
-                    $('#moreType').hide();
-                }
-            })
-        });
-        form.on('radio(randM)', function(data){
-            if( data.value === "0" ){
-                $('#money').attr( 'readonly', false);
-            } else {
-                var price = data.elem.dataset.price;
-                $('#money').attr( 'readonly', true).val( price );
-            }
-        });
-        form.on('submit(formDemo)', function(data){
-            $.post('',data.field,function (res) {
-                clearInterval(status);
-                status = setInterval(function(){
-                    $.post('/status',{Ikey:data.field.Ikey},function (res) {
-                        console.log( res );
-                        if(res.code === 1){
-                            layer.msg( "支付成功！");
-                            setTimeout(function () {
-                                location.href = res.url;
-                            },1500)
-                        }
-                    })
-                },3000);
-                if( res.code === 1 ){
-                    if(data.field.type == 11 || data.field.type == 12){
-                        $('#time').css('display','block');
-                        if( ot !== "" ){
-                            clearInterval( ot );
-                        }
-                        timer(res.msg.time*60);
-                    }
-                    $('.layui-card-body').html( res.data );
-                } else {
-                    clearInterval(status);
-                    clearInterval( ot );
-                    if(res.msg.msg){
-                        toastr.error( res.msg.msg )
-                    }else{
-                        toastr.error( res.msg )
-                    }
-
-                }
-            });
-            if(data.field.type != 10){
-                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-            }
-
-        });
-        function timer(intDiff){
-            ot = setInterval(function(){
-                var day=0,
-                    hour=0,
-                    minute=0,
-                    second=0;//时间默认值       
-                if(intDiff > 0){
-                    day = Math.floor(intDiff / (60 * 60 * 24));
-                    hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
-                    minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
-                    second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
-                }
-                if (minute <= 9) minute = '0' + minute;
-                if (second <= 9) second = '0' + second;
-                if(minute ==0 && second == 0){
-                    $('#time').css('display','none');
-                    $('.layui-card-body').css('display','none');
-                }
-                $('#minute_show').html('<s></s>'+minute+'分');
-                $('#second_show').html('<s></s>'+second+'秒');
-
-                intDiff--;
-            }, 1000);
-        }
-    });
 </script>
 </html>
