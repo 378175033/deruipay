@@ -171,7 +171,7 @@ class Api extends Controller
         // 识别正确返回语音二进制 错误则返回json 参照下面错误码
         if(!is_array($result)){
             file_put_contents('audio.mp3', $result);
-//            echo '<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>';
+            echo '<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>';
         }
     }
 }

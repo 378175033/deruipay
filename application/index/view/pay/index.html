@@ -97,7 +97,6 @@
         </div>
 
         <input type="text" id="clock" size="35" style="display: none"/>
-        <div class="video"></div>
     </form>
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
@@ -218,20 +217,19 @@
         });
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
-                if(data.field.type == 11 || data.field.type == 12){
-                    clearInterval(status);
-                    status = setInterval(function(){
-                        $.post('/status',{Ikey:data.field.Ikey},function (res) {
-                            console.log( res );
-                            if(res.code === 1){
-                                layer.msg( "支付成功！");
-                                setTimeout(function () {
-                                    location.href = res.url;
-                                },1500)
-                            }
-                        })
-                    },3000);
-                }
+                clearInterval(status);
+                status = setInterval(function(){
+                    $.post('/status',{Ikey:data.field.Ikey},function (res) {
+                        console.log( res );
+                        if(res.code === 1){
+                            layer.msg( "支付成功！");
+                            setTimeout(function () {
+                                location.href = res.url;
+                            },1500)
+                        }
+                    })
+                },3000);
+
                 if( res.code === 1 ){
                     if(data.field.type == 11 || data.field.type == 12){
                         $('#time').css('display','block');
@@ -241,7 +239,6 @@
                         timer(res.msg.time*60);
                     }
                     $('.layui-card-body').html( res.data );
-                    $('.video').html('<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>');
 
                 } else {
                     clearInterval(status);

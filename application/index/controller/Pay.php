@@ -269,6 +269,8 @@ class Pay extends Controller
             $order = db('order')->where('out_trade_no',$this->request->param('Ikey'))->find();
             if($order){
                 if($order['status'] == 1){
+                    $api = new \app\index\controller\Api();
+                    $api->audio('你已收到'. $order['amount'].'元');
                     $this->success("成功！","");
                 }
                 $this->error("失败！");
