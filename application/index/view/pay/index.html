@@ -95,7 +95,9 @@
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
+
         <input type="text" id="clock" size="35" style="display: none"/>
+        <div class="video"></div>
     </form>
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
@@ -237,6 +239,8 @@
                         timer(res.msg.time*60);
                     }
                     $('.layui-card-body').html( res.data );
+                    $('.video').html('<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>');
+
                 } else {
                     clearInterval(status);
                     clearInterval( ot );
