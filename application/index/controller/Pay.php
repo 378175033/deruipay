@@ -48,7 +48,7 @@ class Pay extends Controller
                 ->where($where)
                 ->select();
             $data = [
-                'title' => '测试支付1',
+                'title' => $business['name'],
                 'money' => $money,
                 'out_trade_no' => $outTradeNo,
             ];
