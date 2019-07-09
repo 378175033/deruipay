@@ -238,6 +238,8 @@
                     }
                     $('.layui-card-body').html( res.data );
                 } else {
+                    clearInterval(status);
+                    clearInterval( ot );
                     if(res.msg.msg){
                         toastr.error( res.msg.msg )
                     }else{
