@@ -64,7 +64,7 @@ class Order extends Business
             $join = [
                 [$this->pre."passageway p",'p.id = a.user_passageway_id', 'left'],
             ];
-            $field = "a.id,p.name,a.create_time,a.order_id,a.batch,a.amount,a.commission,a.service_charges,a.pay_time,a.status";
+            $field = "a.id,p.name,a.create_time,a.order_id,a.batch,a.amount,a.commission,a.service_charges,a.pay_time,a.status,a.user_passageway_id,a.business_id,a.pay_from";
             $list = $this->model
                 ->alias( "a")
                 ->field( $field )
