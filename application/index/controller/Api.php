@@ -158,7 +158,7 @@ class Api extends Controller
      * @param string $text
      * @return bool
      */
-    public function audio( $text = "未定义支付方式")
+    public function audio($text = "未定义支付方式")
     {
         if( empty( $text ) ) return false;
         $appId = '16746355';

@@ -220,6 +220,8 @@ class Api extends Controller
             db('order')->where(['order_id' => $param['out_trade_no']])->update($order);
             //支付成功的逻辑
             $this->accountLog($order);
+            $api = new \app\index\controller\Api();
+            $api->audio('你已收到'. $order['amount'].'元');
             return 'success';
 
         }else{
