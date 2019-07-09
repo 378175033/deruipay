@@ -8,6 +8,7 @@
 
 namespace app\index\controller;
 use think\Controller;
+use think\Log;
 
 class Api extends Controller
 {
@@ -142,6 +143,8 @@ class Api extends Controller
         $key = "ThisIsTest";
         $api->param = $param;
         $api->sign = md5($payId.$param.$type.$money.$key);
+        Log::info('签名1');
+        Log::info($api->sign);
         $this->is_Html = "";
 //        $api->sign = $payId.$param.$type.$money.$key;
         $res = $api->createOrder($data);
