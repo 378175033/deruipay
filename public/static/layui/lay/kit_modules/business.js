@@ -126,6 +126,12 @@ layui.define(mods,
                                 component: "business/user/profile",
                                 name: "账户信息",
                                 iframe: !0
+                            },
+                            {
+                                path: "/index/pay",
+                                component: "/index/pay/index",
+                                name: "我的收银台",
+                                iframe: !0
                             }
                         ]
                     };
