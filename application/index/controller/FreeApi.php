@@ -152,6 +152,10 @@ class FreeApi extends Controller
         if(!$tmpPrice){
             $this->error('查无数据');
         }
+
+        Db::name("tmp_price")
+            ->where('price',$price*"100".'-'.$type)
+            ->delete();
         $order = db('order')
             ->where('status',3)
             ->where('order_id',$tmpPrice['oid'])
