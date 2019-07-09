@@ -27,6 +27,7 @@ class Pay extends Controller
     {
 
         $this->assign('way', model('passageway')->getList() );
+
         return $this->fetch();
     }
 //    public function index()
