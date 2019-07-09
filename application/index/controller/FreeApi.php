@@ -284,7 +284,7 @@ class FreeApi extends Controller
         $return_url = getSetting('returnUrl');
         $_sign = md5($this->payId . $this->param . $this->type . $this->price . $key);
         Log::info('签名2');
-        Log::info($_sign);
+        Log::info($this->payId .'-'. $this->param .'-'. $this->type .'-'. $this->price .'-'. $key);
 //        $_sign = $this->payId . $this->param . $this->type . $this->price . $key;
         if ($this->sign != $_sign) {
             $this->error( "签名错误！");
