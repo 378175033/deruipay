@@ -9,6 +9,7 @@
 namespace app\index\controller;
 use think\Controller;
 use think\Log;
+use pay\speech\AipSpeech;
 
 class Api extends Controller
 {
@@ -149,5 +150,30 @@ class Api extends Controller
 //        $api->sign = $payId.$param.$type.$money.$key;
         $res = $api->createOrder($data);
         $this->error( $res );
+    }
+
+    /**
+     * @desc
+     * Created by PhpStorm
+     * User: zhaolan
+     * Date: 2019/7/9 0009 16:33
+     * @param string $text
+     * @return bool
+     */
+    public function audio( $text = "未定义支付方式")
+    {
+        if( empty( $text ) ) return false;
+        $appId = '16746355';
+        $apiKey = 'GieVGuE4CX5t5FTgGympULhh';
+        $secretKey = '4mKwT1w8pWfEchsBgSB1Gn7lvrLfInvd';
+        $client = new AipSpeech( $appId, $apiKey, $secretKey);
+        $result = $client->synthesis($text, 'zh', 1, array(
+            'vol' => 5,
+        ));
+        // 识别正确返回语音二进制 错误则返回json 参照下面错误码
+        if(!is_array($result)){
+            file_put_contents('audio.mp3', $result);
+            echo '<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>';
+        }
     }
 }

@@ -93,6 +93,7 @@ class Index extends Manage
                     'status' => 1
                 ];
                 $list['finish'] = model( "order")->where( $where )->field( $field )->whereTime("create_time","-5 s")->find()['amount'];
+                $list['total'] = model( "order")->where( $where )->field( 'status,count(*) total,sum(amount) amount' )->whereTime("create_time","d")->find()['amount'];
             } else {
                 $time = date('-5s');
                 $field = "sum(amount) amount";
