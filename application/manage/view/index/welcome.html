@@ -20,6 +20,12 @@
         line-height: 70px;
         font-size: 48px;
     }
+    .order-list ul{
+        padding: 20px;
+    }
+    .order-list ul li{
+        line-height: 32px;
+    }
 </style>
 <link rel="stylesheet" href="http://at.alicdn.com/t/font_1283160_phlqj68hbw.css">
 <div class="layui-container mt20">
@@ -52,6 +58,39 @@
                             <span>商户管理</span>
                         </a>
                     </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-col-md3">
+
+        </div>
+    </div>
+</div>
+<div class="layui-container mt20">
+    <div class="layui-row">
+        <div class="layui-col-md9 layui-card">
+            <div class="layui-card-header">订单概况</div>
+            <div class="layui-card-body order-list">
+                <ul class="layui-col-md4">
+                    <li>今日订单数: <span> {$order.t.total}</span></li>
+                    <li>今日完成订单数: <span> {$order.t.finish}</span></li>
+                    <li>今日未完订单数: <span> {$order.t.unFinish}</span></li>
+                    <li>今日完成订单金额: <span> {$order.t.amount}</span></li>
+                    <li>今日未完成订单金额: <span> {$order.t.unAmount}</span></li>
+                </ul>
+                <ul class="layui-col-md4">
+                    <li>昨日订单数: <span> {$order.y.total}</span></li>
+                    <li>昨日完成订单数: <span> {$order.y.finish}</span></li>
+                    <li>昨日未完订单数: <span> {$order.y.unFinish}</span></li>
+                    <li>昨日完成订单金额: <span> {$order.y.amount}</span></li>
+                    <li>昨日未完成订单金额: <span> {$order.y.unAmount}</span></li>
+                </ul>
+                <ul class="layui-col-md4">
+                    <li>总订单数: <span> {$order.a.total}</span></li>
+                    <li>总完成订单数: <span> {$order.a.finish}</span></li>
+                    <li>总未完订单数: <span> {$order.a.unFinish}</span></li>
+                    <li>总完成订单金额: <span> {$order.a.amount}</span></li>
+                    <li>总未完成订单金额: <span> {$order.a.unAmount}</span></li>
                 </ul>
             </div>
         </div>

@@ -39,7 +39,8 @@
                 var cs = layer.load(2);
                 layer.prompt({
                     formType: 1,
-                    title: '请输入原密码'
+                    title: '请输入原密码',
+                    shade: 0
                 }, function(value, index, elem){
                     //判断原密码是否一致
                     $.post('',{act:'ckPass',value:value},function (res) {
@@ -47,7 +48,8 @@
                             layer.close(index);
                             layer.prompt({
                                 formType:1,
-                                title:'重新设置密码'
+                                title:'重新设置密码',
+                                shade: 0
                             },function ( value, index) {
                                 $.post("",{act:'rePass',value:value},function (res) {
                                     if( res.code === 1 ){
