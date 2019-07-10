@@ -42,6 +42,7 @@ class Index extends Business
         $loginLog = Db::name('login_log')->order('id','desc')->find();
         $loginLog['create_time'] = date('Y-m-d H:i:s',$loginLog['create_time']);
         $this->assign('logs',$loginLog);
+        $this->assign('frozen_money',$this->user['frozen_money']);
         return $this->fetch();
     }
 }
