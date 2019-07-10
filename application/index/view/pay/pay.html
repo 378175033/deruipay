@@ -1,10 +1,272 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>支付测试</title>
+    <link rel="stylesheet" href="__LAYUI__/css/layui.css">
+    <link rel="stylesheet" href="__TOASTR__/build/toastr.css">
+    <style>
+        .layui-card-body{
+            overflow: hidden;
+        }
+        .mt60{
+            margin-top: 60px;
+        }
+        .top-head{
+            border-radius: 15px;
+            padding: 0 30px;
+            overflow: hidden;
+        }
+        .top-head .layui-card-body{
+            line-height: 36px;
+            font-size: 16px;
+        }
+
+        .price{
+            color: #f00;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .th-t h3{
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .th-l ul li p{
+            border: 1px solid #aaa;
+            display: inline-block;
+            padding: 0 15px;
+            height: 40px;
+            line-height: 40px;
+        }
+        .th-l ul li p img{
+            width: 32px;
+            margin-top: -5px;
+        }
+        .th-l ul li p span{
+            font-size: 21px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        .qrcode{
+            text-align: center;
+            padding: 20px 0;
+            width: 200px;
+            margin: 0 auto;
+        }
+        .qrcode img{
+            width: 100%;
+        }
+        .qrcode div{
+            line-height: 26px;
+            background-color: #445F85;
+            color: #eee;
+            padding: 10px 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .banks li{
+            float: left;
+            width: 20%;
+            margin-bottom: 15px;
+        }
+        .mask{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba( 0,0,0,.6);
+            line-height: 180px;
+            display: none;
+        }
+        .banks li img{
+            width: 70%;
+            position: relative;
+            left: -15%;
+        }
+    </style>
 </head>
 <body>
+<div class="layui-container mt60 layui-form">
+    <div class="layui-card top-head">
+        <div class="layui-card-header th-t" >
+            <h3>订单确认信息</h3>
+        </div>
+        <div class="layui-card-body">
+            <div class="th-l layui-col-md6">
+                <ul>
+                    <li>
+                        支付平台：
+                        <p>
+                            <img src="/uploads/passageway/{$way.icon}" alt="">
+                            <span>{$way.name}</span>
+                        </p>
+                    </li>
+                    <li>
+                        付款金额：<span class="price">{$order.amount}元</span>
+                    </li>
+                    <li>
+                        订单编号：{$order.order_id}
+                    </li>
+                </ul>
+            </div>
+            <div class="layui-col-md6">
+                提示：为了使您正常的进行支付，请您注意以下几点
+                <br>
+                1.请在提交支付前关闭弹出窗口阻止功能。
+                <br>
+                2.请确定点击银行交易成功的返回按钮，否则交易可能无法完成
+            </div>
+        </div>
+    </div>
+    <div class="layui-card top-head">
+        <div class="layui-card-body layui-col-md12">
+            {if condition="$way.id eq 10"}
+            <form class="layui-form" action="{:url('unionpay')}">
+                <div class="layui-form-item layui-bank">
+                    <label class="layui-form-label">选择银行:</label>
+                    <div class="layui-input-block">
+                        <ul class="banks">
+                        {volist name="banks" id="bank" key="key"}
+                            <li>
+                                <label>
+                                    <input type="radio" name="banks" value="{$bank.name}">
+                                    <img src="{$bank.picture}" title="{$bank.name}">
+                                </label>
+                            </li>
+                        {/volist}
+                        </ul>
+                    </div>
+                </div>
+                <div class="layui-form-item bankContent">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银联卡号：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="bank_code"   lay-verify="bank_code" placeholder="请输入银联卡号"  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item bankContent">
+                    <label class="layui-form-label">姓名：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name"  lay-verify="name" placeholder="请输入姓名"  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item bankContent">
+                    <label class="layui-form-label">手机号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item bankContent">
+                    <label class="layui-form-label">身份证号码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="hidden" name="passageway" value="{$way.id}">
+                        <input type="hidden" name="amount" value="{$order.amount}">
+                        <input type="hidden" name="order_id" value="{$order.order_id}">
+                        <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo" >立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+            {elseif condition="$way.is_free eq 0"}
+            <div class="qrcode">
+                <div>
+                    <span class="miu"></span>
+                    <span>:</span>
+                    <span class="sec"></span>
+                </div>
+                <div style="background-color:#fff;position: relative">
+                    {$data.msg}
+                    <p class="mask">过期二维码</p>
+                </div>
+                <div>
+                    请使用{$way.name}扫描<br />二维码以完成支付
+                </div>
+            </div>
+            {else}
+                <div class="qrcode">
+                    <!--<img src="/uploads/passageway/{$way.icon}" alt="">-->
+                    {$data}
+                    <div>
+                        请使用{$way.name}扫描<br />二维码以完成支付
+                    </div>
+                </div>
+            {/if}
 
+        </div>
+    </div>
+</div>
 </body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__TOASTR__/toastr.js"></script>
+<script>
+    $('.banks img').click(function () {
+        $(this).siblings('.layui-form-radio').trigger('click');
+    })
+    var sta = '{$data.time}'*60;
+    var miu = parseInt(sta/60);
+    var sec = sta%60;
+    var index = setInterval( function () {
+
+        $('.miu').html( miu < 10 ? "0"+miu : miu);
+        $('.sec').html( sec < 10 ? "0"+sec : sec);
+        if( sec <= 0 ){
+            sec = 59;
+            miu--;
+            if( miu < 0 ){
+                clearInterval( index );
+                $('.mask').show();
+            }
+        } else {
+            sec--;
+        }
+    },1000);
+    $('.th-r input').blur(function () {
+        var v = $(this).val();
+        if( v === "") v = 0;
+        $('.price').html( parseFloat(v).toFixed(2) )
+    })
+    $('.cen-body ul li div').click( function () {
+        $('.cen-body ul li div.active').removeClass('active');
+        $('#type').val( $(this).data('id') );
+        $(this).addClass('active');
+    })
+    // 格式化限制数字文本框输入，只能数字或者两位小数
+    function format_input_num(obj){
+        // 清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/[^\d.]/g,"");
+        // 验证第一个字符是数字
+        obj.value = obj.value.replace(/^\./g,"");
+        // 只保留第一个, 清除多余的
+        obj.value = obj.value.replace(/\.{2,}/g,".");
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        // 只能输入两个小数
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+    }
+    layui.use(['form'], function() {
+        var form = layui.form;
+        form.on('submit(formDemo)', function(data) {
+            var s = data.field;
+            console.log( s )
+            $.post( "{:url('unionpay')}", s, function (res) {
+                if( res.code === 1 ){
+
+                } else {
+                    toastr.error( res.msg );
+                }
+            })
+        })
+    })
+</script>
 </html>

@@ -165,22 +165,23 @@ class Api extends Controller
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/service/AlipayTradeService.php";
         require_once dirname(dirname(dirname(dirname(__FILE__)))) . "/extend/alipay/f2fpay/qrpay_test.php";
         $orderTitel = $data['title'];
-        $goods = $data['money'];
-        $outTradeNo = $data['out_trade_no'];
+        $goods = $data['amount'];
+        $outTradeNo = $data['order_id'];
         $succ = pay_face($outTradeNo, $orderTitel, $goods, $config);
         if( ismobile() ){
             $succ = "<script> window.location.href='".$succ['url']."'</script>";
         } else {
             $succ = $succ['code'];
         }
+        return $succ;
         $this->success( "获取二维码成功！",'', $succ);
-        if ($succ != 1 && $succ != 3) {
-            $this->success('支付宝创建订单二维码成功', '', $succ);
-        } elseif ($succ == 1) {
-            $this->error('支付宝创建订单二维码失败', '');
-        } else {
-            $this->error('系统异常，状态未知!!', '');
-        }
+//        if ($succ != 1 && $succ != 3) {
+//            $this->success('支付宝创建订单二维码成功', '', $succ);
+//        } elseif ($succ == 1) {
+//            $this->error('支付宝创建订单二维码失败', '');
+//        } else {
+//            $this->error('系统异常，状态未知!!', '');
+//        }
     }
     /**
      * 支付宝回调

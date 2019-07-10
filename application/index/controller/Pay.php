@@ -33,84 +33,94 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isAjax() && $request->isPost()) {
+            $id =  $request->param('id',0,'intval');
+            if( empty( $id ) ) $this->error( "订单参数错误！");
             $this->verify($request, 'stage1');
-            if (!$up = $user_passageway->in($request->param('passageway'), $request->param('business_id'))) {
+            if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('未开通此通道');
             }
-            $this->success('订单创建成功', url('pay'), $request);
+            $data = $request->param();
+            $data['user_passageway_id'] = $up['id'];
+            $res = model( "Order")->allowField( true )->isUpdate( true )->save( $data );
+            if( $res ) {
+                $this->success('成功', url('pay',array( "id"=> $id )));
+            }
+            $this->error('系统繁忙，请稍后再试！');
         } else {
             $this->assign('way', $passageway->getList());
             if (!$order_id = $this->create_order($request)) {
                 $this->error('订单创建失败！');
             }
-            $this->assign('order_id', $order_id);
+            $order = Db::name('order')->where('order_id',$order_id)->field("id,order_id,title")->find();
+            $this->assign('order', $order);
             return $this->fetch();
         }
+    }
+
+    public function unionpay()
+    {
+        $request = request();
+        $data = [
+            'money' => $request->param('amount'),
+            'bankname' => $request->param('banks'),
+            'bankcardid' => $request->param('bank_code'),
+            'bankfullname' => $request->param('name'),
+            'bankidc' => $request->param('idCard'),
+            'bankmobile' => $request->param('mobile'),
+            'type' => $request->param('passageway'),
+            'screen' => ismobile() ? 2 : 1,
+            'order_id' => $request->param('order_id'),
+        ];
+        $api = new daxiangpay();
+        $api->pay($data);
     }
 
     public function pay()
     {
         $request = $this->request;
-        $this->verify($request, 'stage2');
-        // todo: 检查商户信息
+        $data = model('order')->find($request->param('id',0,'intval'));
+        if( empty( $data ) ) $this->error( "订单参数错误！");
+//        $this->verify($request, 'stage2');
         if ($request->isAjax() && $request->isPost()) {
-            if ($request->param('passageway', 0) == 10){
-                //跳转到银联
-                $banks = config('daxiangpay')['PAY_BANK_LIST'];
-                $data = [
-                    'money' => $request->param('amount'),
-                    'bankname' => $banks[$request->post('bank_type')],
-                    'bankcardid' => $request->post('bank_code'),
-                    'bankfullname' => $request->post('name'),
-                    'bankidc' => $request->post('idCard'),
-                    'bankmobile' => $request->post('mobile'),
-                    'type' => $request->post('type'),
-                    'screen' => ismobile() ? 2 : 1,
-                    'order_id' => $request->param('order_id'),
-                ];
-                $api = new daxiangpay();
-                $api->pay($data, false);
-            }
-        } else {
-            $data = [
-                'title' => '测试支付1',
-                'money' => $request->param('amount'),
-                'out_trade_no' => $request->param('order_id'),
+
+        } else{
+            $this->assign( 'order', $data);
+
+            $where = [
+                'id' => $data['user_passageway_id']
             ];
-            switch ($request->param('passageway', 0)) {
+            $passageway = model( 'UserPassageway')->where( $where )->value( "passageway_id");
+            $this->assign("way",model('passageway')->find( $passageway ) );
+            switch ( $passageway ) {
                 case 1:
                     $api = new \app\manage\controller\Api();
                     $res = $api->Face($data);
-                    if ($res['code'] == 1) {
-                        $this->success("获取二维码成功！", '', $res['data']);
-                    } else {
-                        $this->error($res['msg']);
-                    }
+                    $this->assign("data", $res);
+                    return $this->fetch();
                     break;
                 case 9:
                     return $this->fetch();
                     break;
                 case 10:
+                    $banks = Db::name( "banks")->where( "status = 1 and delete_time = 0 " )->select();
+                    $this->assign( "banks", $banks);
+                    return $this->fetch();
                     break;
                 case 11:
                     $data['type'] = "1";
                     $api = new Api();
                     $res = $api->free_pay($data);
-                    if ($res['code'] == 1) {
-                        $this->success("二维码获取成功！", '', $res['data']);
-                    } else {
-                        $this->error($res['msg']);
-                    }
+                    $res['name'] = "微信";
+                    $this->assign("data", $res);
+                    return $this->fetch();
                     break;
                 case 12:
                     $data['type'] = "2";
                     $api = new Api();
                     $res = $api->free_pay($data);
-                    if ($res['code'] == 1) {
-                        $this->success("二维码获取成功！", '', $res['data']);
-                    } else {
-                        $this->error($res['msg']);
-                    }
+                    $res['name'] = "支付宝";
+                    $this->assign("data", $res);
+                    return $this->fetch();
                     break;
                 default:
                     $this->error('通道错误！');
@@ -268,11 +278,12 @@ class Pay extends Controller
     {
         $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $str = [
-            'business_id' => $request->param('business_id'),
+            'business_id' => $this->business,
             'order_id' => $outTradeNo,
             'pay_from' => 1,
             'create_time' => time(),
             'status' => 3,
+            'title' => session("business")['name'],
             'back_status' => 0,
         ];
         if (Db('order')->insert($str)) {
