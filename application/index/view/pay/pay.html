@@ -190,7 +190,7 @@
                     <p class="mask">过期二维码</p>
                 </div>
                 <div>
-                    请使用{$way.name}扫描<br />二维码以完成支付
+                    请使用{$data.name}扫描<br />二维码以完成支付
                 </div>
             </div>
             {else}
@@ -211,10 +211,21 @@
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__TOASTR__/toastr.js"></script>
 <script>
+    setInterval(function(){
+        $.post('/status',{Ikey:'{$order.order_id}'},function (res) {
+            console.log( res );
+            if(res.code === 1){
+                layer.msg( "支付成功！");
+                setTimeout(function () {
+                    window.location.href = "{:url('Pay/spage')}";
+                },1500)
+            }
+        })
+    },3000);
     $('.banks img').click(function () {
         $(this).siblings('.layui-form-radio').trigger('click');
     })
-    var sta = '{$data.time}'*60;
+    var sta = '{$data.time|default="0"}'*60;
     var miu = parseInt(sta/60);
     var sec = sta%60;
     var index = setInterval( function () {

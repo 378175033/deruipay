@@ -372,7 +372,6 @@ class FreeApi extends Controller
                 "timeOut" => getSetting(),//过期时间
                 "date" => $createDate
             );
-            //todo 整合当前order表与pay_order表
             $code = "<img src='/manage/Pay_modl/enQrcode?url=".$payUrl."'>";
             $msg = ['msg'=>$code,'time'=> getSetting()];
             return $msg;
