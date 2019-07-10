@@ -19,6 +19,7 @@ use think\Validate;
 class Pay extends Controller
 {
     protected $business;
+
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
@@ -29,30 +30,92 @@ class Pay extends Controller
     {
         $passageway = new Passageway();
         $user_passageway = new UserPassageway();
-        $business = $this->business;
         $request = $this->request;
+        // todo: 检查商户信息
         if ($request->isAjax() && $request->isPost()) {
-            $w = $request->param("passageway",0,'intval');
-            if( empty(  $w ) ) $this->error("请选择支付方式！");
-            if($up = $user_passageway->in($request->param('passageway'), $business)){
-                $data['passageway'] = $up->business_id;
-                $data['up'] = $up->toArray();
-            }else{
-
-                return $this->error('未开通此通道');
+            $this->verify($request, 'stage1');
+            if (!$up = $user_passageway->in($request->param('passageway'), $request->param('business_id'))) {
+                $this->error('未开通此通道');
             }
-            $data['amount'] = $request->param('amount');
-            $this->verify($data, $data['passageway']);
-            $this->pay($data);
-        }else{
-            $this->assign('way', $passageway->getList() );
+            $this->success('订单创建成功', url('pay'), $request);
+        } else {
+            $this->assign('way', $passageway->getList());
+            if (!$order_id = $this->create_order($request)) {
+                $this->error('订单创建失败！');
+            }
+            $this->assign('order_id', $order_id);
             return $this->fetch();
         }
     }
 
-    public function pay($data)
+    public function pay()
     {
-        return $this->fetch();
+        $request = $this->request;
+        $this->verify($request, 'stage2');
+        // todo: 检查商户信息
+        if ($request->isAjax() && $request->isPost()) {
+            if ($request->param('passageway', 0) == 10){
+                //跳转到银联
+                $banks = config('daxiangpay')['PAY_BANK_LIST'];
+                $data = [
+                    'money' => $request->param('amount'),
+                    'bankname' => $banks[$request->post('bank_type')],
+                    'bankcardid' => $request->post('bank_code'),
+                    'bankfullname' => $request->post('name'),
+                    'bankidc' => $request->post('idCard'),
+                    'bankmobile' => $request->post('mobile'),
+                    'type' => $request->post('type'),
+                    'screen' => ismobile() ? 2 : 1,
+                    'order_id' => $request->param('order_id'),
+                ];
+                $api = new daxiangpay();
+                $api->pay($data, false);
+            }
+        } else {
+            $data = [
+                'title' => '测试支付1',
+                'money' => $request->param('amount'),
+                'out_trade_no' => $request->param('order_id'),
+            ];
+            switch ($request->param('passageway', 0)) {
+                case 1:
+                    $api = new \app\manage\controller\Api();
+                    $res = $api->Face($data);
+                    if ($res['code'] == 1) {
+                        $this->success("获取二维码成功！", '', $res['data']);
+                    } else {
+                        $this->error($res['msg']);
+                    }
+                    break;
+                case 9:
+                    return $this->fetch();
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    $data['type'] = "1";
+                    $api = new Api();
+                    $res = $api->free_pay($data);
+                    if ($res['code'] == 1) {
+                        $this->success("二维码获取成功！", '', $res['data']);
+                    } else {
+                        $this->error($res['msg']);
+                    }
+                    break;
+                case 12:
+                    $data['type'] = "2";
+                    $api = new Api();
+                    $res = $api->free_pay($data);
+                    if ($res['code'] == 1) {
+                        $this->success("二维码获取成功！", '', $res['data']);
+                    } else {
+                        $this->error($res['msg']);
+                    }
+                    break;
+                default:
+                    $this->error('通道错误！');
+            }
+        }
     }
 //    public function index()
 //    {
@@ -201,46 +264,62 @@ class Pay extends Controller
 //    }
 
 
-    public function verify($request, $type)
+    public function create_order(Request $request)
     {
-        $rule = [
-            'amount' => 'require|gt:0|number',
-            'passageway' => 'require|integer',
+        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
+        $str = [
+            'business_id' => $request->param('business_id'),
+            'order_id' => $outTradeNo,
+            'pay_from' => 1,
+            'create_time' => time(),
+            'status' => 3,
+            'back_status' => 0,
         ];
-        $field = [
-            'amount' => '支付金额',
-            'passageway' => '支付方式',
+        if (Db('order')->insert($str)) {
+            return $outTradeNo;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function verify(Request $request, $stage)
+    {
+        $type = $request->param('passageway');
+        $rule = [
+            'amount|支付金额' => 'require|gt:0|number',
+            'passageway|支付方式' => 'require|integer',
+        ];
+        $msg = [
+            'passageway.require' => '请选择支付方式！'
         ];
         if ($type == 10) {
-            $rule['bank_type'] = 'require';
-            $rule['bank_code'] = 'require|min:12';
-            $rule['name'] = 'require';
-            $rule['mobile'] = 'require|min:11|max:11';
-            $rule['idCard'] = 'require|min:15|max:18';
-
-            $field['bank_type'] = '银行名称';
-            $field['bank_code'] = '银行卡号';
-            $field['name'] = '开户人名称';
-            $field['mobile'] = '银行预留手机号';
-            $field['idCard'] = '身份证号码';
+            $rule['bank_type|银行名称'] = 'require';
+            $rule['bank_code|银行卡号'] = 'require|min:12';
+            $rule['name|开户人名称'] = 'require';
+            $rule['mobile|银行预留手机号'] = 'require|min:11|max:11';
+            $rule['idCard|身份证号码'] = 'require|min:15|max:18';
         }
 
-        $validate = new Validate($rule, [], $field);
-        $result = $validate->check($request);
+        $validate = new Validate($rule, $msg);
+        $validate->scene('stage1', ['amount', 'passageway']);
+        $validate->scene('stage2', ['amount', 'passageway', 'bank_type', 'bank_code', 'name', 'mobile', 'idCard']);
+        $result = $validate->scene($stage)->check($request->param());
         if (!$result) {
             $this->error($validate->getError());
         }
-        if ($type == 10) {
-            if (!preg_match_all("/^1[34578]\d{9}$/", $request["mobile"], $mobiles)) {
+        if ($type == 10 && $stage != 'stage1') {
+            if (!preg_match_all("/^1[34578]\d{9}$/", $request->param("mobile"), $mobiles)) {
                 $this->error('银行预留手机号规则错误！');
             }
 //            if(!preg_match('/^([1-9]{1})(\d{14}|\d{18})$/', $request->post("bank_code"),$match)){
 //                $this->error('银行卡号规则错误！');
 //            }
-            if (!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request["idCard"]), $match)) {
+            if (!preg_match('/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', trim($request->param("idCard")), $match)) {
                 $this->error('身份证号输入不合法！');
             }
         }
+        return $result;
     }
 
     /**
@@ -295,11 +374,11 @@ class Pay extends Controller
     public function orderStatus()
     {
         $Ikey = $this->request->param("Ikey");
-        if($Ikey){
-            $order = db('order')->where('out_trade_no',$this->request->param('Ikey'))->find();
-            if($order){
-                if($order['status'] == 1){
-                    $this->success("成功！","");
+        if ($Ikey) {
+            $order = db('order')->where('out_trade_no', $this->request->param('Ikey'))->find();
+            if ($order) {
+                if ($order['status'] == 1) {
+                    $this->success("成功！", "");
                 }
                 $this->error("失败！");
             }
