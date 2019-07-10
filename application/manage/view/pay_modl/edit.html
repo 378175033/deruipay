@@ -22,6 +22,13 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">通道图标</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="icon" placeholder="通道图标" id="input_upload" value="{$data.icon}" readonly>
+                    <a href="javascript:;" class="layui-btn layui-btn-xs" id="upload"><i class="layui-icon layui-icon-upload-drag"></i>上传图标</a>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">最小打款金额</label>
                 <div class="layui-input-block">
                     <input class="layui-input" name="mini" value="0.01" placeholder="最小打款金额" value="{$data.mini}">
@@ -48,8 +55,29 @@
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
-    layui.use(['form'], function() {
-        var form = layui.form
+    layui.use(['form','upload'], function() {
+        var form = layui.form,upload=layui.upload;
+        var uploadInst = upload.render({
+            elem: '#upload' //绑定元素
+            ,url: '{:url("Upload/upload")}' //上传接口
+            ,accept: 'images' //允许上传的文件类型
+            ,data : {"folder": "passageway"}//上传接口额外参数
+            ,size : 2048//设置文件最大可允许上传的大小，单位 KB
+            ,multiple: false//是否允许多文件上传。
+            ,acceptMime: 'image/*'//规定打开文件选择框时，筛选出的文件类型
+            //,size: 50 //最大允许上传的文件大小
+            ,done: function(res){
+                if( res.code === 1 ){
+                    $( '#input_upload').val( res.msg );
+                } else {
+                    toastr.error( res.msg )
+                }
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
         //自定义验证规则
         form.verify({
             name: function(value) {
