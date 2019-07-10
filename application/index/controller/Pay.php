@@ -85,7 +85,6 @@ class Pay extends Controller
 
         } else{
             $this->assign( 'order', $data);
-
             $where = [
                 'id' => $data['user_passageway_id']
             ];
@@ -273,6 +272,10 @@ class Pay extends Controller
 //        }
 //    }
 
+    public function spage()
+    {
+        return $this->fetch();
+    }
 
     public function create_order(Request $request)
     {
@@ -280,6 +283,7 @@ class Pay extends Controller
         $str = [
             'business_id' => $this->business,
             'order_id' => $outTradeNo,
+            'out_trade_no' => $outTradeNo,
             'pay_from' => 1,
             'create_time' => time(),
             'status' => 3,
