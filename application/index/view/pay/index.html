@@ -76,7 +76,7 @@
                     订单编号：E2019070917543787440
                 </div>
                 <div class="layui-col-md4 th-r">
-                    订单金额：<input type="text" name="price" class="layui-input" value="1.00" step="0.01" onkeyup="format_input_num( this )">元
+                    订单金额：<input type="text" name="amount" class="layui-input" value="1.00" step="0.01" onkeyup="format_input_num( this )">元
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
             <div class="layui-card-body">
                 <div class="layui-col-md12" style="text-align: right">
                     需支付：<span class="price">1.00</span>元
-                    <input type="hidden" name="type" id="type">
+                    <input type="hidden" name="passageway" id="type">
                     <button class="layui-btn" lay-submit lay-filter="formDemo" style="margin-left: 20px">立即支付</button>
                 </div>
             </div>
@@ -139,8 +139,8 @@
         var form = layui.form;
         form.on('submit(formDemo)', function(data) {
             var s = data.field;
-            s.flag = 1;
-            $.post( "{:url('index/check')}", s, function (res) {
+            // s.flag = 1;
+            $.post( "{:url('pay/index')}", s, function (res) {
                 console.log( res );
                 if( res.code === 1 ){
 

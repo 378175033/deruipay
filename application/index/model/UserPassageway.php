@@ -16,7 +16,7 @@ class UserPassageway extends Model{
         $condition = [
             'delete_time' => 0,
             'status' => 1,
-            'id' => $id,
+            'passageway_id' => $id,
             'business_id' => $business
         ];
         $res = $this->where( $condition )->find();

@@ -32,10 +32,13 @@ class Pay extends Controller
         $business = $this->business;
         $request = $this->request;
         if ($request->isAjax() && $request->isPost()) {
+            $w = $request->param("passageway",0,'intval');
+            if( empty(  $w ) ) $this->error("请选择支付方式！");
             if($up = $user_passageway->in($request->param('passageway'), $business)){
                 $data['passageway'] = $up->business_id;
                 $data['up'] = $up->toArray();
             }else{
+
                 return $this->error('未开通此通道');
             }
             $data['amount'] = $request->param('amount');
@@ -43,7 +46,6 @@ class Pay extends Controller
             $this->pay($data);
         }else{
             $this->assign('way', $passageway->getList() );
-
             return $this->fetch();
         }
     }
