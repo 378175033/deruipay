@@ -9,280 +9,147 @@
     <link rel="stylesheet" href="__LAYUI__/css/layui.css">
     <link rel="stylesheet" href="__TOASTR__/build/toastr.css">
     <style>
-        .layui-layer-msg{
-            display: none;
+        .layui-card-body{
+            overflow: hidden;
         }
-        .layui-bank,.bankContent,.bank_pay{
-            display: none;
+        .mt60{
+            margin-top: 60px;
+        }
+        .top-head{
+            border-radius: 15px;
+            padding: 0 30px;
+        }
+        .top-head .layui-card-body{
+            line-height: 36px;
+            font-size: 16px;
+        }
+        .th-r{
+            line-height: 72px
+        }
+        .th-r input{
+            width: 50%;
+            display: inline-block;
+            margin: 0 15px;
+            padding: 0 30px;
+        }
+        .cen-body{
+            margin: 30px auto;
+        }
+        .cen-body ul{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .cen-body ul li{
+            width: 16%;
+        }
+        .cen-body ul li div{
+            width: 100%;
+            text-align: center;
+            line-height: 60px;
+            border: 1px solid #aaa;
+            cursor: pointer;
+        }
+        .cen-body ul li div.active{
+            border-color: #1a8ae1;
+            box-shadow: 1px 1px 1px #1a8ae1;
+        }
+        .cen-body ul li div img{
+            width: 32px;
+            margin-right: 10px;
+        }
+        .price{
+            color: #f00;
+            font-weight: 700;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <form class="layui-form" style="width: 95%;margin: 60px auto">
-        <div class="layui-form-item">
-            <label class="layui-form-label">支付金额</label>
-            <div class="layui-input-block">
-                <input type="number" step="0.01" class="layui-input" name="money" id="money" placeholder="写入支付金额" lay-verify="money" onkeyup="validationNumber( this, 2)">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">支付方式</label>
-            <div class="layui-input-block">
-                <select name="type" lay-verify="type" lay-filter="type">
-                    <option value="0">-请选择支付方式-</option>
-                    {volist name="way" id="w"}
-                    <option value="{$w.id}">{$w.name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item bankContent">
-            <label class="layui-form-label">姓名：</label>
-            <div class="layui-input-block">
-                <input type="text" name="name"  lay-verify="name" placeholder="请输入姓名"  class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item bankContent">
-            <label class="layui-form-label">手机号：</label>
-            <div class="layui-input-block">
-                <input type="text" name="mobile"  lay-verify="mobile" placeholder="请输入手机号"  class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item bankContent">
-            <label class="layui-form-label">身份证号码：</label>
-            <div class="layui-input-block">
-                <input type="text" name="idCard"   lay-verify="idCard" placeholder="请输入身份证号码"  class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item" id="moreType" style="display: none">
-            <label class="layui-form-label">选择支付方式</label>
-            <div class="layui-input-block">
-            </div>
-        </div>
-        <div class="layui-form-item layui-bank">
-            <label class="layui-form-label">银行</label>
-            <div class="layui-input-block">
-                <select name="bank_type" lay-verify="bank_type" lay-filter="bank_type">
-                    <option value="0">-请选择银行-</option>
-                    {volist name="banks" id="bank" key="key"}
-                    <option value="{$key}">{$bank}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item bankContent">
-            <div class="layui-form-item">
-                <label class="layui-form-label">银联卡号：</label>
-                <div class="layui-input-block">
-                    <input type="text" name="bank_code"   lay-verify="bank_code" placeholder="请输入银联卡号"  class="layui-input">
+    <div class="layui-container mt60 layui-form">
+        <div class="layui-card top-head">
+            <div class="layui-card-body">
+                <div class="layui-col-md8">
+                    商品名称：测试订单
+                    <br />
+                    订单编号：E2019070917543787440
+                </div>
+                <div class="layui-col-md4 th-r">
+                    订单金额：<input type="text" name="amount" class="layui-input" value="1.00" step="0.01" onkeyup="format_input_num( this )">元
                 </div>
             </div>
         </div>
-        <input type="text" class="Ikey" name="Ikey" lay-verify="Ikey" style="display: none">
-        <div class="layui-form-item" id="time" style="text-align: center;display: none">
-            <strong id="minute_show">00分</strong>
-            <strong id="second_show">00秒</strong>
-        </div>
-        <div class="layui-card">
-            <div class="layui-card-body" style="text-align: center">
+        <div class="layui-card top-head">
+            <div class="layui-card-body">
+                <div class="layui-col-md12">
+                    支付方式
+                </div>
+                <div class="layui-col-md12 cen-body">
+                    <ul>
+                        {volist name="way" id="w"}
+                        <li>
+                            <div data-id="{$w.id}">
+                                <img src="/uploads/passageway/{$w.icon}" alt="">{$w.name}
+                            </div>
+                        </li>
+                        {/volist}
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <!--商户订单号-->
-                <input type="hidden" name="payId" value="{:time()}">
-                <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo" onclick="window.clearInterval()">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        <div class="layui-card top-head">
+            <div class="layui-card-body">
+                <div class="layui-col-md12" style="text-align: right">
+                    需支付：<span class="price">1.00</span>元
+                    <input type="hidden" name="passageway" id="type">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo" style="margin-left: 20px">立即支付</button>
+                </div>
             </div>
         </div>
-
-        <input type="text" id="clock" size="35" style="display: none"/>
-        <div class="video"></div>
-    </form>
+    </div>
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__TOASTR__/toastr.js"></script>
 <script>
-    function validationNumber(e, num) {
-        var regu = /^[0-9]+\.?[0-9]*$/;
-        if (e.value != "") {
-            if (!regu.test(e.value)) {
-                alert("请输入正确的数字");
-                e.value = e.value.substring(0, e.value.length - 1);
-                e.focus();
-            } else {
-                if (num == 0) {
-                    if (e.value.indexOf('.') > -1) {
-                        e.value = e.value.substring(0, e.value.length - 1);
-                        e.focus();
-                    }
-                }
-                if (e.value.indexOf('.') > -1) {
-                    if (e.value.split('.')[1].length > num) {
-                        e.value = e.value.substring(0, e.value.length - 1);
-                        e.focus();
-                    }
-                }
-            }
-        }
+    $('.th-r input').blur(function () {
+        var v = $(this).val();
+        if( v === "") v = 0;
+        $('.price').html( parseFloat(v).toFixed(2) )
+    })
+    $('.cen-body ul li div').click( function () {
+        $('.cen-body ul li div.active').removeClass('active');
+        $('#type').val( $(this).data('id') );
+        $(this).addClass('active');
+    })
+    // 格式化限制数字文本框输入，只能数字或者两位小数
+    function format_input_num(obj){
+        // 清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/[^\d.]/g,"");
+        // 验证第一个字符是数字
+        obj.value = obj.value.replace(/^\./g,"");
+        // 只保留第一个, 清除多余的
+        obj.value = obj.value.replace(/\.{2,}/g,".");
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        // 只能输入两个小数
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
     }
-
-    var ot = "";
-    var status = "";
     layui.use(['form'], function() {
         var form = layui.form;
-        var flag = true;
-        //自定义验证规则
-        form.verify({
-            money: function(value) {
-                if( value ===  "" ){
-                    toastr.error( "请输入支付金额" );
-                    return "请输入支付金额";
-                }
-            },
-            type:function ( value ) {
-                if( value === "0"){
-                    toastr.error( "请选择支付方式" );
-                    return "请选择支付方式";
-                }else if(value === "10"){
-                    form.verify({
-                        bank_code:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入银行卡号" );
-                                return "请输入银行卡号";
-                            }
-                        },
-                        bank_type:function ( value ) {
-                            if( value === "0"){
-                                toastr.error( "请选择银行" );
-                                return "请选择银行";
-                            }
-                        },
-                        name:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入姓名" );
-                                return "请输入姓名";
-                            }
-                        },
-                        mobile:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入手机号" );
-                                return "请输入手机号";
-                            }
-                        },
-                        idCard:function ( value ) {
-                            if( value === ""){
-                                toastr.error( "请输入身份证号码" );
-                                return "请输入身份证号码";
-                            }
-                        }
-                    })
-                }
-            },
-
-
-        });
-        form.on('select(type)', function(data){
-            var key = Math.random().toString(36).substr(2);
-            $('.Ikey').val(key);
-            if(data.value == 10){
-                $(".layui-bank").show();
-                $(".bankContent").show();
-
-            }else{
-                $(".layui-bank").hide();
-                $(".bankContent").hide();
-            }
-            if(data.value != 11 || data.value != 12){
-                $('#time').hide();
-            }else{
-                $('#time').show();
-            }
-            $.post( "{:url('freeList')}",{id:data.value},function (res) {
+        form.on('submit(formDemo)', function(data) {
+            var s = data.field;
+            // s.flag = 1;
+            $.post( "{:url('pay/index')}", s, function (res) {
+                console.log( res );
                 if( res.code === 1 ){
-                    $('#moreType').show().find('.layui-input-block').html( res.msg );
-                    form.render();
+
                 } else {
-                    $('#moreType').hide();
+                    toastr.error( res.msg );
                 }
             })
-        });
-        form.on('radio(randM)', function(data){
-            if( data.value === "0" ){
-                $('#money').attr( 'readonly', false);
-            } else {
-                var price = data.elem.dataset.price;
-                $('#money').attr( 'readonly', true).val( price );
-            }
-        });
-        form.on('submit(formDemo)', function(data){
-            $.post('',data.field,function (res) {
-                clearInterval(status);
-                status = setInterval(function(){
-                    $.post('/status',{Ikey:data.field.Ikey},function (res) {
-                        console.log( res );
-                        if(res.code === 1){
-                            $('.video').html('<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>');
-                            clearInterval(status);
-                            layer.msg( "支付成功！");
-                            setTimeout(function () {
-                                location.href = res.url;
-                            },1500)
-                        }
-                    })
-                },3000);
-
-                if( res.code === 1 ){
-                    if(data.field.type == 11 || data.field.type == 12){
-                        $('#time').css('display','block');
-                        if( ot !== "" ){
-                            clearInterval( ot );
-                        }
-                        timer(res.msg.time*60);
-                    }
-                    $('.layui-card-body').html( res.data );
-
-                } else {
-                    clearInterval(status);
-                    clearInterval( ot );
-                    if(res.msg.msg){
-                        toastr.error( res.msg.msg )
-                    }else{
-                        toastr.error( res.msg )
-                    }
-
-                }
-            });
-            if(data.field.type != 10){
-                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-            }
-
-        });
-        function timer(intDiff){
-            ot = setInterval(function(){
-                var day=0,
-                    hour=0,
-                    minute=0,
-                    second=0;//时间默认值       
-                if(intDiff > 0){
-                    day = Math.floor(intDiff / (60 * 60 * 24));
-                    hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
-                    minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
-                    second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
-                }
-                if (minute <= 9) minute = '0' + minute;
-                if (second <= 9) second = '0' + second;
-                if(minute ==0 && second == 0){
-                    $('#time').css('display','none');
-                    $('.layui-card-body').css('display','none');
-                }
-                $('#minute_show').html('<s></s>'+minute+'分');
-                $('#second_show').html('<s></s>'+second+'秒');
-
-                intDiff--;
-            }, 1000);
-        }
-    });
+            return false;
+        })
+    })
 </script>
 </html>

@@ -54,7 +54,7 @@ class Manage extends Controller
      */
     protected $allow_auth = [];
 
-
+    protected $admin_id;
     public function _initialize()
     {
         parent::_initialize();
