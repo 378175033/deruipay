@@ -126,7 +126,7 @@ class Api extends Controller
     public function free_pay( $data )
     {
         $type = $data['type'];
-        $money = $data['money'];
+        $money = $data['amount'];
         //查看是否定额支付
         $where =[
             'type'  => $type,
@@ -146,7 +146,7 @@ class Api extends Controller
         $api->sign = md5($payId.$param.$type.$money.$key);
         $this->is_Html = "";
 //        $api->sign = $payId.$param.$type.$money.$key;
-        $res = $api->createOrder($data);
+        return $res = $api->createOrder($data);
         $this->error( $res );
     }
 

@@ -375,7 +375,8 @@ class FreeApi extends Controller
             //todo 整合当前order表与pay_order表
             $code = "<img src='/manage/Pay_modl/enQrcode?url=".$payUrl."'>";
             $msg = ['msg'=>$code,'time'=> getSetting()];
-            $this->success( $msg,'', $code);
+            return $msg;
+//            $this->success( $msg,'', $code);
         }
     }
     public function checkParam()
