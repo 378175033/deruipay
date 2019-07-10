@@ -8,6 +8,7 @@
 
 namespace app\business\controller;
 use app\common\controller\Business;
+use think\Db;
 
 /**
  * @desc 后端首页
@@ -29,6 +30,18 @@ class Index extends Business
 
     public function welcome()
     {
+        /**
+         * 公告信息返回
+         */
+        $notices = Db::name('notice')
+            ->order('id','desc')
+            ->field(['id','name','content'])
+            ->select();
+        $this->assign('notices',$notices);
+
+        $loginLog = Db::name('login_log')->order('id','desc')->find();
+        $loginLog['create_time'] = date('Y-m-d H:i:s',$loginLog['create_time']);
+        $this->assign('logs',$loginLog);
         return $this->fetch();
     }
 }
