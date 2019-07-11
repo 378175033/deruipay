@@ -2,12 +2,12 @@
 <div class="layui-card layui-col-md10 layui-col-md-offset1">
     <div class="layui-card-body ">
         <form class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户名/登录名</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" name="login_name" placeholder="写入用户名/登录名" lay-verify="name">
-                </div>
-            </div>
+            <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">用户名/登录名</label>-->
+                <!--<div class="layui-input-block">-->
+                    <!--<input class="layui-input" name="login_name" placeholder="写入用户名/登录名" lay-verify="name">-->
+                <!--</div>-->
+            <!--</div>-->
             <div class="layui-form-item">
                 <label class="layui-form-label">商户名称</label>
                 <div class="layui-input-block">
@@ -55,22 +55,24 @@
     layui.use(['form'], function() {
         var form = layui.form
         //自定义验证规则
-        form.verify({
-            name: function(value) {
-                if( value ===  "" ){
-                    return "用户名不能为空"
-                }
-            }
-        });
+        // form.verify({
+        //     name: function(value) {
+        //         if( value ===  "" ){
+        //             return "用户名不能为空"
+        //         }
+        //     }
+        // });
         form.on('submit(formDemo)', function(data){
             console.log(data.field)
             $.post('{:url("add")}',data.field,function (res) {
                 console.log( res );
                 if( res.code === 1 ){
                     toastr.success( res.msg ,function () {
-                        parent.location.reload();
-                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(index);
+                        setTimeout(function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1200)
                     });
                 } else {
                     toastr.error( res.msg )

@@ -38,9 +38,9 @@ class Index extends Controller
                 $this->error($validate->getError());
             }
             //校验手机验证码
-            if( !checkSms( $request->param('code') ) ){
-                $this->error( "验证码错误！");
-            }
+//            if( !checkSms( $request->param('code') ) ){
+//                $this->error( "验证码错误！");
+//            }
 
             $business = $Business->doLogin($request->param());
             if(empty( $business['status'])){
