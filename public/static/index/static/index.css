@@ -1,0 +1,357 @@
+.pointer{
+    cursor: pointer;
+}
+
+#login{
+    position: relative;
+    height: 4.72rem;
+}
+
+#swiper-banner{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 4.72rem;
+    width: 100%;
+}
+
+#swiper-banner .swiper-slide{
+    background-size: 100% 100%;
+}
+
+#header{
+    position: relative;
+    z-index: 2;
+}
+
+.login-container{
+    position: absolute;
+    top: 1.41rem;
+    right: 1.99rem;
+    z-index: 2;
+    display: inline-block;
+    width: 2rem;
+    background: rgba(255,255,255,0.8);
+    vertical-align: bottom;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.login-now{
+    display: inline-block;
+    padding: 0.11rem 0.24rem;
+    margin: 2.57rem 2.32rem 0 2.18rem;
+    font-size: 0.18rem;
+    font-weight: 400;
+    color: #278AF9;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.login-user{
+    color: rgba(0,0,0,0.8);
+    font-size: 0.12rem;
+    padding: 0.17rem 0;
+}
+
+.login-input{
+    position: relative;
+    width: 1.2rem;
+    height: 0.2rem;
+    margin: 0 auto 0.16rem auto;
+}
+
+.login-input>input{
+    width: 0.96rem;
+    border-radius: 4px;
+    font-size: 0.09rem;
+    height: 0.2rem;
+    background: #fff;
+    color: rgba(0,0,0,0.4);
+    outline: none;
+}
+
+.login-input>input::-webkit-input-placeholder{color:rgba(0,0,0,0.4);}
+.login-input>input::-moz-placeholder{color:rgba(0,0,0,0.4);}
+.login-input>input:-moz-placeholder{color:rgba(0,0,0,0.4);}
+.login-input>input:-ms-input-placeholder{color:rgba(0,0,0,0.4);}
+
+.login-account{
+    width: 100%;
+    padding-left: 0.24rem;
+}
+
+.login-icon{
+    position: absolute;
+    top: 0.06rem;
+    left: 0.07rem;
+    width: 0.08rem;
+}
+
+.login-msg{
+    width: 0.7rem !important;
+    color: #000;
+    text-align: center;
+}
+
+.login-send{
+    font-size: 0.09rem;
+    border-radius: 4px;
+    width: 0.47rem;
+    height: 0.2rem;
+    line-height: 0.2rem;
+    text-align: center;
+    color: rgba(0,0,0,0.4);
+    background: #fff;
+    margin-left: 0.03rem;
+}
+
+.login-in{
+    display: block;
+    width: 1.2rem;
+    height: 0.2rem;
+    border-radius: 4px;
+    margin: 0 auto;
+    background: #fff;
+    color: #1B92F9;
+    font-size: 0.09rem;
+}
+
+.login-fun{
+    width: 1.2rem;
+    margin: 0.08rem auto 0.13rem auto;
+}
+
+.login-forget,.login-regist{
+    color: rgba(0,0,0,0.4);
+    font-size: 0.07rem;
+    width: 50%;
+    display: inline-block;
+    text-align:left;
+}
+
+.login-regist{
+    text-align: right;
+}
+
+#choose{
+    padding: 0.6rem 0 0.36rem 0;
+    color: #101010;
+}
+
+.desc-text,.desc-title{
+    text-align: center;
+}
+
+.desc-title{
+    font-size: 0.24rem;
+    font-weight: 300;
+}
+
+.desc-text{
+    padding-top: 0.12rem;
+}
+
+.desc-text>span{
+    display: inline-block;;
+    font-size: 0.08rem;
+    font-weight: 300;
+    opacity: 0.8;
+    padding-bottom: 0.06rem;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+.choose-container{
+    width: 5.18rem;
+    margin: 0 auto;
+    padding: 0.34rem 0.32rem 0.24rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 0 15px 10px #f3f3f3;
+}
+
+.choose-desc{
+    display: inline-block;
+    width: 50%;
+}
+
+.choose-desc>div{
+    padding: 0.4rem 0;
+}
+
+.choose-icon{
+    width: 0.41rem;
+    margin-right: 0.46rem;
+    vertical-align: middle;
+}
+
+.choose-desc:nth-of-type(2) .choose-icon{
+    margin-left: 0.35rem;
+}
+
+.choose-text{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.choose-text h1{
+    font-size: 0.12rem;
+    font-weight: 400;
+    color: #101010;
+}
+
+.choose-text p{
+    font-size: 0.07rem;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+.choose-text-left{
+    text-align: left;
+}
+
+#cooperation{
+    background: url("../assets/index_cooperation.png");
+    background-size: 100% 100%;
+    height: 4rem;
+}
+
+#cooperation{
+    text-align: center;
+}
+
+#cooperation>p:nth-of-type(1){
+    color: #fff;
+    font-size: 0.24rem;
+    padding: 0.6rem 0 0.16rem 0;
+}
+
+#cooperation>p:nth-of-type(2){
+    color: #fff;
+    font-size: 0.08rem;
+    padding-bottom: 0.53rem;
+    letter-spacing: 0.05rem;
+}
+
+#bm{
+    width: 6rem;
+    margin: 0 auto;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#pay{
+    background: #F6F9FE;
+    padding-top: 0.6rem;
+    text-align: center;
+}
+
+#pay-bank{
+    padding: 0.58rem 0 0.52rem 0;
+}
+
+#swiper-pay-type{
+    display: inline-block;
+    vertical-align: middle;
+    width: 6rem;
+    margin: 0 0.12rem;
+}
+
+.pay-product{
+    display: inline-block;
+    width: 1rem;
+    height: 2rem;
+    padding: 0 0.2rem;
+    border-radius: 4px;
+    box-shadow: 0 0 5px 5px rgba(243, 243, 243, 0.6);
+    text-align: center;
+    margin-right: 0.12rem;
+    vertical-align: middle;
+    background: #fff;
+}
+
+.pay-product:nth-of-type(4){
+    margin-right: 0;
+}
+
+.pay-product>h1{
+    color: #101010;
+    font-size: 0.15rem;
+    padding-bottom: 0.09rem;
+}
+
+.pay-product>img{
+    width: 0.46rem;
+    margin: 0.49rem 0 0.31rem 0;
+    font-weight: 300;
+}
+
+.pay-product>p{
+    color: rgba(16, 16, 16, 0.8);
+    font-size: 0.08rem;
+}
+
+.bank-left,.bank-right{
+    display: inline-block;
+    width: 0.46rem;
+    height: 0.46rem;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: rgba(246,249,254,1);
+    background-size: 100% 100%;
+}
+
+.bank-left{
+    background-image: url("../assets/index_left.png");
+}
+
+.bank-right{
+    background-image: url("../assets/index_right.png");
+}
+
+.swiper-slide{
+    text-align: left;
+}
+
+#new{
+     position: relative;
+     height: 2.8rem;
+     background-image: url("../assets/index_new_bc.png");
+     background-size: 100% 100%;
+     padding: 0.84rem 0 0 1.92rem;
+ }
+
+#new h1{
+    font-size: 0.3rem;
+    color: #48A7FB;
+}
+
+#new p{
+    font-size: 0.12rem;
+    color: rgba(0,0,0,0.8);
+    padding-top: 0.2rem;
+}
+
+.new-radius{
+    width: 0.24rem;
+    height: 0.24rem;
+    background-image: url("../assets/index_ridus.png");
+    background-size: 100% 100%;
+    position: absolute;
+    left: 1.66rem;
+    top: -0.12rem;
+}
+
+.new-now{
+    font-size: 0.15rem;
+    padding: 0.1rem 0.3rem;
+    box-shadow:0px 5px 4px 0px rgba(0,96,255,0.14);
+    border-radius:4px;
+    background: #0094FF;
+    color: #fff;
+    position: absolute;
+    top: 0.98rem;
+    right: 1.92rem;
+}

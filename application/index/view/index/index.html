@@ -1,20 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>支付管理系统</title>
-    <link rel="stylesheet" href="__CSS__/index.css">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="__CSS__/index.css">
+    {include file='public:head'}
 </head>
 <body>
-<div class="insert">
-    <a href="/business.html">
-        商户入口
-    </a>
-    <a href="/manage.html">
-        管理入口
-    </a>
-    <!--<a href="{:url('Pay/index')}">支付测试</a>-->
+<div id="login">
+    <div id="swiper-banner" class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style='background-image:url("__IMG__/index_banner_1.png");'></div>
+            <div class="swiper-slide" style='background-image:url("__IMG__/index_banner_2.png");'></div>
+            <div class="swiper-slide" style='background-image:url("__IMG__/index_banner_3.png");'></div>
+        </div>
+    </div>
+    <div id="header" v-cloak>
+        <header-component post-class="publicHeader"></header-component>
+    </div>
+    <!--<div class="login-now">立即接入</div>-->
+    <div class="login-container">
+        <p class="login-user">商户登录</p>F
+        <div class="login-input">
+            <img class="login-icon" src="__IMG__/index_account.png" />
+            <input class="login-account" placeholder="请输入账号" />
+        </div>
+        <div class="login-input" src="__IMG__/index_psw.png">
+            <img class="login-icon" src="__IMG__/index_psw.png" />
+            <input class="login-account" placeholder="请输入账号密码" />
+        </div>
+        <div class="login-input">
+            <input class="login-msg" placeholder="请输入验证码" />
+            <button class="login-send">验证码</button>
+        </div>
+        <button class="login-in">确定</button>
+        <div class="login-fun">
+            <a href="forget.html" class="login-forget">忘记密码</a>
+            <a href="register.html" class="login-regist">商户注册</a>
+        </div>
+    </div>
 </div>
-
+<div id="choose">
+    <p class="desc-title">为什么选择我们</p>
+    <p class="desc-text"><span>因为专注，所以专业</span></p>
+    <div class="choose-container">
+        <div class="choose-desc">
+            <div>
+                <img class="choose-icon" src="__IMG__/index_join.png" />
+                <div class="choose-text">
+                    <h1>接入便利</h1>
+                    <p>全平台SKD让你最小化</p>
+                    <p>介入支付的时间与人力</p>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img class="choose-icon" src="__IMG__/index_stable.png" />
+                    <div class="choose-text">
+                        <h1>稳定可靠</h1>
+                        <p>所有数据的传输和存储</p>
+                        <p>符合金融级别的安全标准</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="choose-desc">
+            <div>
+                <img class="choose-icon" src="__IMG__/index_sweet.png" />
+                <div class="choose-text">
+                    <h1>高效贴心</h1>
+                    <p>7×24小时在线服务</p>
+                    <p>提供快速解决方案</p>
+                </div>
+            </div>
+            <div>
+                <img class="choose-icon" src="__IMG__/index_safe.png" />
+                <div class="choose-text">
+                    <h1>安全保证</h1>
+                    <p>金融级安全系统、</p>
+                    <p>智能监控系统，双重加密</p>
+                    <p>确保服务快速稳定交易</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pay">
+    <p class="desc-title">支付产品</p>
+    <p class="desc-text"><span>多种支付产品任你选择，点击马上体验</span></p>
+    <div id="pay-bank">
+        <div class="bank-left" onclick="slidePrev()"></div>
+        <div id="swiper-pay-type" class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="pay-product">
+                        <img src="__IMG__/index_pay.png" />
+                        <h1>快捷支付</h1>
+                        <p>手机端/电脑端（含PC扫一 扫）的多渠道支付</p>
+                    </div>
+                    <div class="pay-product">
+                        <img src="__IMG__/index_qrcode.png" />
+                        <h1>码支付</h1>
+                        <p>2秒支付、60秒条码自动更新</p>
+                    </div>
+                    <div class="pay-product">
+                        <img src="__IMG__/index_gateway.png" />
+                        <h1>网关支付</h1>
+                        <p>使用银行U盾登录网上银行验证支付</p>
+                    </div>
+                    <div class="pay-product">
+                        <img src="__IMG__/index_replace.png" />
+                        <h1>代付款</h1>
+                        <p>单笔或者批量付款至指定银行账户</p>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="pay-product">
+                        <img src="__IMG__/index_over.png" />
+                        <h1>跨境支付</h1>
+                        <p>提供收单、外币结算、报送海关等服务</p>
+                    </div>
+                    <div class="pay-product">
+                        <img src="__IMG__/index_replace_2.png" />
+                        <h1>代扣款</h1>
+                        <p>一次签约可多次免密扣款支付</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bank-right" onclick="sildeNext()"></div>
+    </div>
+</div>
+<div id="cooperation">
+    <p>我们的合作伙伴</p>
+    <p>Our partners</p>
+    <div id="bm"></div>
+</div>
+<div id="new">
+    <div>
+        <h1>立即开启支付新时代！</h1>
+        <p>得瑞支付，支付技术服务商，让支付简单，专业、快捷，温暖！</p>
+        <button class="new-now">立即开启</button>
+        <div class="new-radius"></div>
+    </div>
+</div>
+<div id="footer" v-cloak>
+    <footer-component></footer-component>
+</div>
 </body>
+<!------公共库------>
+<script src="__COM__/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.1/lottie_html.js"></script>
+<script src="__COM__/swiper.min.js"></script>
+<!------------>
+<script src="__JS__/public.js"></script>
+<script src="__JS__/index.js"></script>
 </html>

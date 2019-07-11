@@ -1,0 +1,117 @@
+#banner{
+    height: 1.6rem;
+    background-image: url("../assets/api_bc.png");
+    background-size: 100% 100%;
+    text-align: center;
+}
+
+.banner-title{
+    padding: 0.57rem 0 0.12rem 0;
+    font-size: 0.18rem;
+    font-family: PingFang-SC-Medium;
+    font-weight: 500;
+    color:  #fff;
+}
+
+.banner-desc{
+    font-size: 0.12rem;
+    font-family: PingFang-SC-Regular;
+    font-weight: 400;
+    color:rgba(255,255,255,0.8);
+    letter-spacing: 0.05rem;
+}
+
+#nav{
+    display: inline-block;
+    width: 30%;
+    text-align: right;
+    vertical-align: top;
+}
+
+.nav-list{
+    display: inline-block;
+    width: 1.12rem;
+    text-align: center;
+}
+
+.nav-list a{
+    display: inline-block;
+    width: 100%;
+    height: 0.3rem;
+    line-height: 0.3rem;
+    margin-bottom: 0.24rem;
+    font-size: 0.12rem;
+    font-family:PingFang-SC-Regular;
+    color:rgba(0,0,0,0.8);
+    border-radius: 4px;
+}
+
+.nav-active{
+    background: #0094FF;
+    color: #fff !important;
+}
+
+#content{
+    display: inline-block;
+    width: 47.5%;
+    margin: 0 18.5% 0 4%;
+}
+
+#content>div{
+    margin-bottom: 0.25rem;
+}
+
+.content-title{
+    font-size: 0.12rem;
+    font-family: PingFang-SC-Regular;
+    color: rgba(0,0,0,0.8);
+}
+
+.content-apart{
+    width: 2.34rem;
+    height: 1px;
+    margin: 0.18rem 0 0.24rem 0;
+    background:linear-gradient(-90deg,rgba(255,255,255,1) 0%,rgba(0,0,0,1) 100%);
+}
+
+.content-desc{
+    margin-bottom: 0.1rem;
+    font-size: 0.07rem;
+    font-family: PingFang-SC-Regular;
+    color: rgba(0,0,0,0.8);
+    line-height: 0.12rem;
+    word-break: break-all;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table th,td{
+    padding: 10px 0 10px 6px;
+    font-size: 0.07rem;
+    border: 1px solid gray;
+    font-family:MicrosoftYaHeiLight;
+}
+
+table th{
+    color: rgba(0,0,0,0.8);
+}
+
+table td{
+    color: rgba(0,0,0,0.6);
+}
+
+table th:nth-of-type(1),table th:nth-of-type(2){
+    width: 20%;
+}
+
+table th:nth-of-type(3),table th:nth-of-type(4){
+    width: 10%;
+}
+
+table th:nth-of-type(5){
+    width: 40%;
+}

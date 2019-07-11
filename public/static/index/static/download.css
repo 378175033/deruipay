@@ -1,0 +1,81 @@
+#banner{
+    height: 1.6rem;
+    background-image: url("../assets/api_bc.png");
+    background-size: 100% 100%;
+    text-align: center;
+}
+
+.banner-title{
+    padding: 0.57rem 0 0.12rem 0;
+    font-size: 0.18rem;
+    font-family: PingFang-SC-Medium;
+    font-weight: 500;
+    color:  #fff;
+}
+
+.banner-desc{
+    font-size: 0.12rem;
+    font-family: PingFang-SC-Regular;
+    font-weight: 400;
+    color:rgba(255,255,255,0.8);
+    letter-spacing: 0.05rem;
+}
+
+#download{
+    background: #F9F9F9;
+    padding: 0.3rem 0;
+}
+
+.download-container{
+    width: 6.12rem;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.download-type{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 1.74rem;
+    height: 0.9rem;
+    margin: 0.3rem 0.15rem 0 0.15rem;
+    line-height: 0.9rem;
+    background: #fff;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+    border-radius:4px;
+}
+
+.download-img{
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 100% 100%;
+    margin-right: 0.24rem;
+}
+
+.download-desc{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0.15rem;
+    font-family: PingFang-SC-Medium;
+    font-weight: 500;
+    color: rgba(0,0,0,0.4);
+    line-height: 0.12rem;
+}
+
+.download-now-container{
+    position: relative;
+    top: -0.4rem
+}
+
+.download-now{
+    display: inline-block;
+    padding: 0.1rem 0.2rem;
+    font-size: 0.15rem;
+    font-family: PingFang-SC-Medium;
+    font-weight: 500;
+    color: #fff;
+    line-height: 0.12rem;
+    border-radius: 4px;
+    background: #6E94FF;
+    box-shadow: 0px 3px 8px 1px rgba(3,63,233,0.36);
+}

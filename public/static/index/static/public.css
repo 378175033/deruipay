@@ -1,0 +1,137 @@
+html{min-width: 960px;}
+
+*{
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+}
+
+input,button{
+    border: 0;
+    outline: none;
+}
+
+li{
+    list-style: none;
+}
+
+a{text-decoration: none;}
+
+/**
+ *不显示vue未实例化完成的标签
+ */
+[v-cloak] {
+    display: none;
+}
+
+
+/**
+ *头部
+ */
+.header{
+    text-align: center;
+}
+
+.publicHeader{
+    background: rgba(0,0,0,0.2);
+}
+
+.transparentHeader{
+    background: rgba(0,0,0,0);
+}
+
+.logo{
+    width: 0.82rem;
+    height: 0.24rem;
+    margin: 0.08rem 0;
+    vertical-align: middle;
+    background: url("../assets/logo.png");
+    background-size: 100% 100%;
+    display: inline-block;
+}
+
+.header-container{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.header-container a{
+    font-size: 0.12rem;
+    color: #fff;
+}
+
+.header-container>li{
+    display: inline-block;
+}
+
+.header-nav{
+    padding: 0 0.44rem 0 0.4rem;
+}
+
+.header-nav>li{
+    padding: 0 0.2rem;
+}
+
+.header-info>li{
+    padding: 0 0.08rem;
+    border-right: 1px solid #fff;
+}
+
+.header-info>li:last-of-type{
+    border-right: none;
+}
+
+/**
+ * 底部
+ */
+.footer{
+    padding: 0.3rem 0 0.2rem 0;
+    background: #323232;
+    text-align: center;
+}
+
+.footer-nav{
+    display: inline-block;
+}
+
+.footer-nav:last-of-type{
+    padding-right: 0;
+}
+
+.footer-title{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 0.14rem;
+    margin: 0 0.3rem;
+}
+
+.footer-title,.footer-list{
+    color: #fff;
+}
+
+.footer-list{
+    display: block;
+    font-size: 0.12rem;
+    padding-bottom: 0.12rem;
+}
+
+.footer-copyright>div{
+    display: inline-block;
+    width: 3.3rem;
+    padding-top: 0.1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 0.16rem;
+}
+
+.footer-copyright p{
+    font-size: 0.12rem;
+    color: #fff;
+}
+
+.first-list{
+    padding-top: 0.17rem;
+}
+
+.first-list .active{
+    color: #0094FF;
+}
