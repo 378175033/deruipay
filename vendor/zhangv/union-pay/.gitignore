@@ -1,7 +1,0 @@
-.idea
-vendor/*
-demo/config-prod.php
-cert/prod/*
-sdk
-build/*
-cache.properties

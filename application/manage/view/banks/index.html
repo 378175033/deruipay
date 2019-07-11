@@ -3,11 +3,29 @@
     <div class="layui-card-header">
         <a class="layui-btn" href="javascript:openIframe({'title':'添加银行'});"> <i class="layui-icon layui-icon-add-1"></i>新增银行</a>
     </div>
+    <!--<form class="layui-form" action="">-->
+        <!--<div class="lay-all">-->
+            <!--<div class="layui-block" style="padding: 20px;">-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label">银行名称</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="business_name" autocomplete="off" placeholder="请输入银行名称"-->
+                               <!--class="layui-input">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<button class="layui-btn" lay-filter="query" lay-submit="">-->
+                    <!--<i class="layui-icon layui-icon-search"></i>查询-->
+                <!--</button>-->
+                <!--<button class="layui-btn" lay-filter="clear" lay-submit="">-->
+                    <!--<i class="layui-icon layui-icon-circle"></i>清空条件-->
+                <!--</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
     <div class="layui-card-body">
         <table class="layui-hide" id="table" lay-filter="text"></table>
     </div>
 </div>
-
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
         <i class="layui-icon layui-icon-edit"></i>
@@ -41,8 +59,10 @@
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
-    layui.use(['table'], function() {
+    layui.use(['form','table'], function() {
         var table = layui.table;
+        //监听查询提交
+
         //表格数据渲染
         table.render({
             elem: '#table',
