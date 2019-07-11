@@ -14,7 +14,7 @@ use think\Validate;
 class Business extends Validate
 {
     protected $rule = [
-        ['login_name','require|alphaDash|unique:business',"用户名/登录名不能为空|用户名/登录名只能为字母与数字_-|用户名/登录名已存在"],
-        ['mobile','unique:business',"手机号码已存在"],
+//        ['login_name','require|alphaDash|unique:business',"用户名/登录名不能为空|用户名/登录名只能为字母与数字_-|用户名/登录名已存在"],
+        ['mobile','require|unique:business',"手机号码不能为空|手机号码已存在"],
     ];
 }
