@@ -49,6 +49,8 @@
 </div>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
 <script>
     layui.use(['form'], function() {
         var form = layui.form
@@ -65,12 +67,15 @@
             $.post('{:url("add")}',data.field,function (res) {
                 console.log( res.code );
                 if( res.code === 1 ){
-                    layer.msg( res.msg ,{icon: 1});
-                    parent.location.reload();
-                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                    parent.layer.close(index);
+                    toastr.success( res.msg,function () {
+                        setTimeout(function () {
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                            parent.location.reload();
+                        })
+                    })
                 } else {
-                    layer.msg( res.msg ,{icon: 2})
+                    toastr.error( res.msg )
                 }
             })
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
