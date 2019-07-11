@@ -46,40 +46,41 @@ class Business extends Model
      */
     public function doLogin( $data )
     {
-        $username = $data['username'];
         $msg = msg();
-        if( !empty( $username ) ){
-            $where = [
-                'login_name'  => $username
+
+        if(empty( $data['mobile'])){
+            $msg['msg'] = '用户手机号不能为空';
+            return $msg;
+        }
+        $business = $this->where('mobile',$data['mobile'])->find();
+        if(!$business){
+            $msg['msg'] = '用户不存在！';
+            return $msg;
+        }
+        if($business['check'] == 0){
+            $msg['msg'] = '用户信息审核中...请耐心等待！';
+            return $msg;
+        }
+        if($business['check'] == 1){
+            $msg['msg'] = '用户信息审核未通过！';
+            return $msg;
+        }
+
+        if($business['status'] != 1){
+            $msg['msg'] = '用户已被禁用，请前往联系客服申请启用！';
+            return $msg;
+        }
+
+        if(compare_password($business['password'],$data['password'],$business['salt'])){
+            $msg['status'] = 1;
+            $login = [
+                'last_login_time'   => time(),
+                'last_login_ip'     => request()->ip()
             ];
-            $info = $this->where( $where )->find();
-            if( $info ){
-                if( $info['check'] == 0 ){
-                    $msg['msg'] = "用户信息审核中...请耐心等待！";
-                } elseif( $info['check'] == 1){
-                    $msg['msg'] = "用户信息审核未通过！";
-                } else {
-                    if( $info['status'] == 1 ) {
-                        if( compare_password( $info['password'],$data['password'], $info['salt'] ) ){
-                            $msg['status'] = 1;
-                            $login = [
-                                'last_login_time'   => time(),
-                                'last_login_ip'     => request()->ip()
-                            ];
-                            $this->where( ['id'=>$info['id']] )->update( $login );
-                            session( "business", $info);
-                        } else {
-                            $msg['msg'] = "密码信息错误！";
-                        }
-                    } else {
-                        $msg['msg'] = "用户已被禁用，请前往联系客服申请启用！";
-                    }
-                }
-            } else {
-                $msg['msg'] = "用户不存在！";
-            }
+            $this->where(['id'=>$business['id']])->update($login);
+            session("business",$business);
         } else {
-            $msg['msg'] = "用户名不能为空！";
+            $msg['msg'] = '密码信息错误';
         }
         return $msg;
     }

@@ -5,6 +5,7 @@
     <title>首页</title>
     <link rel="stylesheet" type="text/css" href="__CSS__/swiper.min.css">
     <link rel="stylesheet" type="text/css" href="__CSS__/index.css">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
     {include file='public:head'}
 </head>
 <body>
@@ -24,22 +25,24 @@
         <p class="login-user">商户登录</p>F
         <div class="login-input">
             <img class="login-icon" src="__IMG__/index_account.png" />
-            <input class="login-account" placeholder="请输入账号" />
+            <input class="login-account" v-model="model.mobile" placeholder="请输入手机号" />
         </div>
         <div class="login-input" src="__IMG__/index_psw.png">
             <img class="login-icon" src="__IMG__/index_psw.png" />
-            <input class="login-account" placeholder="请输入账号密码" />
+            <input class="login-account" v-model="model.password" placeholder="请输入账号密码" />
         </div>
         <div class="login-input">
-            <input class="login-msg" placeholder="请输入验证码" />
-            <button class="login-send">验证码</button>
+            <input class="login-msg" v-model="model.code" placeholder="请输入验证码" />
+            <button class="login-send" @click="sendSms()" v-if="!isDisabled">{{content}}</button>
+            <button class="login-send" @click="sendSms()" v-if="isDisabled">{{content}}</button>
         </div>
-        <button class="login-in">确定</button>
+        <button class="login-in" @click="login()">确定</button>
         <div class="login-fun">
             <a href="forget.html" class="login-forget">忘记密码</a>
             <a href="register.html" class="login-regist">商户注册</a>
         </div>
     </div>
+
 </div>
 <div id="choose">
     <p class="desc-title">为什么选择我们</p>
@@ -156,4 +159,100 @@
 <!------------>
 <script src="__JS__/public.js"></script>
 <script src="__JS__/index.js"></script>
+<script src="__JS__/jquery.js"></script>
+<script src="__LAYUI__/layui.js"></script>
+<script>
+    layui.use(['layer'], function(){
+        var layer = layui.layer;
+        var app = new Vue({
+            el:"#login",
+            data () {
+                return {
+                    isDisabled: false, //控制按钮是否可以点击（false:可以点击，true:不可点击）
+                    content: '验证码', // 发送验证码按钮的初始显示文字
+                    timer: null,
+                    count: '',
+                    model: {},
+                }
+            },
+            methods: {
+                sendSms(){
+                    let vm = this;
+                    if(!vm.model.mobile || vm.model.mobile === ''){
+                        layer.msg('请输入手机号！');
+                        return;
+                    }
+                    if (!(/^1[3456789]\d{9}$/.test(vm.model.mobile))){
+                        layer.msg('请输入正确的手机号');
+                        return;
+                    }
+                    // 控制倒计时及按钮是否可以点击
+                    const TIME_COUNT = 60;
+                    vm.count = TIME_COUNT;
+
+                    vm.timer = setInterval(() => {
+                        if (vm.count > 0 && vm.count <= TIME_COUNT) {
+                            // 倒计时时不可点击
+                            vm.isDisabled = true;
+                            // 计时秒数
+                            vm.count--;
+                            // 更新按钮的文字内容
+                            vm.content = vm.count + 's';
+                        }else {
+                            // 倒计时完，可点击
+                            vm.isDisabled = false;
+                            // 更新按钮文字内容
+                            vm.content = '验证码';
+                            // 清空定时器!!!
+                            clearInterval(vm.timer);
+                            vm.timer = null
+                        }
+                    }, 1000);
+                    $.post('/sms.html',{mobile:vm.model.mobile},function (res) {
+                        vm.isDisabled = false;
+                        if( res.code !== 1 ){
+                            layer.msg( res.msg );
+                        }
+                    })
+                },
+                login(){
+                    let lg = this.model;
+                    if(!lg.mobile || lg.mobile === ''){
+                        layer.msg('请输入手机号！');
+                        return;
+                    }
+                    if (!(/^1[3456789]\d{9}$/.test(lg.mobile))){
+                        layer.msg('请输入正确的手机号');
+                        return;
+                    }
+
+                    if(!lg.code){
+                        layer.msg('验证码不能为空！');
+                        return;
+                    }
+                    if(!lg.password){
+                        layer.msg('密码不能为空！');
+                        return;
+                    }
+                    var data = {
+                        'mobile':lg.mobile,
+                        'code':lg.code,
+                        'password':lg.password,
+                    }
+                    $.post('{:url("index/login")}',data,function (res) {
+                        console.log(res);
+                        if(res.code == 1){
+                            layer.msg( "登录成功！",{icon:1})
+                            setTimeout(function () {
+                                window.location.href = res.url;
+                            },1200)
+                        }else{
+                            layer.msg(res.msg,{icon:2});
+                        }
+                    })
+                }
+            }
+        });
+    });
+</script>
 </html>

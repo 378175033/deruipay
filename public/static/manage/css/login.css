@@ -132,7 +132,7 @@ li {
 
 
 .login-page {
-    width: 40%;
+    width: 30%;
     margin: 15em auto 0;
 }
 .login-page h2.title1{
@@ -154,7 +154,7 @@ li {
     padding: 4em 2em;
 }
 
-.login-page .user, .login-page .lock, .login-page .captcha {
+.login-page .user, .login-page .lock, .login-page .captcha{
     font-size: 1em;
     padding: 14px 15px 14px 37px;
     width: 100%;

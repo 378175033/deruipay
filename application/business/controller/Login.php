@@ -7,6 +7,7 @@
  */
 
 namespace app\business\controller;
+use app\common\model\Sms;
 use think\Controller;
 use think\captcha\Captcha;
 
@@ -99,4 +100,16 @@ class Login extends Controller
         session( 'business', null);
         $this->redirect( url( 'Login/index') );
     }
+
+
+    public function sendCode(){
+        if($this->request->isAjax() && $this->request->isPost() ){
+            $mobile = $this->request->post('mobile');
+            $sms = new Sms();
+            $response = $sms->sendCode($mobile);
+            $this->success( "请求成功！", '',$response);
+
+        }
+    }
+
 }
