@@ -32,7 +32,7 @@ class Login extends Controller
     public  function index()
     {
         if( model( 'User')->checkLogin() ){
-            $this->error("您已经登录了！", '/manage.html#/Index/welcome' );
+            $this->success("您已经登录了！", '/manage.html#/Index/welcome' );
         }
         if( $this->request->isAjax() && $this->request->isPost() ){
             $data = $this->request->param();
