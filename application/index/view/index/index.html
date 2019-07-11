@@ -33,8 +33,8 @@
         </div>
         <div class="login-input">
             <input class="login-msg" v-model="model.code" placeholder="请输入验证码" />
-            <button class="login-send" @click="sendSms(index)" v-if="!isDisabled">{{content}}</button>
-            <button class="login-send" @click="sendSms(index)" v-if="isDisabled">{{content}}</button>
+            <button class="login-send" value="0" @click="sendSms()">{{content}}</button>
+            <!--<button class="login-send" value="1" @click="sendSms()" v-if="isDisabled">{{content}}</button>-->
         </div>
         <button class="login-in" @click="login()">确定</button>
         <div class="login-fun">
@@ -176,8 +176,11 @@
                 }
             },
             methods: {
-                sendSms(index){
-                    console.log(index);
+                sendSms(){
+                    if($('.login-send').attr('isDisabled') == "isDisabled"){
+
+                        return;
+                    }
                     let vm = this;
                     if(!vm.model.mobile || vm.model.mobile === ''){
                         layer.msg('请输入手机号！');
@@ -194,12 +197,14 @@
                     vm.timer = setInterval(() => {
                         if (vm.count > 0 && vm.count <= TIME_COUNT) {
                             // 倒计时时不可点击
+                            $('.login-send').attr('isDisabled','isDisabled');
                             vm.isDisabled = true;
                             // 计时秒数
                             vm.count--;
                             // 更新按钮的文字内容
                             vm.content = vm.count + 's';
                         }else {
+                            $('.login-send').attr('isDisabled','');
                             // 倒计时完，可点击
                             vm.isDisabled = false;
                             // 更新按钮文字内容
