@@ -57,3 +57,20 @@ function getSetting($vlaue='close'){
     $setting = DB('setting')->where('vkey',$vlaue)->find();
     return $setting['vvalue'];
 }
+
+/**
+ * @desc校验手机短信验证码
+ * Created by PhpStorm
+ * User: zhaolan
+ * Date: 2019/7/11 0011 15:29
+ * @param $code
+ * @return bool
+ */
+function checkSms( $code )
+{
+    if( md5( $code ) != session("smsCode")  ){
+        return false;
+    } else {
+        return true;
+    }
+}

@@ -44,7 +44,7 @@ class User extends Model
         $msg = msg();
         if( !empty( $username ) ){
             $where = [
-                'username'  => $username
+                'mobile'  => $username
             ];
             $info = $this->where( $where )->find();
             if( $info ){

@@ -1,7 +1,136 @@
 @charset "utf-8";
-body{
-    overflow-x: unset !important;
+body, input, button, textarea, select {
+    font-size: 16px;
+    line-height: 1.75;
+    border: none;
+    background: none;
 }
+.toast-top-center{
+    top: 25% !important;
+    left: 0;
+    width: 100%;
+}
+.layui-layer-msg{
+    display: none!important;
+}
+.loginpage-bg{
+    background: url(../images/banner_5.jpg) no-repeat center;
+    background-size: cover;
+}
+.loginpage {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+.login-wrap, .reg-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    width: 982px;
+    height: 522px;
+    background: #fff;
+    box-shadow: 0px 10px 30px 0px rgba(28, 103, 106, 0.2);
+    -webkit-box-shadow: 0px 10px 30px 0px rgba(28, 103, 106, 0.2);
+}
+.login-right .body li i, .reg-wrap .body li i {
+    position: absolute;
+    top: 63%;
+    left: 0;
+    margin-top: -16px;
+    font-size: 19px;
+    color: #19bfba;
+}
+.login-left {
+    float: left;
+}
+.login-right {
+    padding: 0 96px;
+    float: left;
+    width: 49%;
+}
+.login-right .head {
+    margin-top: 60px;
+    text-align: center;
+}
+.login-right .body {
+    margin-top: 45px;
+}
+.login-right .foot {
+    margin-top: 35px;
+}
+.login-right .head h3, .reg-wrap .head h3 {
+    font-size: 24px;
+    color: #009e96;
+}
+.login-right .head p, .reg-wrap .head p {
+    font-size: 12px;
+    color: #b1b1b1;
+    letter-spacing: 6px;
+    line-height: 30px;
+}
+ul {
+    overflow: hidden;
+}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+body {
+    position: relative;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    color: #515c7a;
+    background: #fff;
+}
+body, html {
+    height: 100%;
+}
+html * {
+    outline: 0;
+    zoom: 1;
+}
+.login-right .body li, .reg-wrap .body li {
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+li {
+    list-style: none;
+}
+.login-right .body li input, .reg-wrap .body li input {
+    padding-left: 33px;
+    float: left;
+    width: 89%;
+    height: 40px;
+    font-size: 14px;
+    border-bottom: 1px solid #eeeeee;
+}
+.login-right .foot input, .reg-wrap .foot input {
+    display: block;
+    width: 297px;
+    line-height: 40px;
+    color: #fff;
+    font-size: 18px;
+    background: #00b8b3;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 .login-page {
     width: 40%;
     margin: 15em auto 0;

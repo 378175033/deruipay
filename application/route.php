@@ -18,6 +18,7 @@ return [
         ':name' => ['index/hello', ['method' => 'post']],
     ],
     'manage' => 'manage/index/index',
+    'sms' => 'index/sms/code',
 
 //    'pay'=>'index/pay/index',//支付页面
     'status'=>'index/pay/orderStatus',//支付页面

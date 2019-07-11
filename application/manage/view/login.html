@@ -7,21 +7,43 @@
     <title>支付管理系统</title>
     <link rel="stylesheet" href="__CSS__/base.css">
     <link rel="stylesheet" href="__CSS__/login.css">
+    <link rel="stylesheet" href="__LAYUI__/css/layui.css">
     <link rel="stylesheet" href="__JS__/toastr/build/toastr.css">
 </head>
-<body>
-    <div class="main-page login-page ">
-        <h2 class="title1">Login</h2>
-        <div class="widget-shadow">
-            <div class="login-body">
-                <form style="position: relative" class="layui-form">
-                    <input type="text" class="user" name="username" placeholder="登录名" required="">
-                    <input type="password" name="password" class="lock" placeholder="密码" required="">
-                    <input type="text" name="captcha" class="captcha" placeholder="验证码" required="">
-                    <div class="cap_image"><img src="{:url('Login/entry')}" id="captcha" alt="captcha" onclick="this.src='{:url('Login/entry')}'"/></div>
-                    <input type="hidden" name="__token__" value="{$Request.token}" />
-                    <input type="submit" name="Sign In" value="Sign In" lay-submit="" lay-filter="login">
-                </form>
+
+<body class="loginpage-bg">
+    <div class="loginpage">
+        <div class="login-wrap">
+            <div class="login-left">
+                <img src="__IMAGE__/img_32.jpg">
+            </div>
+            <div class="login-right">
+                <div id="body" class="layui-form">
+                    <div class="head">
+                        <h3>用户登录</h3>
+                        <p>登录您的管理后台</p>
+                    </div>
+                    <div class="body">
+                        <ul>
+                            <li>
+                                <i class="layui-icon layui-icon-username"></i>
+                                <input type="text" class="txt" name="username" value="" placeholder="输入手机号" id="username" lay-verify="username">
+                            </li>
+                            <li>
+                                <i class="layui-icon layui-icon-password"></i>
+                                <input type="password" class="password" name="password" value="" placeholder="输入密码" lay-verify="password">
+                            </li>
+                            <li>
+                                <i class="layui-icon layui-icon-layer"></i>
+                                <input type="text" style="width:50%" class="txt" name="code" id="code" value="" lay-verify="code" placeholder="输入验证码">
+                                <button type="button" style="width: 40%" class="layui-btn layui-btn-primary send_sms">获取验证码</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="foot">
+                        <input type="button" class="btn" lay-submit="" lay-filter="login" value="登 录">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

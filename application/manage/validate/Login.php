@@ -12,8 +12,8 @@ use think\Validate;
 class Login extends Validate
 {
     protected $rule = [
-        ['captcha','require|captcha', '验证码不能为空！|验证码错误！'],
-        ['username','require|token', '登录用户名不能为空！|token验证失败'],
+        ['code','require', '验证码不能为空！'],
+        ['username','require', '登录用户名不能为空！'],
         ['password','require', '登录密码不能为空！'],
     ];
 }

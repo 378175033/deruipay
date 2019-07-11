@@ -41,10 +41,15 @@ class Login extends Controller
             if( !$validate->check( $data ) ){
                 $this->error( $validate->getError() );
             }
+            //校验手机验证码
+            if( !checkSms( $data['code'] ) ){
+                $this->error( "验证码错误！");
+            }
             $res = model( 'User')->doLogin( $data );
             if( empty( $res['status'] ) ){
                 $this->error( $res['msg'] );
             }
+            session('smsCode', null);
             //写入登录日志
             model( "LoginLog")->addLog();
             $this->success( "登录成功！", '/manage.html#/Index/welcome');

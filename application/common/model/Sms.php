@@ -8,9 +8,7 @@
 
 namespace app\common\model;
 
-
 use app\common\controller\Curl;
-use think\Config;
 use think\Model;
 
 
@@ -61,9 +59,11 @@ class Sms extends Model
             'template'=>$config['TEMPLATE'],
         ]);
         $url = $url."&".$https;
-
         $response = $Curl->get($url);
         $response = json_decode($response,true);
+        if( $response['stat'] == 100 ){
+            session( 'smsCode', md5( $code ));
+        }
         return $response;
 
 
