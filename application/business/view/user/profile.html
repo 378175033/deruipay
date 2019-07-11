@@ -21,12 +21,36 @@
                 <tr>
                     <td colspan="2">
                         <a href="javascript:;" class="layui-btn layui-btn changePass">修改密码</a>
+                        <a href="javascript:;" class="layui-btn layui-btn-normal safePass">设置支付安全密码</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script type="text/html" id="safe">
+    <form class="layui-form mt20 layui-col-md10">
+        <div class="layui-form-item">
+            <label class="layui-form-label">获取验证码</label>
+            <div class="layui-input-block">
+                <button class="send_sms layui-btn layui-btn-primary" type="button">点击获取验证码</button>
+                <span style="margin-left: 10px;">查看{$user.mobile}短信</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="verify" placeholder="获取到的手机验证码">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn submitBtn_add" lay-submit lay-filter="demo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -72,6 +96,47 @@
                 layer.close( cs );
             })
 
+        })
+    })
+    $('.safePass').click(function () {
+        layui.use(['layer'],function () {
+            var layer = layui.layer;
+            layer.open({
+                type : 1,
+                title: "设置安全密码",
+                area: ['600px','300px'],
+                content:$('#safe').html()
+            })
+        })
+    })
+    var m = 60;
+    function smsTimeout()
+    {
+        var index = setInterval(function () {
+            m--;
+            if( m < 0 ){
+                clearInterval( index );
+                m = 60;
+                $('.send_sms').removeClass("layui-btn-disabled").addClass("layui-btn-primary");
+                $('.send_sms').html( "点击重新获取验证码" );
+            } else{
+                $('.send_sms').removeClass("layui-btn-primary").addClass("layui-btn-disabled");
+                $('.send_sms').html( m+"秒后可重新获取");
+            }
+        },50)
+    }
+    $(document).ready(function () {
+        $(document).on( "click", ".send_sms",function () {
+            if( $(this).hasClass("layui-btn-primary") ){
+                smsTimeout();
+            }
+        })
+    })
+
+    layui.use('form',function () {
+        form = layui.form;
+        form.on("submit(demo)",function () {
+            return false;
         })
     })
 </script>
