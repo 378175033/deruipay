@@ -43,9 +43,10 @@ function ismobile()
 
     return false;
 }
+
 function generate16Num()
 {
-    $uid = date('Ymd') . str_pad(mt_rand(1, 99999), 8,mt_rand(1, 99999), STR_PAD_LEFT);
+    $uid = date('Ymd') . str_pad(mt_rand(1, 99999), 8, mt_rand(1, 99999), STR_PAD_LEFT);
     return $uid;
 }
 
@@ -53,9 +54,79 @@ function generate16Num()
  * 2019/7/8 0008 10:43
  * 过期时间查询
  */
-function getSetting($vlaue='close'){
-    $setting = DB('setting')->where('vkey',$vlaue)->find();
+function getSetting($vlaue = 'close')
+{
+    $setting = DB('setting')->where('vkey', $vlaue)->find();
     return $setting['vvalue'];
+}
+
+function random($length = 6, $type = 'string', $convert = 0)
+{
+    $config = array(
+        'number' => '1234567890',
+        'letter' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        'string' => 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789',
+        'all' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    );
+
+    if (!isset($config[$type]))
+        $type = 'string';
+    $string = $config[$type];
+
+    $code = '';
+    $strlen = strlen($string) - 1;
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $string{mt_rand(0, $strlen)};
+    }
+    if (!empty($convert)) {
+        $code = ($convert > 0) ? strtoupper($code) : strtolower($code);
+    }
+    return $code;
+}
+
+/**
+ * 加密方法
+ * @param string $str
+ * @return string
+ */
+function encode($message, $encodingaeskey)
+{
+    $key = base64_decode($encodingaeskey . '=');
+    $text = random(16) . pack("N", strlen($message)) . $message;
+    $iv = substr($key, 0, 16);
+
+    $block_size = 32;
+    $text_length = strlen($text);
+    $amount_to_pad = $block_size - ($text_length % $block_size);
+    if ($amount_to_pad == 0) {
+        $amount_to_pad = $block_size;
+    }
+    $pad_chr = chr($amount_to_pad);
+    $tmp = '';
+    for ($index = 0; $index < $amount_to_pad; $index++) {
+        $tmp .= $pad_chr;
+    }
+    $text = $text . $tmp;
+
+    $encrypted = openssl_encrypt($text, 'aes-256-ofb', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+    $encrypt_msg = base64_encode($encrypted);
+    return $encrypt_msg;
+}
+
+function decode($message, $encodingaeskey = '')
+{
+    $key = base64_decode($encodingaeskey . '=');
+
+    $ciphertext_dec = base64_decode($message);
+    $iv = substr($key, 0, 16);
+
+    $decrypted = openssl_decrypt($ciphertext_dec, 'aes-256-ofb', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+return $decrypted;
+    $pad = ord(substr($decrypted, -1));
+    if ($pad < 1 || $pad > 32) {
+        $pad = 0;
+    }
+    return $pad;
 }
 
 /**
