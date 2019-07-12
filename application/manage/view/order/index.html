@@ -1,96 +1,187 @@
 {include file='common:head'}
+<style>
+    .layui-form-label{
+        padding: 9px 5px;
+        width: 60px;
+    }
+    .layui-inline{
+        padding: 5px 0px;
+    }
+</style>
 <form class="layui-form" action="">
     <div class="lay-all">
         <div class="layui-block" style="padding: 20px">
             <!-- 时间验证 -->
-            <label class="layui-form-label" style="width: auto">时间范围查询</label>
-            <div class="layui-inline">
-                <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('today')">
-                    <i class="layui-icon layui-icon-search"></i>查询今日
-                </button>
-                <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('week')">
-                    <i class="layui-icon layui-icon-search"></i>查询本周
-                </button>
-                <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('month')">
-                    <i class="layui-icon layui-icon-search"></i>查询本月
-                </button>
-                <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('year')">
-                    <i class="layui-icon layui-icon-search"></i>查询今年
-                </button>
-            </div>
-            <div class="layui-inline">
-                <input id="defaulttime" class="layui-input" name="defaulttime" placeholder="默认时间" type="hidden">
-                <div class="layui-inline">
-                    <input class="layui-input test-item" name="stime" placeholder="开始日" type="text">
+
+            <div class="layui-row">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">商户名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="business_name" autocomplete="off" placeholder="请输入商户名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
                 </div>
-                <div class="layui-inline">
-                    <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">订单编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="e-order_id" autocomplete="off" placeholder="请输入交易流水号" class="layui-input">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">商户名称</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="business_name" autocomplete="off" placeholder="请输入商户名称"
-                           class="layui-input">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">通道名称</label>
+                        <div class="layui-input-inline">
+                            <select name="passageway_id" lay-search="">
+                                <option value="">选取通道</option>
+                                {volist name="passageway_list"  id="passageway"}
+                                <option value="{$passageway.id}">{$passageway.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">交易流水号</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="e-batch" autocomplete="off" placeholder="请输入交易流水号" class="layui-input">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <select name="e-status">
+                                <option value="">请选择一个状态</option>
+                                <option value="0">审核中</option>
+                                <option value="1">成功</option>
+                                <option value="2">未提交</option>
+                                <option value="3">已提交</option>
+                                <option value="4">代付失败</option>
+                                <option value="5">提交失败</option>
+                                <option value="5">已退回</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">订单编号</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="e-order_id" autocomplete="off" placeholder="请输入交易流水号" class="layui-input">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('today')">
+                        <i class="layui-icon layui-icon-search"></i>查询今日
+                        </button>
+                        <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('week')">
+                        <i class="layui-icon layui-icon-search"></i>查询本周
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">商户编号</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="e-business_id" autocomplete="off" placeholder="请输入商户编号"
-                           class="layui-input">
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('month')">
+                            <i class="layui-icon layui-icon-search"></i>查询本月
+                        </button>
+                        <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('year')">
+                            <i class="layui-icon layui-icon-search"></i>查询今年
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">通道编号</label>
-                <div class="layui-input-inline">
-                    <select name="passageway_id" lay-search="">
-                        <option value="">选取通道</option>
-                        {volist name="passageway_list"  id="passageway"}
-                        <option value="{$passageway.id}">{$passageway.name}</option>
-                        {/volist}
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">金额</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="e-amount" autocomplete="off" placeholder="请输入金额" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">状态</label>
-                <div class="layui-input-inline">
-                    <select name="e-status">
-                        <option value="">请选择一个状态</option>
-                        <option value="0">审核中</option>
-                        <option value="1">成功</option>
-                        <option value="2">未提交</option>
-                        <option value="3">已提交</option>
-                        <option value="4">代付失败</option>
-                        <option value="5">提交失败</option>
-                        <option value="5">已退回</option>
-                    </select>
+                <div class="layui-col-xs2">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-filter="query" lay-submit="">
+                            <i class="layui-icon layui-icon-search"></i>查询
+                        </button>
+                        <button class="layui-btn" lay-filter="clear" lay-submit="">
+                            <i class="layui-icon layui-icon-circle"></i>清空条件
+                        </button>
+                    </div>
                 </div>
             </div>
-            <button class="layui-btn" lay-filter="query" lay-submit="">
-                <i class="layui-icon layui-icon-search"></i>查询
-            </button>
-            <button class="layui-btn" lay-filter="clear" lay-submit="">
-                <i class="layui-icon layui-icon-circle"></i>清空条件
-            </button>
+
+
+            <!--<label class="layui-form-label" style="width: auto">时间范围查询</label>-->
+            <!--<div class="layui-inline">-->
+                <!--<button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('today')">-->
+                    <!--<i class="layui-icon layui-icon-search"></i>查询今日-->
+                <!--</button>-->
+                <!--<button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('week')">-->
+                    <!--<i class="layui-icon layui-icon-search"></i>查询本周-->
+                <!--</button>-->
+                <!--<button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('month')">-->
+                    <!--<i class="layui-icon layui-icon-search"></i>查询本月-->
+                <!--</button>-->
+                <!--<button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('year')">-->
+                    <!--<i class="layui-icon layui-icon-search"></i>查询今年-->
+                <!--</button>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<input id="defaulttime" class="layui-input" name="defaulttime" placeholder="默认时间" type="hidden">-->
+                <!--<div class="layui-inline">-->
+                    <!--<input class="layui-input test-item" name="stime" placeholder="开始日" type="text">-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">商户名称</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="business_name" autocomplete="off" placeholder="请输入商户名称"-->
+                           <!--class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">交易流水号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="e-batch" autocomplete="off" placeholder="请输入交易流水号" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">订单编号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="e-order_id" autocomplete="off" placeholder="请输入交易流水号" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">商户编号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="e-business_id" autocomplete="off" placeholder="请输入商户编号"-->
+                           <!--class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">通道编号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<select name="passageway_id" lay-search="">-->
+                        <!--<option value="">选取通道</option>-->
+                        <!--{volist name="passageway_list"  id="passageway"}-->
+                        <!--<option value="{$passageway.id}">{$passageway.name}</option>-->
+                        <!--{/volist}-->
+                    <!--</select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">金额</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="e-amount" autocomplete="off" placeholder="请输入金额" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">状态</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<select name="e-status">-->
+                        <!--<option value="">请选择一个状态</option>-->
+                        <!--<option value="0">审核中</option>-->
+                        <!--<option value="1">成功</option>-->
+                        <!--<option value="2">未提交</option>-->
+                        <!--<option value="3">已提交</option>-->
+                        <!--<option value="4">代付失败</option>-->
+                        <!--<option value="5">提交失败</option>-->
+                        <!--<option value="5">已退回</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<button class="layui-btn" lay-filter="query" lay-submit="">-->
+                <!--<i class="layui-icon layui-icon-search"></i>查询-->
+            <!--</button>-->
+            <!--<button class="layui-btn" lay-filter="clear" lay-submit="">-->
+                <!--<i class="layui-icon layui-icon-circle"></i>清空条件-->
+            <!--</button>-->
         </div>
     </div>
 </form>
