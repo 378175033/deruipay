@@ -79,16 +79,22 @@ class Manage extends Controller
             return true;
         }
 
-        $controller = ucfirst(request()->controller());
+        $controller = request()->controller();
         $action = request()->action();
         $str = $controller."/".$action;
         $allow = [
             'Index/index','Index/welcome'
         ];
+
         $this->allow_auth = array_merge( $allow, $this->allow_auth );
         if( in_array( $str, $this->allow_auth) ){
             return true;
         }
+        //如果是是下划线就下划线转驼峰
+        if(count(explode('-',$controller))>0){
+            $controller = toUnderScore($controller);
+        }
+
         $where = [
             'controller'    => $controller,
             'action'        => $action,
