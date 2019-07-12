@@ -35,11 +35,12 @@
         //自定义验证规则
         form.verify({
             money: function(value) {
+                console.log(value);
                 if( value ===  "" ){
                     toastr.error( "输入申请提现金额" );
                     return;
                 }
-                if( value > "{$user.money}"){
+                if( value > parseInt("{$user.money}") ){
                     toastr.error( "提现金额不能超过{$user.money}" )
                     return;
                 }

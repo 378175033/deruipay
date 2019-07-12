@@ -1,0 +1,168 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:85:"D:\phpStudy\PHPTutorial\WWW\F4\public/../application/manage\view\login_log\index.html";i:1561519323;s:71:"D:\phpStudy\PHPTutorial\WWW\F4\application\manage\view\common\head.html";i:1561360432;}*/ ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/static/manage/js/toastr/build/toastr.css">
+    <style>
+        .mt20{
+            margin-top: 20px;
+        }
+        .container{
+            width: 98%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="">
+        <div class="lay-all">
+            <div class="layui-block" style="padding: 20px">
+                <!-- 时间验证 -->
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: auto">时间范围查询</label>
+                    <div class="layui-inline">
+                        <input class="layui-input test-item"  name="stime" placeholder="开始日" type="text">
+                    </div>
+                    <div class="layui-inline">
+                        <input class="layui-input test-item" name="ltime" placeholder="截止日" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户昵称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">日志类型</label>
+                    <div class="layui-input-inline">
+                        <select name="l-type" class="layui-select">
+                            <option value="">选取日志类型</option>
+                            <option value="2">管理员</option>
+                            <option value="1">商户</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="layui-btn" lay-filter="query" lay-submit="">
+                    <i class="layui-icon layui-icon-search"></i>查询
+                </button>
+                <button class="layui-btn" lay-filter="clear" lay-submit="">
+                    <i class="layui-icon layui-icon-circle"></i>清空条件
+                </button>
+            </div>
+        </div>
+    </form>
+    <table class="layui-hide" id="menu-table" lay-filter="text" style="margin: 0 5%"></table>
+    <div class="layui-form" layui-filter="more">
+        <a class="layui-btn layui-btn-danger delete-btn">删除日志</a>
+    </div>
+</div>
+<script type="text/javascript" src="/static/manage/js/jquery.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
+<script type="text/javascript" src="/static/manage/js/base.js"></script>
+<script>
+    layui.use(['form', 'laydate','table'], function() {
+        var form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+        //渲染时间选择器
+        lay('.test-item').each(function() {
+            laydate.render({
+                elem: this,
+                trigger: 'click'
+            });
+        });
+        //监听查询提交
+        form.on('submit(query)', function(data) {
+            table.reload('LogList', {
+                url: '<?php echo url("index"); ?>',
+                where: data.field
+            });
+            return false;
+        });
+
+        form.on('submit(clear)', function() {
+            window.refresh();
+            return false;
+        });
+
+        //日志删除
+        $(document).on('click','.delete-btn',function () {
+            var checkStatus = table.checkStatus( 'LogList' ); //idTest 即为基础参数 id 对应的值
+            var data = checkStatus.data;
+            var len = checkStatus.data.length;
+            //判断是否有选中项
+            if( len < 1){
+                toastr.error("请至少选中一项！");
+                return false;
+            }
+            var myIn = layer.confirm("您确定要删除吗？无法找回哟！",function () {
+                var param = new Array();
+                for( var i = 0; i< len; i++){
+                    param.push( data[i].id );
+                }
+                $.post( "delete", {id:param},function (res) {
+                    if( res.code === 1){
+                        toastr.success( res.msg )
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                },'json')
+                table.reload('LogList', {
+                    url: '<?php echo url("index"); ?>',
+                    where: data.field
+                });
+                layer.close( myIn );
+            })
+            return false;
+        })
+
+        //表格数据渲染
+        table.render({
+            elem: '#menu-table',
+            method: 'post',
+            url: '<?php echo url("index"); ?>',
+            limit: 10,
+            id:'LogList',
+            limits: [5,10,15,20,50,100], //每页条数的选择项
+            loading: true,
+            where:{ order:'id desc'},
+            cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cols: [
+                [
+                    {checkbox: true},
+                    {field: 'id',title: 'ID',sort:true},
+                    {field: 'username',title: '登录账号'},
+                    {field: 'create_time',title: '登录时间'},
+                    {field: 'device',title: '登录设备'},
+                    {field: 'ip',title: 'IP地址'},
+                    {field: 'address',title: '登录地址'},
+                ]
+            ],
+            page: true,
+            response: {
+                statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.list//解析数据列表
+                };
+            }
+        });
+    })
+</script>
+</html>
