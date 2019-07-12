@@ -35,7 +35,7 @@ class Sms extends Controller
                 $this->error("该手机号未注册！");
             }
             $res = model( "Sms")->sendCode( $mobile, $content);
-            if( $res['stat'] == 100 ){
+            if( isset( $res['stat']) && $res['stat'] == 100 ){
                 $this->success( $res['message'],'',$res['code'] );
             }
             $this->error( $res['message'] );
