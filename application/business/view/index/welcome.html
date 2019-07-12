@@ -28,7 +28,7 @@
     .bg-violet{
         background: #796AEE !important;
     }
-    .bg-violet,.bg-red,.bg-orange{
+    .bg-violet,.bg-red,.bg-orange,.bg-cash{
 
         color: #fff;
         width: 40px;
@@ -46,6 +46,9 @@
     }
     .bg-orange{
         background: #ffc36d !important;
+    }
+    .bg-cash{
+        background: #FF5722 !important;
     }
     .title{
         font-size: 1.3em;
@@ -124,6 +127,19 @@
                         </div>
                     </div>
                     <div class="number">0.00</div>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="bg">
+                    <div class="icon bg-cash"><i class="layui-icon layui-icon-rmb"></i></div>
+                    <div class="title">可提现金额
+                        <div class="layui-progress">
+                            <div class="layui-progress-bar layui-bg-green" lay-percent="30%"></div>
+                        </div>
+                    </div>
+                    <div class="number">¥ {$user.money}
+                        <a  href="javascript:openIframe({title:'余额提现申请',content:'/business/user/withdraw',area:['600px','400px']});" class="layui-btn layui-btn-danger">提现</a>
+                    </div>
                 </div>
             </div>
         </div>
