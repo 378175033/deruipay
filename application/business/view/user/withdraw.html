@@ -1,9 +1,4 @@
 {include file='common:head'}
-<style>
-.layui-layer-msg{
-    display: none;
-}
-</style>
 <form class="layui-form mt20 layui-col-xs11">
     <div class="layui-form-item">
         <label class="layui-form-label">提现金额</label>
@@ -42,17 +37,17 @@
             money: function(value) {
                 if( value ===  "" ){
                     toastr.error( "输入申请提现金额" );
-                    return "输入申请提现金额";
+                    return;
                 }
                 if( value > "{$user.money}"){
                     toastr.error( "提现金额不能超过{$user.money}" )
-                    return "提现金额不能超过{$user.money}";
+                    return;
                 }
             },
             type: function (value) {
                 if( value === "0" ){
                     toastr.error( "请选择提现到账方式" );
-                    return "请选择提现到账方式";
+                    return;
                 }
             }
         });
