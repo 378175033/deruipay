@@ -21,10 +21,53 @@
         font-size: 48px;
     }
     .order-list ul{
-        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
     }
     .order-list ul li{
+        width: 19.2%;
+        padding: 0 20px;
+        border-bottom: 3px solid #2F4056;
+        border-radius: 2px;
+        background-color: #fff;
+        margin-bottom: 10px;
+    }
+    .order-list ul li:nth-child(1){
+        border-bottom: 3px solid #5FB878;
+    }
+    .order-list ul li:nth-child(2){
+        border-bottom: 3px solid #5FB878;
+    }
+    .order-list ul li:nth-child(4){
+        border-bottom: 3px solid #FFB800;
+    }
+    .order-list ul li:nth-child(5){
+        border-bottom: 3px solid #2F4056;
+    }
+    .order-list .ol-head{
         line-height: 32px;
+        border-bottom: 1px dashed #ccc;
+        padding: 10px 0;
+    }
+    .ol-head h3{
+        font-size: 21px;
+        font-weight: 700;
+    }
+    .ol-head p{
+        color: #888;
+        display: inline-block;
+    }
+
+    .ol-body{
+        line-height: 48px;
+        color: #888;
+    }
+    .ol-body span,.ol-head span{
+        font-size: 21px;
+        color: #444;
+        margin-right: 5px;
     }
     .green{
         color: #5FB878;
@@ -32,8 +75,9 @@
     .red{
         color: #FF5722;
     }
+
 </style>
-<link rel="stylesheet" href="http://at.alicdn.com/t/font_1283160_phlqj68hbw.css">
+<link rel="stylesheet" href="http://at.alicdn.com/t/font_1283160_kfsc3aamc2.css">
 <div class="layui-container mt20">
     <div class="layui-row">
         <div class="layui-col-md12 layui-card">
@@ -64,39 +108,56 @@
                             <span>商户管理</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{:url('setting/index')}">
+                            <i class="fa fa-peizhi"></i>
+                            <span>免签配置</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 <div class="layui-container mt20">
-    <div class="layui-row">
-        <div class="layui-col-md12 layui-card">
-            <div class="layui-card-header">订单概况</div>
-            <div class="layui-card-body order-list">
-                <ul class="layui-col-md4">
-                    <li>今日订单数: <span> {$order.t.total}</span></li>
-                    <li>今日完成订单数: <span> {$order.t.finish}</span></li>
-                    <li>今日未完订单数: <span> {$order.t.unFinish}</span></li>
-                    <li>今日完成订单金额: <span class="red"> {$order.t.amount}</span></li>
-                    <li>今日未完成订单金额: <span class="green"> {$order.t.unAmount}</span></li>
-                </ul>
-                <ul class="layui-col-md4">
-                    <li>昨日订单数: <span> {$order.y.total}</span></li>
-                    <li>昨日完成订单数: <span> {$order.y.finish}</span></li>
-                    <li>昨日未完订单数: <span> {$order.y.unFinish}</span></li>
-                    <li>昨日完成订单金额: <span class="red"> {$order.y.amount}</span></li>
-                    <li>昨日未完成订单金额: <span class="green"> {$order.y.unAmount}</span></li>
-                </ul>
-                <ul class="layui-col-md4">
-                    <li>总订单数: <span> {$order.a.total}</span></li>
-                    <li>总完成订单数: <span> {$order.a.finish}</span></li>
-                    <li>总未完订单数: <span> {$order.a.unFinish}</span></li>
-                    <li>总完成订单金额: <span class="red"> {$order.a.amount}</span></li>
-                    <li>总未完成订单金额: <span class="green"> {$order.a.unAmount}</span></li>
-                </ul>
-            </div>
-        </div>
+    <div class="order-list">
+        <ul>
+            <li>
+                <div class="ol-head">
+                    <h3>我的盈利</h3>
+                    <p>总共收入金额</p>
+                </div>
+                <div class="ol-body">
+                    <span>{$list.total}</span>元
+                </div>
+            </li>
+            {volist name="$list.withdraw" id="tx"}
+            <li>
+                <div class="ol-head">
+                    {if condition="$tx.status eq 0"}
+                        <h3>待处理提现申请</h3>
+                    {else}
+                        <h3>已处理提现申请</h3>
+                    {/if}
+                    <span>{$tx.amount|default="0"}</span><p>提现金额</p>
+                </div>
+                <div class="ol-body">
+                    <span>{$tx.num|default="0"}</span>条订单
+                </div>
+            </li>
+            {/volist}
+            {volist name="$list.passageway" id="w"}
+            <li>
+                <div class="ol-head">
+                    <h3>{$w.name}</h3>
+                    <span>{$w.amount}</span><p>今日交易</p>
+                </div>
+                <div class="ol-body">
+                    <span>{$w.num}</span>设备
+                </div>
+            </li>
+            {/volist}
+        </ul>
     </div>
 </div>
 <div class="layui-container mt20">

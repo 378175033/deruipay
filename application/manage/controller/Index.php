@@ -31,18 +31,45 @@ class Index extends Manage
      */
     public function welcome()
     {
-        //获取订单概况
-        $field = "status,count(*) total,sum(amount) amount";
-        //今日订单
-        $t = model('order')->field( $field )->whereTime( "create_time", 'today')->group("status")->select();
-        $order['t'] = $this->formatData( $t );
-        //昨日订单
-        $y = model('order')->field( $field )->whereTime( "create_time", 'yesterday')->group("status")->select();
-        $order['y'] = $this->formatData( $y );
-        //总订单
-        $a = model('order')->field( $field )->group("status")->select();
-        $order['a'] = $this->formatData( $a );
-        $this->assign( 'order', $order);
+        //获取订单总共的收入
+        $model = model( "order");
+        $where = ['status'=>1];
+        //总入金
+        $total = $model->where( $where)->sum( "amount");
+        //提现申请
+        $withdraw[0] = model("withdraw")->field( "status,sum(money) amount,count(*) num")->where(['status'=>0])->group( "status")->find();
+        $withdraw[1] = model("withdraw")->field( "status,sum(money) amount,count(*) num")->where(['status'=>1])->group( "status")->find();
+        //通道订单
+        $d =  "`create_time` BETWEEN ".strtotime( date("Y-m-d") )." AND ".strtotime( date("Y-m-d",strtotime("+1 day")) );
+        $passageway = model('passageway')->alias('p')->join([
+            ['user_passageway up','up.passageway_id = p.id','left'],
+        ])->where([
+            'p.status'=>1
+        ])->field([
+            "(SELECT COUNT(*) AS tp_count FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND ".$d." LIMIT 1)" =>'num',
+            "IFNULL((SELECT SUM(amount) AS tp_sum FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND ".$d." LIMIT 1),0.00)" =>'amount',
+            "p.name"
+        ])->group("p.id")->select();
+//        echo $model->getLastSql();
+        $list = [
+            'total' => $total,
+            'withdraw' => $withdraw,
+            'passageway'   => $passageway
+        ];
+        $this->assign( "list",$list );
+
+//        //获取订单概况
+//        $field = "status,count(*) total,sum(amount) amount";
+//        //今日订单
+//        $t = model('order')->field( $field )->whereTime( "create_time", 'today')->group("status")->select();
+//        $order['t'] = $this->formatData( $t );
+//        //昨日订单
+//        $y = model('order')->field( $field )->whereTime( "create_time", 'yesterday')->group("status")->select();
+//        $order['y'] = $this->formatData( $y );
+//        //总订单
+//        $a = model('order')->field( $field )->group("status")->select();
+//        $order['a'] = $this->formatData( $a );
+//        $this->assign( 'order', $order);
         return $this->fetch();
     }
 
