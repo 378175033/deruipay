@@ -124,7 +124,7 @@
         <ul>
             <li>
                 <div class="ol-head">
-                    <h3>我的盈利</h3>
+                    <h3>公司盈利</h3>
                     <p>总共收入金额</p>
                 </div>
                 <div class="ol-body">
@@ -223,26 +223,27 @@
                 type:'line',
                 stack: '总量',
                 areaStyle: {},
-                data:[120, 132, 101, 134, 90, 230, 210]
+                data:[]
             },
             {
                 name:'完成订单金额',
                 type:'line',
                 stack: '总量',
                 areaStyle: {},
-                data:[220, 182, 191, 234, 290, 330, 310]
+                data:[]
             }
         ]
     };
     function reQu()
     {
-        $.post('ajax_order',{type:'begin'},function ( res ) {
+        $.post('ajax_order',{},function ( res ) {
             console.log( res )
             if( res.code === 1 ){
                 option.xAxis[0].data = res.data.time;
-                option.series[0].data = res.data.time;
-                option.series[1].data = res.data.time;
+                option.series[0].data = res.data.a;
+                option.series[1].data = res.data.b;
             }
+            console.log( option )
         })
     }
     setInterval(function () {

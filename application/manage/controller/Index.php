@@ -101,38 +101,30 @@ class Index extends Manage
 
     public function ajax_order()
     {
-        if( $this->request->isPost() && $this->request->isAjax() )
-        {
-            $type = $this->request->param('type', '');
-            if( $type == "begin"){
-                $m = time()-time()%5;
-                $time = [
-                    date( "H:i:s", $m-30),
-                    date( "H:i:s", $m-25),
-                    date( "H:i:s", $m-20),
-                    date( "H:i:s", $m-15),
-                    date( "H:i:s", $m-10),
-                    date( "H:i:s", $m-5),
-                    date( "H:i:s", $m),
-                ];
-                $field = "sum(amount) amount";
-                $where = [
-                    'status' => 1
-                ];
-                $list['finish'] = model( "order")->where( $where )->field( $field )->whereTime("create_time","-5 s")->find()['amount'];
-                $list['total'] = model( "order")->where( $where )->field( 'status,count(*) total,sum(amount) amount' )->whereTime("create_time","d")->find()['amount'];
-            } else {
-                $time = date('-5s');
-                $field = "sum(amount) amount";
-                $where = [
-                    'status' => 1
-                ];
-                $list['finish'] = model( "order")->where( $where )->field( $field )->whereTime("create_time","-5 s")->find()['amount'];
+
+            $model = model("order");
+            $m = time()-time()%5;
+            $time = [
+                date( "H:i:s", $m-30),
+                date( "H:i:s", $m-25),
+                date( "H:i:s", $m-20),
+                date( "H:i:s", $m-15),
+                date( "H:i:s", $m-10),
+                date( "H:i:s", $m-5),
+                date( "H:i:s", $m),
+            ];
+            $where = [
+                'status' => 1
+            ];
+            $comp = $total = [];
+            foreach ( $time as $key => $val ){
+                $comp[] = $model->where( $where )->whereTime("create_time",'<',$val)->whereTime("create_time","d")->sum("amount");
+                $total[] = $model->whereTime("create_time",'<',$val)->whereTime("create_time","d")->sum("amount");
             }
             $list['sql'] = model( "order")->getLastSql();
             $data['time'] = $time;
-            $data['list'] = $list;
+            $data['b'] = $comp;
+            $data['a'] = $total;
             $this->success( "数据获取成功！", "", $data );
-        }
     }
 }
