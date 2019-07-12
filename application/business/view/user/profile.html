@@ -28,19 +28,31 @@
         </table>
     </div>
 </div>
+<style>
+    .safe{
+        display: none;
+    }
+</style>
 <script type="text/html" id="safe">
     <form class="layui-form mt20 layui-col-md10">
-        <div class="layui-form-item">
+        <div class="layui-form-item verify">
             <label class="layui-form-label">获取验证码</label>
             <div class="layui-input-block">
                 <button class="send_sms layui-btn layui-btn-primary" type="button">点击获取验证码</button>
                 <span style="margin-left: 10px;">查看{$user.mobile}短信</span>
             </div>
         </div>
-        <div class="layui-form-item">
+        <div class="layui-form-item verify">
             <label class="layui-form-label">验证码</label>
             <div class="layui-input-block">
                 <input class="layui-input" name="verify" placeholder="获取到的手机验证码">
+                <input type="text" name="safePass" placeholder="请设置您的支付安全密码" class="safe layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item safe">
+            <label class="layui-form-label">安全密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="safe_pass" placeholder="请设置您的支付安全密码" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -105,37 +117,58 @@
                 type : 1,
                 title: "设置安全密码",
                 area: ['600px','300px'],
+                shade: 0,
                 content:$('#safe').html()
             })
         })
     })
-    var m = 60;
-    function smsTimeout()
-    {
-        var index = setInterval(function () {
-            m--;
-            if( m < 0 ){
-                clearInterval( index );
-                m = 60;
-                $('.send_sms').removeClass("layui-btn-disabled").addClass("layui-btn-primary");
-                $('.send_sms').html( "点击重新获取验证码" );
-            } else{
-                $('.send_sms').removeClass("layui-btn-primary").addClass("layui-btn-disabled");
-                $('.send_sms').html( m+"秒后可重新获取");
-            }
-        },50)
-    }
     $(document).ready(function () {
+        var m = 60;
         $(document).on( "click", ".send_sms",function () {
-            if( $(this).hasClass("layui-btn-primary") ){
-                smsTimeout();
-            }
+            var that = $(this);
+            that.removeClass("layui-btn-primary").addClass("layui-btn-disabled").attr("disabled", true);
+            $.post('/sms.html',{mobile:"{$user.mobile}"},function (res) {
+                console.log( res )
+                if( res.code !== 1 ){
+                    toastr.error( res.msg );
+                }
+            })
+            var intval = setInterval(function () {
+                m--;
+                if( m < 0 ){
+                    clearInterval( intval );
+                    m = 60;
+                    that.removeClass("layui-btn-disabled").addClass("layui-btn-primary").attr("disabled", false);
+                    that.html( "获取验证码" );
+                } else {
+                    that.html( "重新获取("+m+")");
+                }
+            },1000)
         })
     })
 
     layui.use('form',function () {
         form = layui.form;
-        form.on("submit(demo)",function () {
+        form.on("submit(demo)",function ( data ) {
+            console.log( data );
+            data.field.act="safePass";
+            $.post( "",data.field,function (res) {
+                console.log( res )
+                if( res.code === 1 ){
+                    toastr.success( res.msg,function () {
+                        setTimeout( function () {
+                            $('.verify').hide();
+                            $('.safe').show();
+                            if( res.data == 1){
+                                layer.closeAll();
+                            }
+                        },1200)
+                    });
+                } else {
+                    toastr.error( res.msg );
+                }
+
+            })
             return false;
         })
     })

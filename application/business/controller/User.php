@@ -53,6 +53,27 @@ class User extends Business
                     }
                     $this->error( "数据写入错误！");
                     break;
+                case "safePass"://校验手机验证码
+                    //校验手机验证码
+                    $data = $this->request->param( );
+                    if( !checkSms( $data['verify'] ) ){
+                        $this->error( "验证码错误！");
+                    }
+                    $safePass = $this->request->param("safe_pass","");
+                    if( empty( $safePass ) ){
+                        $this->success("校验成功,请输入校验密码");
+                    }
+                    if( !preg_match( '/^(\w*(?=\w*\d)(?=\w*[A-Za-z])\w*){8,16}$/', $safePass) ){
+                        $this->error("请输入8-16位字符（英文/数字/符号）至少两种或下划线组合");
+                    }
+                    $id = $this->user['id'];
+                    $res = $this->model->allowField(['safe_pass'])->save($data,['id'=>$id]);
+                    if( $res ){
+                        session( "smsCode", null);
+                        $this->success( "安全密码设置成功！","",1);
+                    }
+                    $this->error( "请求错误！请稍后再试！");
+                    break;
             }
         }
         return $this->fetch();

@@ -121,7 +121,6 @@ class Index extends Manage
                 $comp[] = $model->where( $where )->whereTime("create_time",'<',$val)->whereTime("create_time","d")->sum("amount");
                 $total[] = $model->whereTime("create_time",'<',$val)->whereTime("create_time","d")->sum("amount");
             }
-            $list['sql'] = model( "order")->getLastSql();
             $data['time'] = $time;
             $data['b'] = $comp;
             $data['a'] = $total;
