@@ -23,7 +23,7 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        $this->business = $this->request->param('business', 1);
+        $this->business = session('business')['id'];
     }
 
     public function index()
@@ -37,7 +37,7 @@ class Pay extends Controller
             if( empty( $id ) ) $this->error( "订单参数错误！");
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
-                $this->error('未开通此通道');
+                $this->error('该通道已被禁用，请联系网站管理员！');
             }
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
@@ -78,6 +78,7 @@ class Pay extends Controller
     public function pay()
     {
         $request = $this->request;
+        $business = $this->business;
         $data = model('order')->find($request->param('id',0,'intval'));
         if( empty( $data ) ) $this->error( "订单参数错误！");
 //        $this->verify($request, 'stage2');
@@ -86,10 +87,15 @@ class Pay extends Controller
         } else{
             $this->assign( 'order', $data);
             $where = [
-                'id' => $data['user_passageway_id']
+                'id'    => $data['user_passageway_id'],
+                'status'=> 1,
+                'business_id'=>$business,
             ];
-            $passageway = model( 'UserPassageway')->where( $where )->value( "passageway_id");
-            $this->assign("way",model('passageway')->find( $passageway ) );
+            $passageway = model( 'UserPassageway')
+                ->where('status',1)
+                ->where( $where )
+                ->value( "passageway_id");
+            $this->assign("way",model('passageway')->where('status',1)->find( $passageway ));
             switch ( $passageway ) {
                 case 1:
                     $api = new \app\manage\controller\Api();
@@ -122,155 +128,10 @@ class Pay extends Controller
                     return $this->fetch();
                     break;
                 default:
-                    $this->error('通道错误！');
+                    $this->error('该通道已被禁用，请联系网站管理员！');
             }
         }
     }
-//    public function index()
-//    {
-//        $business = $this->business;
-//        $request = $this->request;
-//        $banks = config('daxiangpay')['PAY_BANK_LIST'];
-//        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
-//        if ($request->isAjax() && $request->isPost()) {
-//            $money = $request->post("money", 0);
-//            $type = $request->post("type", 0, 'intval');
-//
-//            $this->verify($request, $type);
-//            $where = [
-//                'a.delete_time' => 0,
-//                'a.status' => 1,
-//                'a.id' => $type,
-//                'b.business_id' => $business,
-//            ];
-//            $passage = db::name('passageway')
-//                ->alias('a')
-//                ->join([
-//                    ['user_passageway b', 'a.id = b.passageway_id', 'left']
-//                ])
-//                ->where($where)
-//                ->select();
-//            $data = [
-//                'title' => '测试支付1',
-//                'money' => $money,
-//                'out_trade_no' => $outTradeNo,
-//            ];
-//            $str = [
-//                'out_trade_no' => $request->post('Ikey') ? $request->post('Ikey') : $outTradeNo,
-//                'business_id' => $business,
-//                'order_id' => $outTradeNo,
-//                'user_passageway_id' => $passage['0']['id'],
-//                'pay_from' => 0,
-//                'amount' => $money,
-//                'create_time' => time(),
-//                'status' => 3,
-//                'back_status' => 0,
-//                'pay_info' => json_encode($data, true),
-//            ];
-//            if ($type == 10) {
-//                $data = [
-//                    'money' => $money,
-//                    'bankname' => $banks[$request->post('bank_type')],
-//                    'bankcardid' => $request->post('bank_code'),
-//                    'bankfullname' => $request->post('name'),
-//                    'bankidc' => $request->post('idCard'),
-//                    'bankmobile' => $request->post('mobile'),
-//                    'type' => $request->post('type'),
-//                    'screen' => ismobile()?2:1,
-//                    'order_id' => $outTradeNo,
-//                ];
-//            }
-////            if($type == 11 || $type == 12){
-////                $freeApi = new FreeApi();
-////                $freeApi->closeOrder($passage);
-////                $count = Db('order')->whereIn('user_passageway_id',$passage[0]['id'])->where('status',3)->count();
-////                $str['original_price'] = $money;
-////                $pay_money = $money-rand(1,5)/100*$count;
-////                if($pay_money<=0){
-////                    $pay_money = 0.01;
-////                }
-////                $str['amount'] = $pay_money;
-////            }
-//            $order_add = Db('order')->insert($str);
-//            if (!$order_add) $this->error("拉取支付失败");
-//            switch ($passage[0]['pay_type']) {
-//                case 'alipay':
-//                    $api = new \app\manage\controller\Api();
-//                    $res = $api->Face($data);
-//                    if ($res['code'] == 1) {
-//                        $this->success("获取二维码成功！", '', $res['data']);
-//                    } else {
-//                        $this->error($res['msg']);
-//                    }
-//                    break;
-//                case 'wechat':
-//
-//                    break;
-//                case 'union':
-//                    $api = new daxiangpay();
-//                    $api->pay($data, false);
-//                    break;
-//                case "free_wechat":
-//                    $data['type'] = "1";
-//                    $api = new Api();
-//                    $res = $api->free_pay($data);
-//                    if ($res['code'] == 1) {
-//                        $this->success("二维码获取成功！", '', $res['data']);
-//                    } else {
-//                        $this->error($res['msg']);
-//                    }
-//                    break;
-//                case "free_alipay":
-//                    $data['type'] = "2";
-//                    $api = new Api();
-//                    $res = $api->free_pay($data);
-//                    if ($res['code'] == 1) {
-//                        $this->success("二维码获取成功！", '', $res['data']);
-//                    } else {
-//                        $this->error($res['msg']);
-//                    }
-//                    break;
-//                default:
-//                    $this->error("暂无该支付方式！请重新选取");
-//            }
-//        } elseif ($request->param('type') == 10) {
-//            $api = new daxiangpay();
-//            $banks = config('daxiangpay')['PAY_BANK_LIST'];
-//            $data = $request->param();
-//            $data['bankname'] = $banks[$request->param('bank_type')];
-//            $data['bankcardid'] = $request->param('bank_code');
-//            $data['bankfullname'] = $request->param('name');
-//            $data['bankidc'] = $request->param('idCard');
-//            $data['bankmobile'] = $request->param('mobile');
-//
-//            $order = Db('order')->where('out_trade_no', $request->param('Ikey'))->find();
-//            if (!$order) {
-//                $this->error('查无订单');
-//            }
-//            $data['order_id'] = $order['order_id'];
-//            $data['screen'] = ismobile()?2:1;
-//            $api->pay($data);
-//        } else {
-//            //获取支付通道
-//            $where = [
-//                'p.delete_time' => 0,
-//                'p.status' => 1,
-//                'user_passageway.status' => 1,
-//                'user_passageway.business_id' => $business,
-//            ];
-//            $way = db('passageway')
-//                ->field('p.id,p.name')
-//                ->alias('p')
-//                ->join('user_passageway', 'user_passageway.passageway_id = p.id')
-//                ->where($where)
-//                ->select();
-//            $this->assign('way', $way);
-//            $banks = config('daxiangpay')['PAY_BANK_LIST'];
-//            $this->assign('banks', $banks);
-//            return $this->fetch();
-//
-//        }
-//    }
 
     public function spage()
     {
