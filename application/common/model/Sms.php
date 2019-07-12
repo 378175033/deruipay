@@ -64,6 +64,7 @@ class Sms extends Model
         if( $response['stat'] == 100 ){
             session( 'smsCode', md5( $code ));
         }
+        $response['code'] = $code;
         return $response;
 
 

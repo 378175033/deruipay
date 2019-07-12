@@ -36,7 +36,7 @@ class Sms extends Controller
             }
             $res = model( "Sms")->sendCode( $mobile, $content);
             if( $res['stat'] == 100 ){
-                $this->success( $res['message'] );
+                $this->success( $res['message'],'',$res['code'] );
             }
             $this->error( $res['message'] );
         }
