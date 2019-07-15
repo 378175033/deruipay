@@ -213,10 +213,18 @@ class User extends Business
     public function withdraw()
     {
         $id = $this->user['id'];
+        //校验安全密码
+        if( empty( $this->user['safe_pass'] ) ){
+            $this->error( "请前往设置安全密码！", url("user/profile") );
+        }
         if( $this->request->isAjax() && $this->request->isPost() )
         {
             $param = $this->request->param();
             $param['bus_id'] = $id;
+            //判断安全密码是否正确
+            if( request()->param('safe_pass', "") != $this->user['safe_pass'] ){
+                $this->error( "支付安全密码错误！");
+            }
             $res = model('withdraw')->doInsert( $param );
             if( empty( $res['status'] ) ){
                 $this->error( $res['msg'] );
