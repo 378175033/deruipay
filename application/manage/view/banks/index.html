@@ -54,6 +54,9 @@
 <script type="text/html" id="sort">
     <input type="number" class="layui-input sort-order" style="height: 28px" value="{{ d.sort }}" data-id="{{d.id}}">
 </script>
+<script type="text/html" id="name">
+    <img src="{{d.picture}}" alt="">
+</script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -80,8 +83,8 @@
                 [
                     {field: 'id',title: 'ID'},
                     {field: 'name',title: '银行名称'},
-                    // {field: 'pay_type',title: '银行图片'},
-                    {field: 'type',title: '银行类别'},
+                    {field: 'picture',title: '银行图片',templet:'#name'},
+                    // {field: 'type',title: '银行类别'},
                     {field: 'status',title: '是否可用',templet: '#status'},
                     {field: 'operation',title: '操作',toolbar: '#barDemo',minWidth: 400}
                 ]

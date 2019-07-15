@@ -123,7 +123,7 @@
     margin: 0.08rem auto 0.13rem auto;
 }
 
-.login-forget,.login-regist{
+.login-forget,.login-regist,.login-remember{
     color: rgba(0,0,0,0.4);
     font-size: 0.07rem;
     width: 50%;
@@ -131,8 +131,17 @@
     text-align:left;
 }
 
-.login-regist{
+.login-forget{
     text-align: right;
+}
+
+.login,.register{
+    font-size: 0.07rem;
+    color:#1B92F9
+}
+.checkbox{
+    width: 0.07rem;
+    height: 0.07rem;
 }
 
 #choose{

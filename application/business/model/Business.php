@@ -111,4 +111,31 @@ class Business extends Model
             return false;
         };
     }
+
+    /**
+     * 2019/7/15 0015 16:30
+     * @param $data
+     * @return array
+     * 注册
+     */
+    public function register($data){
+        $msg = msg();
+        $tmp['salt'] = getSalt();
+        $tmp['password'] = encode_password($data['password'], $tmp['salt'] );
+        $tmp['create_time'] = time();
+        $tmp['status'] = 0;
+        $tmp['shop_sn'] = Db::name('business')->max("shop_sn")+1;
+        $tmp['name'] = '得瑞支付'.$tmp['shop_sn'];
+        $tmp['mobile'] = $data['mobile'];
+        $res = Db::name('business')->insert($tmp);
+        if($res){
+            $business = Db::name('business')->where('mobile',$data['mobile'])->find();
+            session("business",$business);
+            $msg['msg'] = '注册商户成功';
+            $msg['status'] = 1;
+        }else{
+            $msg['msg'] = '注册商户失败';
+        }
+        return $msg;
+    }
 }

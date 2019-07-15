@@ -22,7 +22,7 @@
     </div>
     <!--<div class="login-now">立即接入</div>-->
     <div class="login-container">
-        <p class="login-user">商户登录</p>F
+        <p class="login-user" data-value="0" v-model="model.name">商户登录</p>
         <div class="login-input">
             <img class="login-icon" src="__IMG__/index_account.png" />
             <input class="login-account" v-model="model.mobile" placeholder="请输入手机号" />
@@ -31,15 +31,32 @@
             <img class="login-icon" src="__IMG__/index_psw.png" />
             <input type="password" class="login-account" v-model="model.password" placeholder="请输入账号密码" />
         </div>
+        <div class="login-input again" src="__IMG__/index_psw.png" style="display: none">
+            <img class="login-icon" src="__IMG__/index_psw.png" />
+            <input type="password" class="login-account" v-model="model.passwords" placeholder="请再次输入账号密码"/>
+        </div>
         <div class="login-input">
             <input class="login-msg" v-model="model.code" placeholder="请输入验证码" />
             <button class="login-send" value="0" @click="sendSms()">{{content}}</button>
             <!--<button class="login-send" value="1" @click="sendSms()" v-if="isDisabled">{{content}}</button>-->
         </div>
         <button class="login-in" @click="login()">确定</button>
-        <div class="login-fun">
-            <a href="forget.html" class="login-forget">忘记密码</a>
-            <a href="register.html" class="login-regist">商户注册</a>
+        <div class="login-fun reg-login" style="display: none">
+            <a href="#" class="login-forget" style="width: 100%;text-align: center"> 已有账号?
+                <span class="login" @click="logins()">立即登录</span>
+            </a>
+        </div>
+        <div class="login-fun login-reg">
+            <a class="login-remember">
+                <input type="checkbox" name="like" value="" checked class="checkbox">
+                记住密码
+            </a>
+            <a href="forget.html" class="login-forget">忘记密码？</a>
+        </div>
+        <div class="login-fun login-reg">
+            <a href="#" class="login-regist" style="width: 100%;text-align: center" @click="register()">还没有账号？
+                <span class="register">立即注册</span>
+            </a>
         </div>
     </div>
 
@@ -176,6 +193,20 @@
                 }
             },
             methods: {
+                register(){
+                    $('.again').show();
+                    $('.login-user').text('商户注册');
+                    $('.login-user').attr('data-value',1);
+                    $('.login-reg').hide();
+                    $('.reg-login').show();
+                },
+                logins(){
+                    $('.again').hide();
+                    $('.login-user').text('商户登录');
+                    $('.login-user').attr('data-value',0);
+                    $('.login-reg').show();
+                    $('.reg-login').hide();
+                },
                 sendSms(){
                     if($('.login-send').attr('isDisabled') == "isDisabled"){
 
@@ -240,6 +271,20 @@
                         layer.msg('密码不能为空！');
                         return;
                     }
+                    var value = $(".login-user").attr('data-value');
+
+                    if(value === '1'){
+
+                        if(lg.password !== lg.passwords){
+                            layer.msg('两次密码不一样，请重新输入');
+                            return;
+                        }
+                        this.registerPost(lg);//注册
+                    }else{
+                        this.loginPost(lg);//登录
+                    }
+                },
+                loginPost(lg){
                     var data = {
                         'mobile':lg.mobile,
                         'code':lg.code,
@@ -256,8 +301,26 @@
                             layer.msg(res.msg,{icon:2});
                         }
                     })
+                },
+                registerPost(lg){
+                    var data = {
+                        'mobile':lg.mobile,
+                        'code':lg.code,
+                        'password':lg.password,
+                    }
+                    $.post('{:url("index/register")}',data,function (res) {
+                        console.log(res);
+                        if(res.code == 1){
+                            layer.msg( "登录成功！",{icon:1})
+                            setTimeout(function () {
+                                window.location.href = res.url;
+                            },1200)
+                        }else{
+                            layer.msg(res.msg,{icon:2});
+                        }
+                    })
                 }
-            }
+            },
         });
     });
 </script>
