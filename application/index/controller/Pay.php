@@ -41,8 +41,12 @@ class Pay extends Controller
             $data['user_passageway_id'] = $up['id'];
             $res = $this->create_order($data);
             if( $res ) {
-                $id = model('Order')->where('order_id',$data['order_id'])->value('id');
-                $this->success('成功', url('pay',array( "id"=> $id )));
+                $order = model('Order')->where('order_id',$data['order_id'])->find();
+                $moneys = Pay::getArrivalPrice($order);
+                model('Order')
+                    ->where('order_id',$data['order_id'])
+                    ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
+                $this->success('成功', url('pay',array( "id"=> $order['id'] )));
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
