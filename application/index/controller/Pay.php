@@ -33,26 +33,21 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isAjax() && $request->isPost()) {
-            $id =  $request->param('id',0,'intval');
-            if( empty( $id ) ) $this->error( "订单参数错误！");
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('该通道已被禁用，请联系网站管理员！');
             }
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
-            $res = model( "Order")->allowField( true )->isUpdate( true )->save( $data );
+            $res = $this->create_order($data);
             if( $res ) {
+                $id = model('Order')->where('order_id',$data['order_id'])->value('id');
                 $this->success('成功', url('pay',array( "id"=> $id )));
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
             $this->assign('way', $passageway->getList());
-            if (!$order_id = $this->create_order($request)) {
-                $this->error('订单创建失败！');
-            }
-            $order = Db::name('order')->where('order_id',$order_id)->field("id,order_id,title")->find();
-            $this->assign('order', $order);
+            $this->assign('name', session('business')['name']);
             return $this->fetch();
         }
     }
@@ -138,21 +133,22 @@ class Pay extends Controller
         return $this->fetch();
     }
 
-    public function create_order(Request $request)
+    public function create_order($data)
     {
-        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $str = [
             'business_id' => $this->business,
-            'order_id' => $outTradeNo,
-            'out_trade_no' => $outTradeNo,
+            'order_id' => $data['order_id'],
+            'out_trade_no' => $data['order_id'],
             'pay_from' => 1,
             'create_time' => time(),
+            'user_passageway_id' => $data['user_passageway_id'],
+            'amount' => $data['amount'],
             'status' => 3,
             'title' => session("business")['name'],
             'back_status' => 0,
         ];
-        if (Db('order')->insert($str)) {
-            return $outTradeNo;
+        if ($order = Db('order')->insert($str)) {
+            return $order;
         } else {
             return false;
         }
