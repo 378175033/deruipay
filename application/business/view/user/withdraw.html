@@ -18,6 +18,12 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">安全密码验证</label>
+        <div class="layui-input-block">
+            <input class="layui-input" name="safe_pass" placeholder="请输入您的安全密码">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -54,7 +60,6 @@
         });
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
-                console.log( res )
                 if( res.code === 1 ){
                     toastr.success( res.msg ,function () {
                         setTimeout( function () {
