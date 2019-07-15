@@ -1,0 +1,93 @@
+{include file='common:head'}
+<style>
+    .layui-form-label{
+        width: 300px;
+    }
+</style>
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        <li class="layui-this">网站设置</li>
+        <li>提现配置</li>
+    </ul>
+    <div class="layui-tab-content" style="background-color:#fff;">
+        <div class="layui-tab-item layui-show">1</div>
+        <div class="layui-tab-item">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单笔最小提现金额:</label>
+                    <div class="layui-input-inline"><input type="number" class="layui-input" name="min_withdraw" placeholder="最小提现金额" value="{:deploy('min_withdraw')}"></div>
+                    <label class="layui-form-label">单笔最大提现金额:</label>
+                    <div class="layui-input-inline"><input type="number" class="layui-input" name="max_withdraw" placeholder="最大提现金额" value="{:deploy('max_withdraw')}"></div>
+
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单日提现总金额:</label>
+                    <div class="layui-input-inline"><input type="number" class="layui-input" name="day_withdraw" placeholder="单日提现总金额" value="{:deploy('day_withdraw')}"></div>
+                    <label class="layui-form-label">单日提现总次数:</label>
+                    <div class="layui-input-inline"><input type="number" class="layui-input" name="rate_withdraw" placeholder="单日提现总次数" value="{:deploy('rate_withdraw')}"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">结算方式:</label>
+                    <div class="layui-input-block">
+                        <input type="radio" class="layui-input" name="way_withdraw" title="T+0（即时到账）" value="1" {if condition="deploy('way_withdraw') eq 1"}checked{/if}>
+                        <input type="radio" class="layui-input" name="way_withdraw" title="T+1（次日到账）" value="2" {if condition="deploy('way_withdraw') eq 2"}checked{/if}>
+                        <input type="radio" class="layui-input" name="way_withdraw" title="T+7（每周一结算）" value="3" {if condition="deploy('way_withdraw') eq 3"}checked{/if}>
+                        <input type="radio" class="layui-input" name="way_withdraw" title="T+30（每月一号计算）" value="4" {if condition="deploy('way_withdraw') eq 4"}checked{/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手续费--单笔提款比例:</label>
+                    <div class="layui-input-inline">
+                        <input type="number" step="0.01" class="layui-input" name="ratePay_withdraw" placeholder="单笔提款比例，默认为0.01" value="{:deploy('ratePay_withdraw')}">
+                    </div>
+                    <label class="layui-form-label">手续费--单笔提款收取费用:</label>
+                    <div class="layui-input-inline"><input type="number" class="layui-input" name="Pay_withdraw" placeholder="单笔提款收取费用" value="{:deploy('Pay_withdraw')}"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手续费扣除方式:</label>
+                    <div class="layui-input-block">
+                        <input type="radio" class="layui-input" name="payWay_withdraw" title="从到账金额扣除" value="1" {if condition="deploy('payWay_withdraw') eq 1"}checked{/if}>
+                        <input type="radio" class="layui-input" name="payWay_withdraw" title="从商户余额扣除" value="2" {if condition="deploy('payWay_withdraw') eq 2"}checked{/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">提款通道开启/关闭:</label>
+                    <div class="layui-input-block">
+                        <input type="radio" class="layui-input" name="open_withdraw" title="开启提款" value="1" {if condition="deploy('open_withdraw') eq 1"}checked{/if}>
+                        <input type="radio" class="layui-input" name="open_withdraw" title="关闭提款" value="0" {if condition="deploy('open_withdraw') eq 0"}checked{/if}>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">保存<i class="layui-icon layui-icon-add-circle"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['element','form'], function(){
+        var element = layui.element,form=layui.form;
+        form.on('submit(formDemo)', function(data){
+            $.post('{:url("insert")}',data.field,function (res) {
+                console.log( res );
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout(function () {
+                            // parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1200)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

@@ -212,6 +212,12 @@ class User extends Business
      */
     public function withdraw()
     {
+        //判断是否开启提现
+        $open_withdraw = deploy("open_withdraw");
+        if( empty($open_withdraw) || empty( $this->user['withdraw'] )){
+            $this->error( "未开启提现通道，请联系客服开启！", url("Index/welcome"));
+        }
+
         $id = $this->user['id'];
         //校验安全密码
         if( empty( $this->user['safe_pass'] ) ){
@@ -219,7 +225,7 @@ class User extends Business
         }
         if( $this->request->isAjax() && $this->request->isPost() )
         {
-            $param = $this->request->param();
+            $param = $this->request->post();
             $param['bus_id'] = $id;
             //判断安全密码是否正确
             if( request()->param('safe_pass', "") != $this->user['safe_pass'] ){

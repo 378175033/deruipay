@@ -54,6 +54,13 @@
         <i class="layui-icon layui-icon-delete"></i>
     </a>
 </script>
+<script type="text/html" id="withdraw">
+    {{#  if(d.withdraw == 1){ }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs withdraw-toggle" data-value="0" data-id="{{ d.id }}" data-notice="关|开" title="关闭提现通道">开</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs withdraw-toggle" data-value="1" data-id="{{ d.id }}" data-notice="关|开" title="开启提现通道">关</a>
+    {{#  } }}
+</script>
 <script type="text/html" id="status">
     <div>
         {{#  if(d.status == 1){ }}
@@ -90,6 +97,30 @@
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
+    $(document).on('click','.withdraw-toggle',function () {
+        var id = parseInt( $(this).data('id') );
+        var value = parseInt ( $(this).data('value') );
+        var that = $(this);
+        var notice = $(this).data('notice') ? $(this).data('notice') : "隐藏|显示";
+        notice = notice.split("|");
+        $.post('changeStatus',{id:id,value:value,field:'withdraw'},function ( res ) {
+            if( res.code ===  1 ){
+                toastr.success( res.msg ,function () {
+                    if( value === 1 ){
+                        that.removeClass('layui-btn-danger').addClass('layui-btn-normal');
+                        that.html(notice[1]);
+                        that.data('value', 0)
+                    } else {
+                        that.removeClass('layui-btn-normal').addClass('layui-btn-danger');
+                        that.html(notice[0]);
+                        that.data('value', 1)
+                    }
+                })
+            } else {
+                toastr.error( res.msg )
+            }
+        })
+    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,
@@ -132,6 +163,7 @@
                     {field: 'mobile',title: '手机号码'},
                     {field: 'last_login_time',title: '商户最近登录时间'},
                     {field: 'money',title: '商户余额',templet: '#money',width:430},
+                    {field: 'withdraw',title: '提现',templet: '#withdraw',width:60},
                     {field: 'sort',title: '排序',templet:'#sort'},
                     {field: 'status',title: '状态',templet: '#status'},
                     {field: 'create_time',title: '添加时间'},
