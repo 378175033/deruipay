@@ -27,6 +27,10 @@ class Withdraw extends Model
             //将余额返回账户
             $old_money = model('business')->where( 'id',$data['bus_id'])->value( 'money');
             model( "business")->changeMoney(  $data['money'], $old_money+$data['money'], $data['bus_id'], 4);
+            //如果是扣除余额的方式 返回手续费
+            if( $data['fee_type'] == 2){
+                model( "business")->changeMoney(  $data['fee'], $old_money+$data['money']+$data['fee'], $data['bus_id'], 6);
+            }
         }
     }
 }

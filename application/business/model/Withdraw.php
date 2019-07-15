@@ -28,6 +28,23 @@ class Withdraw extends Model
      */
     public function checkData( $param )
     {
+
+        $money = $param['money'];
+        //判断是否足够提现最小金额
+        if( $money < $max = deploy( "min_withdraw") ) return msg( "单次提现金额不能少于".$max);
+        //判断是否超出提现最大金额
+        if( $money > $max = deploy( "max_withdraw") ) return msg( "单次最大提现金额不能超过".$max);
+        //判断是否超出当日最大金额 与 次数
+        $rs = $this->field("sum(money) total,count(*) num")
+            ->where( ['bus_id'=>$param['bus_id']] )
+            ->whereTime("create_time",'d')
+            ->find();
+        if( ( $rs['total'] + $money ) > $max = deploy( "day_withdraw") ){
+            return msg( "您今日还可体现".($max-$rs['total']) );
+        }
+        if( $rs['num'] >= deploy("rate_withdraw") ){
+            return msg("您今日提现次数已满，请明日再来！");
+        }
         $money = model( 'Business')->where( 'id',$param['bus_id'])->value( 'money');
         //校验申请提现金额
         if( $param['money'] > $money ){
@@ -78,11 +95,24 @@ class Withdraw extends Model
         if( empty( $res['status'] ) ){
             return $res;
         }
+        //计算手续费
+        //单次手续费比例及最小值
+        $fee = number_format($param['money'] * deploy("ratePay_withdraw"),2);
+        $mf = deploy("Pay_withdraw");
+        $fee = $fee > $mf? $fee : $mf;
+        $param['fee'] = $fee;
+        $param['fee_type'] = deploy('payWay_withdraw');
         //写入申请提现
         $result = $this->allowField( true )->data( $param )->isUpdate( false )->save();
         if( $result ){
-            $res = model( 'Business')->changeMoney( -$param['money'], $res['msg'], $param['bus_id'], 3);
-            if( $res ){
+
+            //扣除余额
+            $back = model( 'Business')->changeMoney( -$param['money'], $res['msg'], $param['bus_id'], 3);
+            //扣除手续费
+            if( $param['fee_type'] == 2 ){
+                $back = model( 'Business')->changeMoney( -$param['fee'], $res['msg']-$param['fee'], $param['bus_id'], 5);
+            }
+            if( $back ){
                 return msg( "申请成功！",1);
             } else {
                 return msg( "新增失败！");

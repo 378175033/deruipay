@@ -233,3 +233,23 @@ function clientOS() {
     }
     return $platform;
 }
+
+/**
+ * @desc
+ * Created by PhpStorm
+ * User: zhaolan
+ * Date: 2019/7/15 0015 11:30
+ * @param string $name
+ * @return mixed
+ */
+function deploy( $name = '' )
+{
+    $data = session("deploy");
+    if( empty( $name ) ) return $data;
+    foreach ( $data as $v ){
+        if( $v['vname'] == $name ){
+            return $v['value'];
+        }
+    }
+    return "";
+}

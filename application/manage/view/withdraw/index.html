@@ -126,6 +126,15 @@
                     {field: 'id',title: 'ID'},
                     {field: 'name',title: '商户名称'},
                     {field: 'money',title: '申请提款金额'},
+                    {field: 'fee_type',title: '实际到账金额',templet:function (d) {
+                            if( d.fee_type == 1){
+                                return d.money-d.fee;
+                            } else {
+                                return d.money;
+                            }
+                        }
+                    },
+                    {field:'fee',title:"手续费"},
                     {field: 'w_id',title: '提现账户信息',templet:function (d) {
                             var type = d.w_id;
 

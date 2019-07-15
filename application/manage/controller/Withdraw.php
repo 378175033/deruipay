@@ -41,7 +41,7 @@ class Withdraw extends Manage
             'id' => $id,
             'delete_time' => 0
         ];
-        $field = 'id,bus_id,status,check_desc,check_time,money';
+        $field = 'id,bus_id,status,check_desc,check_time,money,fee_type,fee';
         $data = $this->model->where($where)->field($field)->find();
         $bus_name = db('business')->where('id', $data['bus_id'])->value('name');
         if ( request()->isPost() ) {
@@ -56,6 +56,8 @@ class Withdraw extends Manage
             $post_data['bus_id']    = $data['bus_id'];
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
             if ($result) {
+                $post_data['fee'] = $data['fee'];
+                $post_data['fee_type'] = $data['fee_type'];
                 $this->model->changeWithdraw( $post_data );
                 operaLog($this->admin_id . '对商户(' . $bus_name . ')提款审核');
                 $this->success("设置成功！");
