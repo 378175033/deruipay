@@ -164,6 +164,8 @@ class Daxiangpay extends controller
 
         $accountLog = db('account_log')->where('bus_id',$order['business_id'])->order('id desc')->find();
         $Business = new \app\manage\model\Business();
+        $data = \app\index\controller\Pay::getArrivalPrice($order);
+        $order['amount'] = $data['arrivalPrice'];
         $Business->changeMoney($order['amount'],$accountLog['now_account']+$order['amount'],$order['business_id'],0);
     }
 }

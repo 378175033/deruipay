@@ -153,4 +153,11 @@ class PayModl extends Manage
         $this->success( "成功！",'',$test->index( $data ) );
     }
 
+    /**
+     * 2019/7/15 0015 10:31
+     */
+    public function rate(){
+        return $this->fetch();
+    }
+
 }

@@ -71,9 +71,10 @@
         <div class="layui-card top-head">
             <div class="layui-card-body">
                 <div class="layui-col-md8">
-                    商品名称：{$order.title}
+                    商品名称：{$name}
                     <br />
-                    订单编号：{$order.order_id}
+                    订单编号：<span class="order_id"></span>
+                    <input name="order_id" type="text" class="order_id" style="display: none">
                 </div>
                 <div class="layui-col-md4 th-r">
                     订单金额：<input type="text" name="amount" class="layui-input" value="1.00" step="0.01" onkeyup="format_input_num( this )">元
@@ -103,7 +104,6 @@
                 <div class="layui-col-md12" style="text-align: right">
                     需支付：<span class="price">1.00</span>元
                     <input type="hidden" name="passageway" id="type">
-                    <input type="hidden" name="id" value="{$order.id}">
                     <button class="layui-btn" lay-submit lay-filter="formDemo" style="margin-left: 20px">立即支付</button>
                 </div>
             </div>
@@ -124,6 +124,8 @@
         $('#type').val( $(this).data('id') );
         $(this).addClass('active');
     })
+    $(".order_id").text(getOrderId());
+    $(".order_id").val(getOrderId());
     // 格式化限制数字文本框输入，只能数字或者两位小数
     function format_input_num(obj){
         // 清除"数字"和"."以外的字符
@@ -136,6 +138,7 @@
         // 只能输入两个小数
         obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
     }
+
     layui.use(['form'], function() {
         var form = layui.form;
         form.on('submit(formDemo)', function(data) {
@@ -152,5 +155,18 @@
             return false;
         })
     })
+
+    function getOrderId() {
+        var date = new Date();
+        var year = date.getFullYear().toString();
+        var month = (date.getMonth()+1).toString();
+        var day = date.getDate().toString();
+        var hours = date.getHours().toString();
+        var minutes = date.getMinutes().toString();
+        var seconds = date.getSeconds().toString();
+        var dates = year+month+day+hours+minutes+seconds;
+        var order_id = "zcss"+dates+Math.floor(Math.random()*1000 + 1);
+        return order_id;
+    }
 </script>
 </html>
