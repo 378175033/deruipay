@@ -10,6 +10,39 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+//下划线命名到驼峰命名
+function toCamelCase($str)
+{
+    $array = explode('_', $str);
+    $result = $array[0];
+    $len=count($array);
+    if($len>1)
+    {
+        for($i=1;$i<$len;$i++)
+        {
+            $result.= ucfirst($array[$i]);
+        }
+    }
+    return $result;
+}
+
+/**
+ * 2019/7/12 0012 14:22
+ * @param $str
+ * @return string
+ * 驼峰转下划线
+ */
+function toUnderScore($str)
+{
+    $dstr = preg_replace_callback('/([A-Z]+)/',function($matchs) {
+                return '_'.strtolower($matchs[0]);
+            },$str);
+    return trim(preg_replace('/_{2,}/','_',$dstr),'_');
+}
+
+
+
 function ismobile()
 {
     // 如果有HTTP_X_WAP_PROFILE则一定是移动设备

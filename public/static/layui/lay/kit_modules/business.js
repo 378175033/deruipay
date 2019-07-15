@@ -128,6 +128,12 @@ layui.define(mods,
                                 iframe: !0
                             },
                             {
+                                path: "/user/withdraw",
+                                component: "business/user/withdraw",
+                                name: "余额提现",
+                                iframe: !0
+                            },
+                            {
                                 path: "/index/pay",
                                 component: "/index/pay/index",
                                 name: "我的收银台",

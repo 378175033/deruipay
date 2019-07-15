@@ -23,7 +23,7 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        $this->business = $this->request->param('business', 1);
+        $this->business = session('business')['id'];
     }
 
     public function index()
@@ -37,7 +37,7 @@ class Pay extends Controller
             if( empty( $id ) ) $this->error( "订单参数错误！");
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
-                $this->error('未开通此通道');
+                $this->error('该通道已被禁用，请联系网站管理员！');
             }
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
@@ -78,6 +78,7 @@ class Pay extends Controller
     public function pay()
     {
         $request = $this->request;
+        $business = $this->business;
         $data = model('order')->find($request->param('id',0,'intval'));
         if( empty( $data ) ) $this->error( "订单参数错误！");
 //        $this->verify($request, 'stage2');
@@ -86,10 +87,15 @@ class Pay extends Controller
         } else{
             $this->assign( 'order', $data);
             $where = [
-                'id' => $data['user_passageway_id']
+                'id'    => $data['user_passageway_id'],
+                'status'=> 1,
+                'business_id'=>$business,
             ];
-            $passageway = model( 'UserPassageway')->where( $where )->value( "passageway_id");
-            $this->assign("way",model('passageway')->find( $passageway ) );
+            $passageway = model( 'UserPassageway')
+                ->where('status',1)
+                ->where( $where )
+                ->value( "passageway_id");
+            $this->assign("way",model('passageway')->where('status',1)->find( $passageway ));
             switch ( $passageway ) {
                 case 1:
                     $api = new \app\manage\controller\Api();
@@ -122,7 +128,7 @@ class Pay extends Controller
                     return $this->fetch();
                     break;
                 default:
-                    $this->error('通道错误！');
+                    $this->error('该通道已被禁用，请联系网站管理员！');
             }
         }
     }

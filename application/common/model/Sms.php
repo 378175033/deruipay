@@ -63,6 +63,7 @@ class Sms extends Model
         $response = json_decode($response,true);
         if( $response['stat'] == 100 ){
             session( 'smsCode', md5( $code ));
+            session( 'esmsCode', $code );
         }
         return $response;
 

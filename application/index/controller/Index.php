@@ -25,7 +25,7 @@ class Index extends Controller
          */
         $Business = new Business();
         if( $Business->checkLogin() ){
-            $this->error("您已经登录了！", '/business.html#/index/welcome' );
+            $this->success("您已经登录了！", '/business.html#/index/welcome' );
         }
         if($request->isAjax() && $request->isPost() ){
             $rule = [
@@ -38,9 +38,9 @@ class Index extends Controller
                 $this->error($validate->getError());
             }
             //校验手机验证码
-//            if( !checkSms( $request->param('code') ) ){
-//                $this->error( "验证码错误！");
-//            }
+            if( !checkSms( $request->param('code') ) ){
+                $this->error( "验证码错误！");
+            }
 
             $business = $Business->doLogin($request->param());
             if(empty( $business['status'])){

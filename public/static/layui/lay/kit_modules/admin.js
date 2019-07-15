@@ -1,7 +1,6 @@
 /** kitadmin-v2.1.0 MIT License By http://kit.zhengjinfan.cn Author Van Zheng */
 ;
 "use strict";
-var BaseUrl = "http:://www.demo.com/index.php/manage/";
 
 var list = [];
 layui.use("jquery",function () {
