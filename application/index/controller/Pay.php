@@ -80,7 +80,10 @@ class Pay extends Controller
         if ($request->isAjax() && $request->isPost()) {
 
         } else{
+            $moneys = $this->getArrivalPrice($data);
+            $this->assign( 'moneys', $moneys);
             $this->assign( 'order', $data);
+
             $where = [
                 'id'    => $data['user_passageway_id'],
                 'status'=> 1,
@@ -128,6 +131,36 @@ class Pay extends Controller
         }
     }
 
+    /**
+     * 2019/7/15 0015 11:34
+     * @param $order
+     * @return float|int
+     * 实际到账金额
+     */
+    public static function getArrivalPrice($order){
+
+        $amount = $order['amount'];//金额
+
+        $rate = db('passageway p')->join('user_passageway up','up.passageway_id = p.id')
+            ->where('up.id',$order['user_passageway_id'])
+            ->where('up.business_id',$order['business_id'])
+            ->value('p.rate');
+
+        if($rate>0){
+            $ratePrice = $amount*$rate;//平台金额
+            $arrivalPrice = $amount-$ratePrice;
+            $data = [
+                'ratePrice'=>$ratePrice,
+                'arrivalPrice'=>$arrivalPrice
+            ];
+            return $data;
+        }
+        $data = [
+            'ratePrice'=>0,
+            'arrivalPrice'=>$amount
+        ];
+        return $data;
+    }
     public function spage()
     {
         return $this->fetch();
