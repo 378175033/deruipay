@@ -53,6 +53,12 @@ class Business extends Model
         }catch ( \Exception $e){
             Db::rollback();
             return false;
-        };
+        }
+    }
+
+    // 查询可用金额
+    public function avalible_money()
+    {
+
     }
 }

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资讯中心</title>
+    <link rel="stylesheet" type="text/css" href="/static/index/static/public.css">
+    <link rel="stylesheet" type="text/css" href="/static/index/static/information.css">
+    <script>
+        function resizeFontSize(){
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 960*100 + 'px';
+        }
+        resizeFontSize();
+        window.onresize=function () {
+            resizeFontSize();
+        }
+    </script>
+</head>
+<body>
+<div id="banner">
+    <div id="header" v-cloak>
+        <header-component post-class="transparentHeader"></header-component>
+    </div>
+    <p class="banner-title">资讯中心</p>
+    <p class="banner-desc">-Information center-</p>
+</div>
+<div id="information" v-cloak>
+    <div class="nav">
+        <ul class="nav-container">
+            <li v-for="(item,index) in navs" @click="infoShow(index)" class="nav-list" :class="{ active: item.isActive }">{{ item.name }}<div v-show="item.isShow" class="nav-bottom"></div></li>
+        </ul>
+    </div>
+    <div v-show="infoIndex==0">
+        <div v-for="item in news" class="news-container">
+            <a :href="item.url" target="_blank">
+                <div class="news-img" :style="{backgroundImage:'url('+item.img+')'}"></div>
+                <div class="news-text">
+                    <h1 class="news-title">{{ item.title }}</h1>
+                    <p class="news-desc">{{ item.desc }}</p>
+                    <p class="news-from">新闻来源：{{ item.from }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="pagination">
+            <span @click="preNewsPage(newsPageIndex)" class="preButton">上一页</span>
+            <span v-for="(item,index) in newsPageCount" @click="toNewsPage(index)" :class="{ active:item.isActive }">{{index+1}}</span>
+            <span @click="nextNewsPage(newsPageIndex)" class="nextButton">下一页</span>
+        </div>
+    </div>
+    <div v-show="infoIndex==1">
+        <div v-for="item in records" class="record-container">
+            <a>
+                <div class="news-text">
+                    <h1 class="news-title">{{ item.title }}</h1>
+                    <p class="news-desc">{{ item.desc }}</p>
+                    <p class="news-detail">查看详情</p>
+                </div>
+            </a>
+        </div>
+        <div class="pagination">
+            <span @click="preRecordPage(recordPageIndex)" class="preButton">上一页</span>
+            <span v-for="(item,index) in recordPageCount" @click="toRecordPage(index)" :class="{ active:item.isActive }">{{index+1}}</span>
+            <span @click="nextRecordPage(recordPageIndex)" class="nextButton">下一页</span>
+        </div>
+    </div>
+</div>
+<div id="footer" v-cloak>
+    <footer-component></footer-component>
+</div>
+</body>
+<script src="/static/index/public/vue.min.js"></script>
+<script src="/static/index/js/public.js"></script>
+<script src="/static/index/js/information.js"></script>
+</html>

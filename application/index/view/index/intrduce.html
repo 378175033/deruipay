@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品介绍</title>
+    <link rel="stylesheet" type="text/css" href="/static/index/static/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/index/static/public.css">
+    <link rel="stylesheet" type="text/css" href="/static/index/static/intrduce.css">
+    <script>
+        function resizeFontSize(){
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 960*100 + 'px';
+        }
+        resizeFontSize();
+        window.onresize=function () {
+            resizeFontSize();
+        }
+    </script>
+</head>
+<body>
+    <div id="banner">
+        <div id="header" v-cloak>
+            <header-component post-class="publicHeader"></header-component>
+        </div>
+        <div>
+            <p class="banner-title">用德瑞支付，告别繁琐</p>
+        </div>
+        <div>
+            <p class="banner-desc">开发者无需重复集成繁琐的支付接口，轻松接入所有支付方式应对各类支付场景，同时获得高效能，安全可靠得支付基础设施服务，让支付接口产生价值。</p>
+        </div>
+    </div>
+    <div id="pay">
+        <div class="pay-container">
+            <p class="pay-title">支付产品</p>
+            <p class="pay-desc">多种支付产品任你选择，点击马上体验</p>
+            <div class="pay-type">
+                <div class="type-left" onclick="slidePrev()"></div>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_pay.png" />
+                                <h1>快捷支付</h1>
+                                <p>手机端/电脑端（含PC扫一 扫）的多渠道支付</p>
+                            </div>
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_qrcode.png" />
+                                <h1>码支付</h1>
+                                <p>2秒支付、60秒条码自动更新</p>
+                            </div>
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_gateway.png" />
+                                <h1>网关支付</h1>
+                                <p>使用银行U盾登录网上银行验证支付</p>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_over.png" />
+                                <h1>跨境支付</h1>
+                                <p>提供收单、外币结算、报送海关等服务</p>
+                            </div>
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_replace_2.png" />
+                                <h1>代扣款</h1>
+                                <p>一次签约可多次免密扣款支付</p>
+                            </div>
+                            <div class="pay-product">
+                                <img src="/static/index/assets/index_replace.png" />
+                                <h1>代付款</h1>
+                                <p>单笔或者批量付款至指定银行账户</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="type-right" onclick="sildeNext()"></div>
+            </div>
+        </div>
+    </div>
+    <div id="quick">
+        <p class="product-title">快捷支付</p>
+        <p class="product-desc">-Quick payment-</p>
+        <div class="quick-container">
+            <div class="quick-type"></div>
+            <div class="quick-data"></div>
+            <div class="quick-app">
+                <p class="quick-app-pay">手机APP支付</p>
+                <div class="quick-app-desc">
+                    <p>得瑞支付 为IOS/Android原生/H5App提供全套支付解决方案：支持微信支付，支付宝、银联、手机支付、QQ钱包，京东钱包等。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="qrcode">
+        <p class="product-title">二维码支付</p>
+        <p class="product-desc">-QRcode payment-</p>
+        <div class="qrcode-container">
+            <div class="qrcode-img"></div>
+            <div class="qrcode-text">
+                <p class="qrcode-title">扫二维码支付</p>
+                <p class="qrcode-desc">线下商户二维码台卡，收款方便，商 户日常经营一目了然从收款、查看流 水、核对账单、等等，将商户与消费 紧密相连。</p>
+            </div>
+        </div>
+    </div>
+    <div id="system">
+        <p class="product-title">代付系统</p>
+        <p class="product-desc">-Payment system-</p>
+        <div class="system-container">
+            <div class="system-text">
+                <p class="system-title">代付款、代扣款系统</p>
+                <p class="system-desc" style="padding: 0.24rem 0 0.25rem 0;">一次接入所有主流支付接口，99.99%系统可用性满足你丰富的交易场景需求，为你的用户提供完美支付体验。</p>
+                <p class="system-desc">一个API，在任何平台和场景接入支付功能，支付微信、支付宝 银行卡多种类型、灵活满足你的付款需求。</p>
+            </div>
+            <div class="system-img"></div>
+        </div>
+    </div>
+    <div id="new">
+        <div>
+            <h1>立即开启支付新时代！</h1>
+            <p>得瑞支付，支付技术服务商，让支付简单，专业、快捷，温暖！</p>
+            <button class="new-now">立即开启</button>
+            <div class="new-radius"></div>
+        </div>
+    </div>
+    <div id="footer" v-cloak>
+        <footer-component></footer-component>
+    </div>
+</body>
+<script src="/static/index/public/vue.min.js"></script>
+<script src="/static/index/public/swiper.min.js"></script>
+<script src="/static/index/js/public.js"></script>
+<script>
+    generateHeader();
+    generateFooter();
+    //轮播
+    var mySwiper = new Swiper ('.swiper-container', {
+    });
+
+    //切换轮播
+    function slidePrev() {
+        mySwiper.slidePrev();
+    }
+
+    function sildeNext() {
+        mySwiper.slideNext();
+    }
+</script>
+</html>

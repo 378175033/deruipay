@@ -6,7 +6,6 @@ use app\business\model\Business;
 use app\business\model\LoginLog;
 use app\common\model\Sms;
 use think\Controller;
-use think\Db;
 use think\Validate;
 
 class Index extends Controller
@@ -69,6 +68,45 @@ class Index extends Controller
         $this->redirect( url( 'index/index') );
     }
 
+    public function intrduce()
+    {
+        return $this->fetch();
+    }
+
+    public function api()
+    {
+        return $this->fetch();
+    }
+
+    public function download()
+    {
+        return $this->fetch();
+    }
+
+    public function contact()
+    {
+        return $this->fetch();
+    }
+
+    public function suggest()
+    {
+        return $this->fetch();
+    }
+
+    public function information()
+    {
+        return $this->fetch();
+    }
+
+    public function agreement()
+    {
+        return $this->fetch();
+    }
+
+    public function suggest_form()
+    {
+        return $this->fetch('information');
+    }
 
     public function register(){
         $request = $this->request;
