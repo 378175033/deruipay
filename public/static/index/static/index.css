@@ -106,16 +106,28 @@
     background: #fff;
     margin-left: 0.03rem;
 }
-
-.login-in{
-    display: block;
-    width: 1.2rem;
-    height: 0.2rem;
-    border-radius: 4px;
-    margin: 0 auto;
+.login-in,.login-retrieve,.login-cancel{
     background: #fff;
+}
+.login-in,.retrieve{
+    border-radius: 4px;
+    width: 1.2rem;
+    display: block;
+}
+.login-in,.retrieve,.login-retrieve,.login-cancel{
+    height: 0.2rem;
+    margin: 0 auto;
     color: #1B92F9;
     font-size: 0.09rem;
+}
+.login-retrieve,.login-cancel{
+    width: 0.55rem;
+}
+.login-retrieve{
+    float: left;
+}
+.login-cancel{
+    float: right;
 }
 
 .login-fun{
