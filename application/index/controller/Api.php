@@ -156,9 +156,10 @@ class Api extends Controller
      * User: zhaolan
      * Date: 2019/7/9 0009 16:33
      * @param string $text
+     * @param string $amount
      * @return bool
      */
-    public function audio($text = "未定义支付方式")
+    public function audio($text = "未定义支付方式", $amount)
     {
         if( empty( $text ) ) return false;
         $appId = '16746355';
@@ -170,8 +171,7 @@ class Api extends Controller
         ));
         // 识别正确返回语音二进制 错误则返回json 参照下面错误码
         if(!is_array($result)){
-            file_put_contents('audio.mp3', $result);
-//            echo '<video autoplay="" name="media" style="display: none"><source src="/audio.mp3" type="audio/mp3"></video>';
+            file_put_contents('MP3/'.$amount.'_audio.mp3', $result);
         }
     }
 }
