@@ -8,6 +8,8 @@
 
 namespace app\business\controller;
 use app\common\controller\Business;
+use app\common\controller\Rsa;
+use app\common\controller\Sign;
 
 class User extends Business
 {
@@ -242,5 +244,58 @@ class User extends Business
         }
 
         return $this->fetch();
+    }
+
+    /**
+     * @desc 私钥加密&公钥加密
+     * Created by PhpStorm
+     * User: zhaolan
+     * Date: 2019/7/16 0016 15:30
+     * @return string
+     */
+    public function rsa()
+    {
+        $opensslConfigPath = "D:/phpstudy/PHPTutorial/Apache/conf/openssl.cnf";
+        $config = array(
+            "digest_alg"    => "sha512",
+            "private_key_bits" => 1024,           //字节数  512 1024 2048  4096 等
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,   //加密类型
+            "config"           => $opensslConfigPath,
+        );
+        $rsa = new Rsa();
+        //获取私钥和公钥
+        $keys = $rsa->new_rsa_key( $config );
+        if( $keys == false ){
+            $this->error( "密钥生成失败！查看配置参数！");
+        }
+        $privkey = $keys['privkey'];
+        $pubkey  = $keys['pubkey'];
+        //初始化rsa
+        $rsa->init($privkey, $pubkey,TRUE);
+        //原文
+        $data = '你妈妈让你回家吃饭了';
+        //私钥加密示例
+        $priv = $rsa->priv_encode( $data );
+        //私钥解密 $rsa->priv_decode( $priv)
+        //公钥加密示例
+        $pub = $rsa->pub_encode($data);
+        //公钥解密 $rsa->pub_decode( $pub)
+        return $pub."\n".$priv;
+    }
+
+    public function test()
+    {
+        $param = [
+            'id' => 1,
+            'order_sn' => 'sds4567sds',
+            'amount'    => 1.21,
+            'time'      => time(),
+            'body'  => 'test',
+            'body2'  => 'test"',
+            'test'  => 'null',
+            'more'  => '\sd'
+        ];
+        $sign = new Sign( $param );
+        var_dump( $sign );
     }
 }
