@@ -61,7 +61,7 @@ class Business extends Controller
     public function checkLogin()
     {
         if( !session( "?business") ){
-            $this->redirect( url("business/Login/index") );
+            $this->redirect( url("index/index/index") );
         }
         $this->user = model( 'business')->where('id', session('business')['id'])->find();
         $this->assign( "user", $this->user);
