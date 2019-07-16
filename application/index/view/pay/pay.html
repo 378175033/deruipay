@@ -224,7 +224,7 @@
         $.post('/status',{Ikey:'{$order.order_id}'},function (res) {
             if(res.code === 1){
                 layer.msg( "支付成功！");
-                document.write('<audio controls="controls" height="100" width="100">\n' +
+                $('body').append('<audio autoplay height="100" width="100" style="display: none">\n' +
                     '<source src="'+res.data+'" type="audio/mp3" />\n' +
                     '<embed height="100" width="100" src="'+res.data+'" />\n' +
                     '</audio>');
