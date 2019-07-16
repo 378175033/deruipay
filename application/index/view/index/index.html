@@ -59,8 +59,8 @@
             <a href="#" @click="retrievePwd()"class="login-forget">忘记密码？</a>
         </div>
         <div class="login-fun login-reg">
-            <a href="#" class="login-regist" style="width: 100%;text-align: center" @click="register()">还没有账号？
-                <span class="register">立即注册</span>
+            <a href="#" class="login-regist" style="width: 100%;text-align: center">还没有账号？
+                <span class="register" @click="register()">立即注册</span>
             </a>
         </div>
     </div>
@@ -186,7 +186,7 @@
 <script>
     layui.use(['layer'], function(){
         var layer = layui.layer;
-        var app = new Vue({
+        var vm = new Vue({
             el:"#login",
             data () {
                 return {
