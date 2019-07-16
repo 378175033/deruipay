@@ -220,15 +220,16 @@
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__TOASTR__/toastr.js"></script>
 <script>
-    setInterval(function(){
+    var vint = setInterval(function(){
         $.post('/status',{Ikey:'{$order.order_id}'},function (res) {
             console.log( res );
             if(res.code === 1){
                 toastr.success( "支付成功！");
                 $('.notice-mp3').html('<video autoplay="" name="media" style="display: none"><source src="'+res.data+'" type="audio/mp3"></video>');
+                clearInterval( vint );
                 setTimeout(function () {
                     window.location.href = "{:url('Pay/spage')}";
-                },6000)
+                },20000)
             }
         })
     },3000);
