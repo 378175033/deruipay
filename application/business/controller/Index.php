@@ -34,6 +34,7 @@ class Index extends Business
          * 公告信息返回
          */
         $notices = Db::name('notice')
+            ->where('status',1)
             ->order('id','desc')
             ->field(['id','name','content'])
             ->select();

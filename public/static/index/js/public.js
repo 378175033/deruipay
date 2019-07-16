@@ -14,9 +14,9 @@ function generateHeader(){
                     {url: 'contact.html',name: '联系我们'}
                 ],
                 infos: [
-                    {url: 'javascript:void(0)',text: '028-40082828'},
-                    {url: 'login.html',text: '登录'},
-                    {url: 'register.html',text: '注册'}
+                    {url: 'javascript:void(0)',text: '028-40082828',value:0},
+                    {url: 'javascript:void(0)',text: '登录',value:1},
+                    {url: 'javascript:void(0)',text: '注册',value:2}
                 ]
             }
         },
@@ -24,22 +24,24 @@ function generateHeader(){
         template: '<div class="header" :class="[headerChangeClass]">\n' +
             '        <div class="logo"></div>\n' +
             '        <ul class="header-container header-nav">\n' +
-            '            <li v-for="item in navs"><a :href="item.url">{{ item.name }}</a></li>\n' +
+            '            <li v-for="item in navs"><a :href="item.url">{{ item.name }} </a></li>\n' +
             '        </ul>\n' +
             '        <ul class="header-container header-info">\n' +
-            '            <li v-for="item in infos"><a :href="item.url">{{ item.text }}</a></li>\n' +
+            '            <li v-for="item in infos">' +
+            '               <a :href="item.url" v-if="item.value==0">{{ item.text }}</a>'+
+            '               <a :href="item.url" v-if="item.value==1" @click="this.logins()">{{ item.text }}</a>'+
+            '               <a :href="item.url" v-if="item.value==2" @click="this.register()">{{ item.text }}</a>'+
+            '            </li>\n' +
             '        </ul>\n' +
             '    </div>',
         beforeMount: function () {
             this.headerChangeClass = this.postClass;
         }
     })
-
     var header = new Vue({
-        el: '#header'
-    })
+        el: '#header',
+    });
 }
-
 /**
  * 底部组件
  */
