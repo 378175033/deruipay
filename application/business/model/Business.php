@@ -138,4 +138,39 @@ class Business extends Model
         }
         return $msg;
     }
+
+    /**
+     * 2019/7/16 0016 9:34
+     * @param $data
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 忘记密码
+     */
+    public function retrievePwd($data){
+        $msg = msg();
+
+        $business = Db::name('business')->where('mobile',$data['mobile'])->find();
+
+        if(!$business){
+            $msg['msg'] = '抱歉，查无此商户！';
+        }
+        $salt = getSalt();
+        $temp = [
+            'salt'=>$salt,
+            'password'=>encode_password($data['password'],$salt),
+        ];
+        $buss =  Db::name('business')->where('mobile',$data['mobile'])
+                    ->update($temp);
+        if(!$buss){
+            $msg['msg'] = '忘记密码失败';
+        }else{
+            $msg['msg'] = '忘记密码成功';
+            $msg['status'] = 1;
+        }
+
+        return $msg;
+
+    }
 }
