@@ -62,3 +62,31 @@ function compare_password( $c_password,$password, $salt )
     }
     return false;
 }
+
+/**
+ * 2019/6/14 0014 16:08
+ * @desc生成随机盐
+ * @ApiParams
+ * @ApiReturnParams
+ */
+function getSalt()
+{
+    $str = "2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY";
+    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-5),4);
+    return $name;
+}
+
+/**
+ * 2019/6/14 0014 16:06
+ * @desc 密码加密
+ * @ApiParams
+ * @ApiReturnParams
+ * @param $password string 需要加密的密码
+ * @param $salt string 盐
+ * @return  string $pass 生成的加密密码
+ */
+function encode_password( $password, $salt )
+{
+    $pass = md5( crypt( $password, $salt ) );
+    return $pass;
+}
