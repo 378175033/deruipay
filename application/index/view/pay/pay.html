@@ -113,6 +113,12 @@
                         付款金额：<span class="price">{$order.amount}元</span>
                     </li>
                     <li>
+                        到账金额：<span class="price">{$moneys.arrivalPrice}元</span>
+                    </li>
+                    <li>
+                        费率金额：<span class="price">{$moneys.ratePrice}元</span>
+                    </li>
+                    <li>
                         订单编号：{$order.order_id}
                     </li>
                 </ul>
@@ -216,12 +222,15 @@
 <script>
     setInterval(function(){
         $.post('/status',{Ikey:'{$order.order_id}'},function (res) {
-            console.log( res );
             if(res.code === 1){
                 layer.msg( "支付成功！");
+                $('body').append('<audio autoplay height="100" width="100" style="display: none">\n' +
+                    '<source src="'+res.data+'" type="audio/mp3" />\n' +
+                    '<embed height="100" width="100" src="'+res.data+'" />\n' +
+                    '</audio>');
                 setTimeout(function () {
                     window.location.href = "{:url('Pay/spage')}";
-                },1500)
+                },6000)
             }
         })
     },3000);

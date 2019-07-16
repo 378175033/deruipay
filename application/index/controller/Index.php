@@ -6,6 +6,7 @@ use app\business\model\Business;
 use app\business\model\LoginLog;
 use app\common\model\Sms;
 use think\Controller;
+use think\Db;
 use think\Validate;
 
 class Index extends Controller
@@ -66,5 +67,64 @@ class Index extends Controller
     {
         session( 'business', null);
         $this->redirect( url( 'index/index') );
+    }
+
+
+    public function register(){
+        $request = $this->request;
+        $Business = new Business();
+        if($request->isAjax() && $request->isPost()){
+
+            $this->verify($request->param());
+
+            $business = $Business->where('mobile',$request->param('mobile'))->find();
+
+            if($business){
+                $this->error('抱歉，该手机已注册！');
+            }
+
+            $buss = $Business->register($request->param());
+            if(empty( $buss['status'])){
+                $this->error( $buss['msg']);
+            }
+            $this->success($buss['msg'],'/business.html#/index/welcome');
+
+        }
+    }
+
+    public function retrieve(){
+        $request = $this->request;
+        $Business = new Business();
+        if($request->isAjax() && $request->isPost()){
+
+            $this->verify($request->param());
+
+            $buss = $Business->retrievePwd($request->param());
+
+            if(empty( $buss['status'])){
+                $this->error( $buss['msg']);
+            }
+            $this->success($buss['msg']);
+        }
+    }
+
+
+    public function verify($data){
+        $rule = [
+            'mobile|手机号'=> 'require',
+            'password|密码' => 'require',
+            'code|验证码' => 'require|integer',
+        ];
+
+        $validate = new Validate($rule);
+        if(!$validate->check($data)){
+            $this->error($validate->getError());
+        }
+
+        if( !preg_match( '/^1[3456789]\d{9}$/', $data['mobile'] ) ) $this->error( "手机号格式错误！");
+        //校验手机验证码
+//        if( !checkSms($data['code']) ){
+//            $this->error( "验证码错误！");
+//        }
     }
 }

@@ -33,26 +33,25 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isAjax() && $request->isPost()) {
-            $id =  $request->param('id',0,'intval');
-            if( empty( $id ) ) $this->error( "订单参数错误！");
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('该通道已被禁用，请联系网站管理员！');
             }
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
-            $res = model( "Order")->allowField( true )->isUpdate( true )->save( $data );
+            $res = $this->create_order($data);
             if( $res ) {
-                $this->success('成功', url('pay',array( "id"=> $id )));
+                $order = model('Order')->where('order_id',$data['order_id'])->find();
+                $moneys = Pay::getArrivalPrice($order);
+                model('Order')
+                    ->where('order_id',$data['order_id'])
+                    ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
+                $this->success('成功', url('pay',array( "id"=> $order['id'] )));
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
             $this->assign('way', $passageway->getList());
-            if (!$order_id = $this->create_order($request)) {
-                $this->error('订单创建失败！');
-            }
-            $order = Db::name('order')->where('order_id',$order_id)->field("id,order_id,title")->find();
-            $this->assign('order', $order);
+            $this->assign('name', session('business')['name']);
             return $this->fetch();
         }
     }
@@ -85,7 +84,10 @@ class Pay extends Controller
         if ($request->isAjax() && $request->isPost()) {
 
         } else{
+            $moneys = $this->getArrivalPrice($data);
+            $this->assign( 'moneys', $moneys);
             $this->assign( 'order', $data);
+
             $where = [
                 'id'    => $data['user_passageway_id'],
                 'status'=> 1,
@@ -133,26 +135,57 @@ class Pay extends Controller
         }
     }
 
+    /**
+     * 2019/7/15 0015 11:34
+     * @param $order
+     * @return float|int
+     * 实际到账金额
+     */
+    public static function getArrivalPrice($order){
+
+        $amount = $order['amount'];//金额
+
+        $rate = db('passageway p')->join('user_passageway up','up.passageway_id = p.id')
+            ->where('up.id',$order['user_passageway_id'])
+            ->where('up.business_id',$order['business_id'])
+            ->value('p.rate');
+
+        if($rate>0){
+            $ratePrice = $amount*$rate;//平台金额
+            $arrivalPrice = $amount-$ratePrice;
+            $data = [
+                'ratePrice'=>$ratePrice,
+                'arrivalPrice'=>$arrivalPrice
+            ];
+            return $data;
+        }
+        $data = [
+            'ratePrice'=>0,
+            'arrivalPrice'=>$amount
+        ];
+        return $data;
+    }
     public function spage()
     {
         return $this->fetch();
     }
 
-    public function create_order(Request $request)
+    public function create_order($data)
     {
-        $outTradeNo = "zcss" . date('Ymdhis') . mt_rand(100, 1000);
         $str = [
             'business_id' => $this->business,
-            'order_id' => $outTradeNo,
-            'out_trade_no' => $outTradeNo,
+            'order_id' => $data['order_id'],
+            'out_trade_no' => $data['order_id'],
             'pay_from' => 1,
             'create_time' => time(),
+            'user_passageway_id' => $data['user_passageway_id'],
+            'amount' => $data['amount'],
             'status' => 3,
             'title' => session("business")['name'],
             'back_status' => 0,
         ];
-        if (Db('order')->insert($str)) {
-            return $outTradeNo;
+        if ($order = Db('order')->insert($str)) {
+            return $order;
         } else {
             return false;
         }
@@ -254,7 +287,13 @@ class Pay extends Controller
             $order = db('order')->where('out_trade_no', $this->request->param('Ikey'))->find();
             if ($order) {
                 if ($order['status'] == 1) {
-                    $this->success("成功！", "");
+                    $amount = $order['amount'];
+                    do{
+                        $api = new Api();
+                        $api->audio( "收钱包到账".$amount."元", $amount);
+                    }while( !file_exists( "MP3/".$amount."_audio.mp3") );
+
+                    $this->success("成功！", "","MP3/".$amount."_audio.mp3");
                 }
                 $this->error("失败！");
             }
