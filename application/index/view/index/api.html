@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>开发文档</title>
+    <link rel="stylesheet" type="text/css" href="/static/index/static/public.css">
+    <link rel="stylesheet" type="text/css" href="/static/index/static/api.css">
+    <script>
+        function resizeFontSize(){
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 960*100 + 'px';
+        }
+        resizeFontSize();
+        window.onresize=function () {
+            resizeFontSize();
+        }
+    </script>
+</head>
+<body>
+<div id="banner">
+    <div id="header" v-cloak>
+        <header-component post-class="transparentHeader"></header-component>
+    </div>
+    <p class="banner-title">API开发文档</p>
+    <p class="banner-desc">-API DOCUMENTATION-</p>
+</div>
+<div style="padding-top: 0.24rem;">
+    <div id="nav">
+        <ul class="nav-list">
+            <li><a class="nav-active" href="#api-introduce">API开发文档简介</a></li>
+            <li><a href="#get-gateway">接入网关</a></li>
+            <li><a href="#signature-algorithm">签名算法</a></li>
+            <li><a href="#together-order">商户统一下单API</a></li>
+            <li><a href="#asyn-notice">异步通知</a></li>
+            <li><a href="#order-inquiry">订单查询</a></li>
+            <li><a href="#other-pay">代付提交接口</a></li>
+            <li><a href="#otherpay-inquiry">代付查询接口</a></li>
+            <li><a href="#balance-inquiry">账户余额查询接口</a></li>
+            <li><a href="#way-code">渠道编码</a></li>
+        </ul>
+    </div>
+    <div id="content">
+        <div id="api-introduce">
+            <h1 class="content-title">API开发文档简介</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">
+                本文阅读对象：使用 得瑞支付 商户自服务系统的技术架构师、研发工程师、系统运维工程师.通过本文档，商户可了解我们接入的技术、接入的
+                产品业务、接入的流程、接入规范等信息、以便于商户顺利完成接入工作。
+            </p>
+        </div>
+        <div id="get-gateway">
+            <h1 class="content-title">接入网关</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">
+                请登录商户中心，API管理 开发文档中 查看网关地址和API对接参数。
+            </p>
+        </div>
+        <div id="signature-algorithm">
+            <h1 class="content-title">签名算法</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">签名生成的通过步骤如下：</p>
+            <p class="content-desc">
+                第一步，设所有发送或者接收到的数据为集合M，将集合M内非空参数值的参数按照参数名ASCII码从小到大排序（字典序），使用URL键值对的
+                格式（即key1=value1&key2…）拼接成字符串。
+            </p>
+            <p class="content-desc">
+                第二步，在stringA最后拼接上应用key得到stringSLgnTemp字符串并对stringSlgnemp进行MD5运算，再将得到的字符串所有字符转换为大写，得
+                到sign值signValue。
+            </p>
+            <p class="content-desc">
+                stringSignTemp=”pay_amount=pay_amount&pay_applydate=pay_applydate&pay_bankcode=pay_bankcode&pay_callbackurl=pay_caign-
+                MDS(stringSignTemp).toUpperCase()
+            </p>
+        </div>
+        <div id="together-order">
+            <h1 class="content-title">统一下单API</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">地址：接入网关/Pay_lndex_html</p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="asyn-notice">
+            <h1 class="content-title">异步通知</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">
+                接收到服务器点通讯时，在页面输出“OK”(没有双引号，OK两个字母大写)，否则会重复5次发送点对点通知。
+            </p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="order-inquiry">
+            <h1 class="content-title">订单查询</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">
+                接收到服务器点通讯时，在页面输出“OK”(没有双引号，OK两个字母大写)，否则会重复5次发送点对点通知。
+            </p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="other-pay">
+            <h1 class="content-title">代付提交接口</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">
+                接收到服务器点通讯时，在页面输出“OK”(没有双引号，OK两个字母大写)，否则会重复5次发送点对点通知。
+            </p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="otherpay-inquiry">
+            <h1 class="content-title">代付查询接口</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">
+                接收到服务器点通讯时，在页面输出“OK”(没有双引号，OK两个字母大写)，否则会重复5次发送点对点通知。
+            </p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="balance-inquiry">
+            <h1 class="content-title">账户余额查询接口</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">提交方式：POST</p>
+            <p class="content-desc">
+                接收到服务器点通讯时，在页面输出“OK”(没有双引号，OK两个字母大写)，否则会重复5次发送点对点通知。
+            </p>
+            <table>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数含义</th>
+                    <th>是否必填</th>
+                    <th>参与签名</th>
+                    <th>参数说明</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+                <tr>
+                    <td>pay_memberid</td>
+                    <td>商户号</td>
+                    <th>是</th>
+                    <th>是</th>
+                    <th>平台分配商户号</th>
+                </tr>
+            </table>
+        </div>
+        <div id="way-code">
+            <h1 class="content-title">渠道编码</h1>
+            <div class="content-apart"></div>
+            <p class="content-desc">
+                请登录商户中心，API管理通道费率中查看所属应用的支付通道编码。
+            </p>
+        </div>
+    </div>
+</div>
+<div id="footer" v-cloak>
+    <footer-component></footer-component>
+</div>
+</body>
+<script src="/static/index/public/vue.min.js"></script>
+<script src="/static/index/js/public.js"></script>
+<script src="/static/index/public/jquery.min.js"></script>
+<script>
+    generateHeader();
+    generateFooter();
+
+    $("#nav a").click(function () {
+        $(this).addClass("nav-active");
+        $(this).parents("li").siblings("li").children("a").removeClass("nav-active");
+    })
+</script>
+</html>
