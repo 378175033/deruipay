@@ -211,10 +211,10 @@
                     </div>
                 </div>
             {/if}
-
         </div>
     </div>
 </div>
+<div class="notice-mp3"></div>
 </body>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
@@ -222,12 +222,10 @@
 <script>
     setInterval(function(){
         $.post('/status',{Ikey:'{$order.order_id}'},function (res) {
+            console.log( res );
             if(res.code === 1){
-                layer.msg( "支付成功！");
-                $('body').append('<audio autoplay height="100" width="100" style="display: none">\n' +
-                    '<source src="'+res.data+'" type="audio/mp3" />\n' +
-                    '<embed height="100" width="100" src="'+res.data+'" />\n' +
-                    '</audio>');
+                toastr.success( "支付成功！");
+                $('.notice-mp3').html('<video autoplay="" name="media" style="display: none"><source src="'+res.data+'" type="audio/mp3"></video>');
                 setTimeout(function () {
                     window.location.href = "{:url('Pay/spage')}";
                 },6000)
