@@ -78,17 +78,16 @@
 </body>
 <script src="/static/index/public/vue.min.js"></script>
 <script src="/static/index/js/public.js"></script>
+<script src="/static/index/public/jquery.js"></script>
 <script>
     generateHeader();
     generateFooter();
 
     function sendData() {
-        var formElement = document.getElementById("contact-container");
-        var formData = new FormData(formElement);
-        var request = new XMLHttpRequest();
-        request.open("POST", "suggest_form");
-        formData.append("serialnumber", 222);
-        request.send(formData);
+        var formData = $("#contact-container").serializeArray();
+        $.post('suggest_form',formData, function (data) {
+            alert(data.msg)
+        })
     }
 </script>
 </html>
