@@ -34,6 +34,33 @@ class User extends Manage
 //            ->buildSql();
     }
 
+    public function index()
+    {
+        $user_id =  session('userInfo')['id'];
+
+        if ($this->request->isPost() && $this->request->isAjax()) {
+            $users = $this->model->where('delete_time',0)->select();
+            if($user_id != 1){
+
+                foreach ($users as $user){
+                    $user['mobile'] = substr_replace($user['mobile'], '****', 3, 4);
+                }
+            }
+            $sql = $this->model->getLastSql();
+            $count = $this->model->count();
+            $data = [
+                'list' => $users,
+                'count' => $count,
+                'sql'   => $sql,
+                'user_id'=>$user_id,
+            ];
+            $this->success('获取成功','',$data);
+        }
+
+        return $this->fetch();
+
+    }
+
     public function add()
     {
         if( request()->isAjax() && request()->isAjax() ){
