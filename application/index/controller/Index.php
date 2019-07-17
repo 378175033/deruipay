@@ -125,7 +125,7 @@ class Index extends Controller
             if(empty( $buss['status'])){
                 $this->error( $buss['msg']);
             }
-            $this->success($buss['msg'],'/business.html#/index/welcome');
+            $this->success($buss['msg'],'');
 
         }
     }
