@@ -42,7 +42,7 @@ class Pay extends Controller
             $res = $this->create_order($data);
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
-                $moneys = Pay::getArrivalPrice($order);
+                $moneys = $this->getArrivalPrice($order);
                 model('Order')
                     ->where('order_id',$data['order_id'])
                     ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
@@ -141,17 +141,21 @@ class Pay extends Controller
      * @return array
      * 实际到账金额
      */
-    public static function getArrivalPrice($order){
+    public  function getArrivalPrice($order){
 
         $amount = $order['amount'];//金额
 
         $rate = db('passageway p')->join('user_passageway up','up.passageway_id = p.id')
             ->where('up.id',$order['user_passageway_id'])
             ->where('up.business_id',$order['business_id'])
-            ->value('p.rate');
+            ->find();
 
-        if($rate>0){
-            $ratePrice = $amount*$rate;//平台金额
+        if($rate['rate']>0){
+
+            $ratePrice = $amount*$rate['rate'];//平台金额
+            if($ratePrice<$rate['cost']){
+                $this->error('抱歉,费率金额不能小于最低金额,最低金额：'.$rate['cost']);
+            }
             $arrivalPrice = $amount-$ratePrice;
             $data = [
                 'ratePrice'=>$ratePrice,
