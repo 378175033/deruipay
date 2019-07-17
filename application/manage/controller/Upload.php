@@ -14,7 +14,6 @@ class Upload extends Controller
     public function upload(){
         // 获取表单上传文件
         $file = request()->file('file');
-        $param = request()->param();
         $folder = request()->param("folder", "");
         // 移动到框架应用根目录/public/uploads/ 目录下
         $info = $file->validate(['size'=>2048*1024,'ext'=>'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploads'.DS.$folder);

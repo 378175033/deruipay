@@ -11,11 +11,11 @@
 <script type="text/html" id="status">
     <div>
         {{# if(d.status == 0){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
+        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','70%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
         {{# } else if( d.status == 1 ){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-primary">未通过</a>
+        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','70%'],title:'提款审核'});" class="layui-btn layui-btn-xs layui-btn-primary">未通过</a>
         {{# }else{  }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=2',area:['30%','50%'],title:'提款审核'});" class="layui-btn layui-btn-xs">通过</a>
+        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=2',area:['30%','70%'],title:'提款审核'});" class="layui-btn layui-btn-xs">通过</a>
         {{# } }}
     </div>
 </script>
@@ -26,7 +26,6 @@
         </a>
     </div>
 </script>
-
 
 <form class="layui-form" action="">
     <div class="lay-all">
@@ -45,7 +44,7 @@
                 <label class="layui-form-label">提现账户类型</label>
                 <div class="layui-input-inline">
                     <select name="e-w_id">
-                        <option value="0">提现账户类型</option>
+                        <option value="">提现账户类型</option>
                         <option value="1">支付宝</option>
                         <option value="2">微信</option>
                         <option value="3">银行卡</option>
@@ -62,7 +61,8 @@
                 <label class="layui-form-label">审核状态</label>
                 <div class="layui-input-inline">
                     <select name="e-status">
-                        <option value=0>请选择</option>
+                        <option value="">请选择</option>
+                        <option value=0>待审核</option>
                         <option value=1>未通过</option>
                         <option value=2>已通过</option>
                     </select>

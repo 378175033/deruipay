@@ -138,7 +138,7 @@ class Pay extends Controller
     /**
      * 2019/7/15 0015 11:34
      * @param $order
-     * @return float|int
+     * @return array
      * 实际到账金额
      */
     public static function getArrivalPrice($order){
@@ -233,7 +233,7 @@ class Pay extends Controller
 
     /**
      * 2019/6/28 0028 10:31
-     * @param Request $request
+     * @return mixed
      * 支付宝回调
      */
     public function aliPayNotify()
