@@ -141,9 +141,9 @@ class Manage extends Controller
                         $st = substr($vl, 0, 2);
                         if( $st == "b-"){
                             $vl = substr($vl, 2);
-                            if (!empty($val))  $where["b.".$vl] = $val;
+                            if ( $val != "")  $where["b.".$vl] = $val;
                         } else {
-                            if (!empty($val))  $where["a.".$vl] = $val;
+                            if ( $val != "")  $where["a.".$vl] = $val;
                         }
                         break;
                     case 'i-':

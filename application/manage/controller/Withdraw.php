@@ -41,7 +41,7 @@ class Withdraw extends Manage
             'id' => $id,
             'delete_time' => 0
         ];
-        $field = 'id,bus_id,status,check_desc,check_time,money,fee_type,fee';
+        $field = 'id,bus_id,status,check_desc,check_time,money,fee_type,fee,picture';
         $data = $this->model->where($where)->field($field)->find();
         $bus_name = db('business')->where('id', $data['bus_id'])->value('name');
         if ( request()->isPost() ) {
@@ -49,9 +49,17 @@ class Withdraw extends Manage
             if (!isset($post_data['status'])) {
                 $this->error('请选择审核状态');
             }
-            if ($data['status'] !== 0) {
+            if ( $data['status'] !== 0 && $data['status'] != $post_data['status']) {
                 $this->error('已审核过,请勿重复审核');
             }
+            if( $data['status'] == $post_data['status'] ){
+                $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);
+                if( $result ){
+                    $this->success( "设置成功！");
+                }
+                $this->error( "设置失败！");
+            }
+
             $post_data['check_time'] = time();
             $post_data['bus_id']    = $data['bus_id'];
             $result = $this->model->allowField(true)->save($post_data, ['id' => $id]);

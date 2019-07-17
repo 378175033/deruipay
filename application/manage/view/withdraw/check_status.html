@@ -22,6 +22,20 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">图集：</label>
+                <div class="layui-upload-drag" id="test10">
+                    <input id="input_img" type="text" style="display: none" name="picture">
+                    <i class="layui-icon"></i>
+                    <p>点击上传，或将图片拖拽到此处</p>
+                </div>
+                <div class="layui-input-block img" style="margin-top: 10px">
+                    {php} $imgs = json_decode( $data['picture'], true);{/php}
+                    {volist name="imgs" id="im"}
+                        <img src="{$im}" alt="" style="max-width: 120px">
+                    {/volist}
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">最近一次审核时间</label>
                 <div class="layui-input-block">
                     {$data.check_time}
@@ -42,6 +56,44 @@
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
+    layui.use(['upload','layer'], function(){
+        var upload = layui.upload,layer=layui.layer;
+        //执行实例
+        var img = "";
+        var picture =[];
+        var lo;
+        var uploadInst = upload.render({
+            elem: '#test10', //绑定元素
+            url: '{:url("Upload/upload")}', //上传接口
+            accept: 'images', //允许上传的文件类型
+            data : {"folder": "withdraw"},//上传接口额外参数
+            size : 2048,//设置文件最大可允许上传的大小，单位 KB
+            multiple: true,//是否允许多文件上传。
+            acceptMime: 'image/*',//规定打开文件选择框时，筛选出的文件类型
+            //,size: 50 //最大允许上传的文件大小
+            before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                lo = layer.load(); //上传loading
+                img = "";
+                picture = [];
+            },
+            allDone: function(){ //当文件全部被提交后，才触发
+                $('.img').html( img );
+                console.log( JSON.stringify( picture ) );
+                $('#input_img').val( JSON.stringify( picture ) );
+                layer.closeAll('loading');
+                // console.log(obj.total); //得到总文件数
+                // console.log(obj.successful); //请求成功的文件数
+                // console.log(obj.aborted); //请求失败的文件数
+            },
+            done: function(res){
+                img = img + '<img style="max-width: 120px" src="/uploads/withdraw/'+res.msg+'" alt=""> ';
+                picture.push( '/uploads/withdraw/'+res.msg );
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+    });
     layui.use(['form'], function() {
         var form = layui.form;
         form.on('submit(formDemo)', function(data){
