@@ -132,6 +132,7 @@ class Business extends Model
             $business = Db::name('business')->where('mobile',$data['mobile'])->find();
             session("business",$business);
             $msg['msg'] = '注册商户成功,请等待审核';
+
             $msg['status'] = 1;
         }else{
             $msg['msg'] = '注册商户失败';
