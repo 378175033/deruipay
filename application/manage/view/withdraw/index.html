@@ -138,6 +138,18 @@
                         }
                     },
                     {field:'fee',title:"手续费"},
+                    {field:'picture',title:"图集",templet:function(d){
+                        var pic = d.picture,img = "";
+                            pic = JSON.parse( pic );
+                            if( pic ){
+                                for ( var i = 0; i< pic.length; i++){
+                                    img = img +"<img src='"+pic[i]+"' style='max-width: 48px;padding: 2px;cursor: pointer' onclick='window.open(this.src)'/>"
+                                }
+                                return img;
+                            }
+                            return "暂未上传图集";
+                        }
+                    },
                     {field: 'w_id',title: '提现账户信息',templet:function (d) {
                             var type = d.w_id;
 

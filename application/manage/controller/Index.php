@@ -52,7 +52,7 @@ class Index extends Manage
             "IFNULL((SELECT SUM(amount) AS tp_sum FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1),0.00)" => 'amount',
             "p.name"
         ])->group("p.id")->select();
-//        echo $model->getLastSql();
+        echo $model->getLastSql();
         $list = [
             'total' => $total,
             'withdraw' => $withdraw,
