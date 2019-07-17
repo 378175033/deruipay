@@ -148,8 +148,10 @@ class User extends Business
         $data = model('account')->where( $where )->find();
         if( !$data ){
             $data = $where;
-            model('account')->allowField( true )->isUpdate( false )->save( $data );
-            $data['id'] = model('account')->id;
+            $model = model('account');
+            $model->allowField( true )->isUpdate( false )->save( $data );
+            $id = $model->id;
+            $data = $model->find( $id );
         }
         $this->assign( 'data', $data);
         return $this->fetch();

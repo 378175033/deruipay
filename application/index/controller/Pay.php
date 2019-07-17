@@ -99,21 +99,21 @@ class Pay extends Controller
                 ->value( "passageway_id");
             $this->assign("way",model('passageway')->where('status',1)->find( $passageway ));
             switch ( $passageway ) {
-                case 1:
+                case 1://支付宝
                     $api = new \app\manage\controller\Api();
                     $res = $api->Face($data);
                     $this->assign("data", $res);
                     return $this->fetch();
                     break;
-                case 9:
+                case 9://微信支付
                     return $this->fetch();
                     break;
-                case 10:
+                case 10://银联支付
                     $banks = Db::name( "banks")->where( "status = 1 and delete_time = 0 " )->select();
                     $this->assign( "banks", $banks);
                     return $this->fetch();
                     break;
-                case 11:
+                case 11://微信免签
                     $data['type'] = "1";
                     $api = new Api();
                     $res = $api->free_pay($data);
@@ -121,7 +121,7 @@ class Pay extends Controller
                     $this->assign("data", $res);
                     return $this->fetch();
                     break;
-                case 12:
+                case 12://支付宝免签
                     $data['type'] = "2";
                     $api = new Api();
                     $res = $api->free_pay($data);
