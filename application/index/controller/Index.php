@@ -1,11 +1,11 @@
 <?php
 namespace app\index\controller;
 
-use app\business\controller\Login;
 use app\business\model\Business;
 use app\business\model\LoginLog;
-use app\common\model\Sms;
+use app\index\model\Suggest;
 use think\Controller;
+use think\Loader;
 use think\Validate;
 
 class Index extends Controller
@@ -105,7 +105,15 @@ class Index extends Controller
 
     public function suggest_form()
     {
-        return $this->fetch('information');
+        $request = $this->request->param();
+        $validate = Loader::validate('Suggest');
+        $result = $validate->check($request);
+        if(true !== $result){
+            $this->error($validate->getError());
+        }
+        $suggest = new Suggest($request);
+        $suggest->allowField(true)->save();
+        $this->success('提交成功！');
     }
 
     public function register(){
@@ -125,7 +133,7 @@ class Index extends Controller
             if(empty( $buss['status'])){
                 $this->error( $buss['msg']);
             }
-            $this->success($buss['msg'],'/business.html#/index/welcome');
+            $this->success($buss['msg'],'');
 
         }
     }

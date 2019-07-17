@@ -64,7 +64,6 @@
             </a>
         </div>
     </div>
-
 </div>
 <div id="choose">
     <p class="desc-title">为什么选择我们</p>
@@ -166,7 +165,8 @@
     <div>
         <h1>立即开启支付新时代！</h1>
         <p>得瑞支付，支付技术服务商，让支付简单，专业、快捷，温暖！</p>
-        <button class="new-now">立即开启</button>
+
+        <a href="index.html" class="new-now">立即开启</a>
         <div class="new-radius"></div>
     </div>
 </div>
@@ -313,11 +313,11 @@
                         'mobile':lg.mobile,
                         'code':lg.code,
                         'password':lg.password,
-                    }
+                    };
                     $.post('{:url("index/login")}',data,function (res) {
                         console.log(res);
                         if(res.code == 1){
-                            layer.msg( "登录成功！",{icon:1})
+                            layer.msg( "登录成功！",{icon:1});
                             setTimeout(function () {
                                 window.location.href = res.url;
                             },1200)
@@ -331,11 +331,11 @@
                         'mobile':lg.mobile,
                         'code':lg.code,
                         'password':lg.password,
-                    }
+                    };
                     $.post('{:url("index/register")}',data,function (res) {
                         console.log(res);
                         if(res.code == 1){
-                            layer.msg( "注册成功！",{icon:1})
+                            layer.msg( "注册成功,请等待审核",{icon:1});
                             setTimeout(function () {
                                 window.location.href = res.url;
                             },1200)
@@ -353,7 +353,7 @@
                     $.post('{:url("index/retrieve")}',data,function (res) {
                         console.log(res);
                         if(res.code == 1){
-                            layer.msg( "忘记密码成功！",{icon:1})
+                            layer.msg( "忘记密码成功！",{icon:1});
                             setTimeout(function () {
                                 window.location.href = res.url;
                             },1200)

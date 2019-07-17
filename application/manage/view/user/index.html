@@ -14,18 +14,32 @@
 </body>
 <script type="text/html" id="barDemo">
 
-
-    <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
-        <i class="layui-icon layui-icon-edit"></i>
-    </a>
-    {{# if( d.id !== 1 ){ }}
+    {{# if(d.user_id == 1){ }}
+        <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
+            <i class="layui-icon layui-icon-edit"></i>
+        </a>
+        {{# if( d.id !== 1 ){ }}
         <a class="layui-btn layui-btn-xs layui-btn-danger btn-remove" data-id="{{ d.id }}" title="移除数据">
             <i class="layui-icon layui-icon-delete"></i>
         </a>
         <a href="javascript:openIframe({content:'auth?id={{d.id}}',area:['30%','80%'],title:'配置权限'});" class="layui-btn layui-btn-xs" title="配置权限">
             <i class="layui-icon layui-icon-set-fill"></i>
         </a>
+        {{# } }}
+    {{# }else{ }}
+        <button class="layui-btn layui-btn-xs layui-btn-normal btn-update layui-btn-disabled"  data-id="{{ d.id }}" title="修改数据" disabled>
+            <i class="layui-icon layui-icon-edit"></i>
+        </button>
+        {{# if( d.id !== 1 ){ }}
+        <button class="layui-btn layui-btn-xs layui-btn-danger btn-remove layui-btn-disabled" data-id="{{ d.id }}" title="移除数据" disabled>
+            <i class="layui-icon layui-icon-delete"></i>
+        </button>
+        <button href="javascript:openIframe({content:'auth?id={{d.id}}',area:['30%','80%'],title:'配置权限'});" class="layui-btn layui-btn-xs layui-btn-disabled" title="配置权限" disabled>
+            <i class="layui-icon layui-icon-set-fill"></i>
+        </button>
+        {{# } }}
     {{# } }}
+
 </script>
 <script type="text/html" id="status">
     <div>

@@ -34,6 +34,7 @@ class Menu extends Model
             $menu[$key]['child'] = $this->where( $where )->order( $order )->select();
         }
         return $menu;
+
     }
 
 }
