@@ -7,11 +7,11 @@ function generateHeader(){
             return {
                 headerChangeClass: '', //头部背景颜色
                 navs: [
-                    {url: 'index.html',name: '首页'},
-                    {url: 'intrduce.html',name: '产品介绍'},
-                    {url: 'api.html',name: '开发文档'},
-                    {url: 'download.html',name: '下载中心'},
-                    {url: 'contact.html',name: '联系我们'}
+                    {url: '/index/index/index.html',name: '首页'},
+                    {url: '/index/index/intrduce.html',name: '产品介绍'},
+                    {url: '/index/index/api.html',name: '开发文档'},
+                    {url: '/index/index/download.html',name: '下载中心'},
+                    {url: '/index/index/contact.html',name: '联系我们'}
                 ],
                 infos: [
                     {url: 'javascript:void(0)',text: '028-40082828',value:0},
@@ -28,9 +28,7 @@ function generateHeader(){
             '        </ul>\n' +
             '        <ul class="header-container header-info">\n' +
             '            <li v-for="item in infos">' +
-            '               <a :href="item.url" v-if="item.value==0">{{ item.text }}</a>'+
-            '               <a :href="item.url" v-if="item.value==1" @click="this.logins()">{{ item.text }}</a>'+
-            '               <a :href="item.url" v-if="item.value==2" @click="this.register()">{{ item.text }}</a>'+
+            '               <a :href="item.url">{{ item.text }}</a>'+
             '            </li>\n' +
             '        </ul>\n' +
             '    </div>',
