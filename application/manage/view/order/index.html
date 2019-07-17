@@ -63,12 +63,13 @@
                     </div>
                     <!--<div class="layui-col-xs3 layui-col-md2">-->
                         <div class="layui-inline">
-                            <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('today')">
+                            <button class="layui-btn"  lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('today')">
                                 <i class="layui-icon layui-icon-search"></i>查询今日
                             </button>
                             <button class="layui-btn" lay-filter="query" lay-submit="" onclick="$('#defaulttime').val('week')">
                                 <i class="layui-icon layui-icon-search"></i>查询本周
                             </button>
+                            <input id="defaulttime" class="layui-input" name="defaulttime" placeholder="默认时间" type="hidden">
                         </div>
                     <!--</div>-->
                     <!--<div class="layui-col-xs3 layui-col-md2">-->
@@ -257,7 +258,7 @@
                 statusCode: "1" //重新规定成功的状态码为 200，table 组件默认为 0
             },
             parseData: function (res) { //res 即为原始返回的数据
-                console.log(res.data.list);
+                console.log(res);
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
