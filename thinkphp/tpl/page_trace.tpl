@@ -43,14 +43,14 @@
             close.parentNode.style.display = 'block';
             history[0] = 1;
             document.cookie = 'thinkphp_show_page_trace='+history.join('|')
-        }
+        };
         close.onclick = function(){
             trace.style.display = 'none';
             this.parentNode.style.display = 'none';
             open.style.display = 'block';
             history[0] = 0;
             document.cookie = 'thinkphp_show_page_trace='+history.join('|')
-        }
+        };
         for(var i = 0; i < tab_tit.length; i++){
             tab_tit[i].onclick = (function(i){
                 return function(){

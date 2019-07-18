@@ -74,9 +74,6 @@ class Controller
      */
     protected function _initialize()
     {
-        if( !session("?deploy") ){
-            session("deploy", db('config')->where(['delete_time'=>0,'status'=>1])->select());
-        }
     }
 
     /**

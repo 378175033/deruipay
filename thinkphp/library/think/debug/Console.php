@@ -111,7 +111,7 @@ class Console
         }
         $js = <<<JS
 
-<script type='text/javascript'>
+<script; type='text/javascript'>
 {$lines}
 </script>
 JS;
