@@ -313,6 +313,14 @@ class User extends Business
         return $this->fetch();
     }
 
+    /**
+     * @desc 获取随机32位安全码
+     * Created by PhpStorm
+     * User: zhaolan
+     * Date: 2019/7/18 0018 16:32
+     * @param $length
+     * @return string
+     */
     private function createRandomStr($length){
         $str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';//62个字符
         $i = 0;

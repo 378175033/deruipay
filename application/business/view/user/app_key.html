@@ -6,6 +6,9 @@
     .layui-form-label{
         width: auto;
     }
+    .keyCon{
+        display: none;
+    }
 </style>
 <form class="layui-form mt20 layui-col-xs11">
     <div class="layui-form-item verify">
@@ -21,7 +24,7 @@
             <input class="layui-input" name="verify" placeholder="获取到的手机验证码">
         </div>
     </div>
-    <div class="layui-form-item">
+    <div class="layui-form-item keyCon">
         <label class="layui-form-label layui-col-md4">我的安全码</label>
         <div class="layui-input-block" style="position: relative">
             <input type="text" id="safe" readonly class="layui-bg-red layui-input" title="我的安全码" style="border: none"/>
@@ -32,7 +35,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>
+            <!--<button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>-->
             <button class="layui-btn submitBtn_add" lay-submit lay-filter="Demo">重置安全码</button>
         </div>
     </div>
@@ -90,15 +93,14 @@
         });
         form.on('submit(Demo)', function(data){
             data.field.reset = 1;
-            layer.confirm("请注意修改安全码后，需更改网站的安全码参数，否则接口会调用失败",function ( index ) {
-                layer.close(index)
-                $.post('',data.field,function (res) {
-                    if( res.code === 1 ){
-                        $('#safe').val( res.data );
-                    } else {
-                        toastr.error( res.msg )
-                    }
-                })
+            $.post('',data.field,function (res) {
+                if( res.code === 1 ){
+                    $('.verify').hide();
+                    $('.keyCon').show();
+                    $('#safe').val( res.data );
+                } else {
+                    toastr.error( res.msg )
+                }
             })
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
