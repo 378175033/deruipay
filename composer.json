@@ -23,7 +23,8 @@
         "ext-json": "^1.6",
         "ext-curl": "^7.2",
         "ext-openssl": "^7.2",
-        "alibabacloud/sdk": "^1.7"
+        "alibabacloud/sdk": "^1.7",
+        "phpseclib/phpseclib": "^2.0"
     },
     "autoload": {
         "psr-4": {
