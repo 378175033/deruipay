@@ -153,28 +153,24 @@ class Pay extends Controller
             ->find();
         $rate = $data['rates'];//用户通道费率
 
-        if($rate <=0 ){
-            $rate = $data['rate'];//通道基础费率
+        if($rate <=0  && $data['cost'] <= 0){
 
-            if($rate<=0){
-                $ratePrice = $data['cost'];//费率最低金额
-
-            }else{
-                $ratePrice = $amount*$rate;//
-            }
+            $ratePrice = $rate['rate']*$amount;
         }else{
-            $ratePrice = $amount*$rate;
+            $ratePrice = $rate*$amount<$data['cost']?$data['cost']:$rate*$amount;
+
         }
 
-        if($amount < $ratePrice){
-            $this->error('抱歉,支付金额不能小于最低金额,最低金额：'.$rate['cost']);
+        if($amount <= $ratePrice){
+            $this->error('抱歉,支付金额不能小于最低金额,最低金额：'.$data['cost']);
         }
+
         $arrivalPrice = $amount-$ratePrice;
+
         $data = [
             'ratePrice'=>$ratePrice,
             'arrivalPrice'=>$arrivalPrice
         ];
-
         return $data;
     }
     public function spage()
