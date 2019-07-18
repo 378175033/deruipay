@@ -147,17 +147,17 @@
     },
     {
         "name": "alibabacloud/sdk",
-        "version": "1.7.41",
-        "version_normalized": "1.7.41.0",
+        "version": "1.7.42",
+        "version_normalized": "1.7.42.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aliyun/openapi-sdk-php.git",
-            "reference": "c9efed8acda2515a6b5ce29f62bd2a3d86699f17"
+            "reference": "9825b37c80d6523ac0bd4e7da0058300248fb820"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aliyun/openapi-sdk-php/zipball/c9efed8acda2515a6b5ce29f62bd2a3d86699f17",
-            "reference": "c9efed8acda2515a6b5ce29f62bd2a3d86699f17",
+            "url": "https://api.github.com/repos/aliyun/openapi-sdk-php/zipball/9825b37c80d6523ac0bd4e7da0058300248fb820",
+            "reference": "9825b37c80d6523ac0bd4e7da0058300248fb820",
             "shasum": "",
             "mirrors": [
                 {
@@ -323,7 +323,7 @@
         "suggest": {
             "ext-sockets": "To use client-side monitoring"
         },
-        "time": "2019-07-18T07:26:41+00:00",
+        "time": "2019-07-18T08:58:51+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
