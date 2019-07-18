@@ -253,3 +253,27 @@ function deploy( $name = '' )
     }
     return "";
 }
+
+/**
+ * 2019/7/18 0018 12:51
+ * @param $key
+ * @param $secret
+ * @param $timestamp
+ * @return string
+ * 生成签名
+ */
+function getSign($key,$timestamp,$secret){
+
+    $data = [
+        'api_key'=>$key,
+        'api_secret'=>$secret,
+        'timestamp'=>$timestamp,
+    ];
+
+    ksort($data);//先升序排序
+
+    $data = http_build_query($data);//把数组转成http格式
+
+    return md5($data);//加密
+
+}

@@ -12,7 +12,7 @@ use think\Model;
 
 class Passageway extends Model
 {
-    public  function getList( $where = [] )
+    public  function getList($business_id, $where = [])
     {
         $condition = [
             'delete_time' => 0,
@@ -22,7 +22,14 @@ class Passageway extends Model
         $list = $this->append(['is_open'])->where( $condition )->select();
         $UserPassageway = new UserPassageway();
         foreach ($list as $value){
-            $value['is_open'] = $UserPassageway->where('passageway_id',$value['id'])->value('status');
+            $user_passageway = $UserPassageway->where('passageway_id',$value['id'])
+                ->where('business_id',$business_id)
+                ->find();
+            $is_open = 1;
+            if(!$user_passageway || !$user_passageway['status']){
+                $is_open = 0;
+            }
+            $value['is_open'] = $is_open;
         }
         return $list;
     }
