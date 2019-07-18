@@ -29,7 +29,8 @@
                     <td colspan="2">
                         <a href="javascript:;" class="layui-btn layui-btn changePass">修改密码</a>
                         <a href="javascript:;" class="layui-btn layui-btn-normal safePass">设置支付安全密码</a>
-                        <a href="javascript:;" class="layui-btn layui-btn-normal rsa">查看安全密钥</a>
+                        <a href="javascript:;" class="layui-btn layui-btn-normal rsa">重置开发者密钥</a>
+                        <a href="javascript:;" class="layui-btn layui-btn-warm allowIp">IP白名单</a>
                     </td>
                 </tr>
             </tbody>
@@ -79,13 +80,31 @@
     $('.rsa').click(function () {
         layui.use(['layer'],function () {
             var layer = layui.layer;
-            layer.open({
-                type : 2,
-                content : "{:url('appKey')}",
-                title : "查看安全密钥",
-                area : ["600px","400px"],
-                closeBtn: 2,
+            layer.confirm("你确定要重置开发者密钥(AppSecret)吗？\n" +
+                "请注意：重置AppSecret立即生效，所有使用旧AppSecret的接口将立即失效。为确保支付接口的正常使用，请尽快更新AppSecret信息。",function ( index ) {
+                layer.close( index )
+                layer.open({
+                    type : 2,
+                    content : "{:url('appKey')}",
+                    title : "查看安全密钥",
+                    area : ["600px","400px"],
+                    closeBtn: 2,
+                })
             })
+        })
+    })
+    $('.allowIp').click(function () {
+        layui.use(['layer'],function () {
+            var layer = layui.layer;
+            layer.prompt({
+                formType: 2,
+                value: '初始值',
+                title: '设置IP白名单',
+                area: ['400px', '200px'] //自定义文本域宽高
+            }, function(value, index){
+                alert(value); //得到value
+                layer.close(index);
+            });
         })
     })
     $('.changePass').click(function () {
