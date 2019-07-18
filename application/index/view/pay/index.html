@@ -89,11 +89,17 @@
                 <div class="layui-col-md12 cen-body">
                     <ul>
                         {volist name="way" id="w"}
-                        <li>
-                            <div data-id="{$w.id}">
-                                <img src="/uploads/passageway/{$w.icon}" alt="">{$w.name}
-                            </div>
-                        </li>
+                            <li>
+                                {if condition="$w.is_open neq 1"}
+                                    <div data-id="{$w.id}" data-value="{$w.is_open}" style="background-color: #9F9F9F">
+                                        <img src="/uploads/passageway/{$w.icon}" alt="">{$w.name}
+                                    </div>
+                                {else}
+                                    <div data-id="{$w.id}" data-value="{$w.is_open}">
+                                        <img src="/uploads/passageway/{$w.icon}" alt="">{$w.name}
+                                    </div>
+                                {/if}
+                            </li>
                         {/volist}
                     </ul>
                 </div>
@@ -119,11 +125,17 @@
         if( v === "") v = 0;
         $('.price').html( parseFloat(v).toFixed(2) )
     })
+
     $('.cen-body ul li div').click( function () {
-        $('.cen-body ul li div.active').removeClass('active');
-        $('#type').val( $(this).data('id') );
-        $(this).addClass('active');
+        var value = $(this).attr('data-value');
+        if(value == 1){
+            $('.cen-body ul li div.active').removeClass('active');
+            $('#type').val( $(this).data('id') );
+            $(this).addClass('active');
+        }
     })
+
+
     $(".order_id").text(getOrderId());
     $(".order_id").val(getOrderId());
     // 格式化限制数字文本框输入，只能数字或者两位小数

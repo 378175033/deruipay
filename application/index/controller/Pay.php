@@ -39,10 +39,10 @@ class Pay extends Controller
             }
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
+            $moneys = $this->getArrivalPrice($data);
             $res = $this->create_order($data);
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
-                $moneys = $this->getArrivalPrice($order);
                 model('Order')
                     ->where('order_id',$data['order_id'])
                     ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
@@ -147,7 +147,7 @@ class Pay extends Controller
 
         $rate = db('passageway p')->join('user_passageway up','up.passageway_id = p.id')
             ->where('up.id',$order['user_passageway_id'])
-            ->where('up.business_id',$order['business_id'])
+            ->where('up.business_id',$this->business)
             ->find();
 
         if($rate['rate']>0){

@@ -19,7 +19,11 @@ class Passageway extends Model
             'status' => 1,
         ];
         $condition = array_merge( $condition, $where);
-        $list = $this->where( $condition )->select();
+        $list = $this->append(['is_open'])->where( $condition )->select();
+        $UserPassageway = new UserPassageway();
+        foreach ($list as $value){
+            $value['is_open'] = $UserPassageway->where('passageway_id',$value['id'])->value('status');
+        }
         return $list;
     }
 }
