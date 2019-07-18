@@ -1,5 +1,4 @@
 .idea
-composer.lock
 *.log
 .extend/alipay/tmp
 .extend/alipay/f2fpay/log
