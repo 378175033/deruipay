@@ -37,7 +37,7 @@ class User extends Manage
     public function index()
     {
         $user_id =  session('userInfo')['id'];
-
+        $this->assign('user_id',$user_id);
         if ($this->request->isPost() && $this->request->isAjax()) {
             $users = $this->model->where('delete_time',0)->select();
             if($user_id != 1){
@@ -52,7 +52,6 @@ class User extends Manage
                 'list' => $users,
                 'count' => $count,
                 'sql'   => $sql,
-                'user_id'=>$user_id,
             ];
             $this->success('获取成功','',$data);
         }
