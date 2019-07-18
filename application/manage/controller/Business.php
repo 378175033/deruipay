@@ -189,6 +189,7 @@ class Business extends Manage
                 $insert = [
                     'bus_id'    => $id,
                     'account'   => $dif,
+                    'user_id'   => session( 'userInfo')['id'],
                     'now_account'=> $data['money'],
                     'desc'      => $data['desc'],
                     'info'      => $info,
@@ -282,6 +283,7 @@ class Business extends Manage
                 'count' => $count,
                 'sql'   => $sql
             ];
+//            halt($data);
             $this->success('获取成功！', '', $data);
         }
         $this->assign("id", $id);
