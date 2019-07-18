@@ -70,8 +70,15 @@
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
     $('.rsa').click(function () {
-        $.post('rsa',{},function (res) {
-            console.log( res )
+        layui.use(['layer'],function () {
+            var layer = layui.layer;
+            layer.open({
+                type : 2,
+                content : "{:url('appKey')}",
+                title : "查看安全密钥",
+                area : ["600px","400px"],
+                closeBtn: 2,
+            })
         })
     })
     $('.changePass').click(function () {
@@ -113,7 +120,6 @@
                 });
                 layer.close( cs );
             })
-
         })
     })
     $('.safePass').click(function () {
