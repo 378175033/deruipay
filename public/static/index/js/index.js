@@ -7,7 +7,7 @@ var animation = bodymovin.loadAnimation({
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: 'static/index/static/data.json'
+    path: '/static/index/static/data.json'
 })
 
 //banner轮播
