@@ -10,6 +10,7 @@ namespace app\manage\controller;
 
 use app\common\controller\Manage;
 use app\index\model\Suggest;
+use think\Db;
 
 /**
  * @desc 后端首页
@@ -52,7 +53,14 @@ class Index extends Manage
             "IFNULL((SELECT SUM(amount) AS tp_sum FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1),0.00)" => 'amount',
             "p.name"
         ])->group("p.id")->select();
-        echo $model->getLastSql();
+        $passageway = Db::name("passageway")->alias("p")->join([
+            ['user_passageway up','up.passageway_id = p.id','left']
+        ])->field( "p.name,group_concat(up.id) upid" )->where( "p.status", 1 )->group("p.id")->select();
+        foreach ( $passageway as $key => $value ){
+            $upid = $value['upid'];
+            $t = Db::name("order")->field("count(*) num,IFNULL( sum(amount), 0.00) amount")->where(['user_passageway_id'=>['in', $upid],'status'=> 1])->whereTime('create_time', 'today')->find();
+            $passageway[$key] = array_merge( $value, $t);
+        }
         $list = [
             'total' => $total,
             'withdraw' => $withdraw,
