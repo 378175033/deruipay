@@ -55,7 +55,6 @@ class Key extends Controller
     public function encrypt($content)
     {
         $rsa = new RSA();
-        $rsa = new RSA();
         return $rsa->encrypt($content);
     }
 
