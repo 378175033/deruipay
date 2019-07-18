@@ -8,12 +8,14 @@
 
 namespace app\index\controller;
 
+use app\index\model\Business;
 use app\index\model\Passageway;
 use app\index\model\UserPassageway;
 use daxiangpay\daxiangpay;
 use think\Controller;
 use think\Db;
 use think\Request;
+use think\Response;
 use think\Validate;
 
 class Pay extends Controller
@@ -23,7 +25,14 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        $this->business = session('business')['id'];
+        if( !session("?business") ){
+            $this->business= $this->request->param('business_id', "");
+            if( empty( $this->business ) ){
+                $this->error("请求参数错误！");
+            }
+        } else {
+            $this->business = session('business')['id'];
+        }
     }
 
     public function index()
@@ -32,7 +41,10 @@ class Pay extends Controller
         $user_passageway = new UserPassageway();
         $request = $this->request;
         // todo: 检查商户信息
-        if ($request->isAjax() && $request->isPost()) {
+        if ($request->isPost()){
+            if($other_number = $request->param('other_number')){//如果有第三方的号
+                $this->verifySign($request);
+            }
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('该通道已被禁用，请联系网站管理员！');
@@ -40,7 +52,7 @@ class Pay extends Controller
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
             $moneys = $this->getArrivalPrice($data);
-            $res = $this->create_order($data);
+            $res = $this->create_order($data,$other_number);
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
                 model('Order')
@@ -50,7 +62,8 @@ class Pay extends Controller
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
-            $this->assign('way', $passageway->getList());
+
+            $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
         }
@@ -178,7 +191,7 @@ class Pay extends Controller
         return $this->fetch();
     }
 
-    public function create_order($data)
+    public function create_order($data,$other_number='')
     {
         $str = [
             'business_id' => $this->business,
@@ -192,6 +205,9 @@ class Pay extends Controller
             'title' => session("business")['name'],
             'back_status' => 0,
         ];
+        if($other_number){//如果有第三方订单号
+            $str['batch'] = $other_number;
+        }
         if ($order = Db('order')->insert($str)) {
             return $order;
         } else {
@@ -307,6 +323,43 @@ class Pay extends Controller
             }
         }
         $this->fetch();
+    }
+
+    /**
+     * 2019/7/18 0018 13:05
+     * @param $request
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 签名验证
+     */
+    public function verifySign(Request $request){
+
+        $rule = [
+            'key|key' => 'require',
+            'sign|签名' => 'require',
+            'timestamp|时间' => 'require',
+        ];
+
+        $validate = new Validate($rule);
+        $result = $validate->check($request->param());
+        if (!$result) {
+            $this->error($validate->getError());
+        }
+        $key = $request->param('key');
+        $Business = new Business();
+        $business = $Business->where('api_key',$key)->where('id',$this->business)->find();
+        if(!$business){
+            $this->error('查无商户');
+        }
+        if($business['api_key'] != $key){
+            $this->error('参数key不对');
+        }
+        $sign = getSign($request->param('key'),$request->param('timestamp'),$business['api_secret']);
+
+        if($request->param('sign') != $sign){
+            $this->error('签名错误');
+        }
     }
 
 }
