@@ -10,6 +10,8 @@ namespace app\business\controller;
 use app\common\controller\Business;
 use app\common\controller\Rsa;
 use app\common\controller\Sign;
+use think\Db;
+use think\Request;
 
 class User extends Business
 {
@@ -283,6 +285,43 @@ class User extends Business
         $pub = $rsa->pub_encode($data);
         //公钥解密 $rsa->pub_decode( $pub)
         return $pub."\n".$priv;
+    }
+
+    public function appKey(){
+        //验证手机
+        if( $this->request->isPost() ){
+            $data = $this->request->param();
+            if( !checkSms( $data['verify'] ) ){
+                $this->error( "验证码错误！");
+            }
+            $api_key = Db::name("business")->where('id',$this->user['id'] )->value("api_key");
+            $reset = $this->request->post('reset', 0, 'intval');
+            if( empty( $api_key ) || $reset == 1){
+                //生成随机32位安全码
+                $salt = $this->createRandomStr( 32 );;
+                $res = Db::name("business")->where('id',$this->user['id'] )->update(['api_key'=>$salt]);
+                if( $res ){
+                    $this->success( "成功获取！",'', $salt);
+                }
+                $this->error( "获取失败！重新获取！");
+            } else {
+                $this->success("成功获取！",'',$api_key);
+            }
+
+        }
+        return $this->fetch();
+    }
+
+    private function createRandomStr($length){
+        $str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';//62个字符
+        $i = 0;
+        $r = "";
+        while( $i < $length ){
+            $str = str_shuffle($str);
+            $r .= substr( $str, 0, 1);
+            $i++;
+        }
+        return $r;
     }
 
     public function test()
