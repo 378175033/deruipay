@@ -43,15 +43,17 @@ function into_recycle( $rid, $table, $desc = "")
 }
 
 /**
- * 2019/6/14 0014 16:08
- * @desc生成随机盐
- * @ApiParams
- * @ApiReturnParams
+ * @desc 生成随机盐
+ * Created by PhpStorm
+ * User: zhaolan
+ * Date: 2019/7/18 0018 14:26
+ * @param int $length 随机盐长度
+ * @return bool|string
  */
-function getSalt()
+function getSalt( $length = 4)
 {
     $str = "2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY";
-    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-5),4);
+    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-$length-1),$length);
     return $name;
 }
 

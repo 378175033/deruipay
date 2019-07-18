@@ -1,0 +1,106 @@
+{include file='common:head'}
+<style>
+    .layui-layer-msg{
+        display: none;
+    }
+    .layui-form-label{
+        width: auto;
+    }
+</style>
+<form class="layui-form mt20 layui-col-xs11">
+    <div class="layui-form-item verify">
+        <label class="layui-form-label">获取验证码</label>
+        <div class="layui-input-block">
+            <button class="send_sms layui-btn layui-btn-primary" type="button">点击获取验证码</button>
+            <span style="margin-left: 10px;">查看{$user.mobile}短信</span>
+        </div>
+    </div>
+    <div class="layui-form-item verify">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-block">
+            <input class="layui-input" name="verify" placeholder="获取到的手机验证码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-col-md4">我的安全码</label>
+        <div class="layui-input-block" style="position: relative">
+            <input type="text" id="safe" readonly class="layui-bg-red layui-input" title="我的安全码" style="border: none"/>
+            <a class="layui-btn layui-btn-primary copy" title="复制安全码" style="position: absolute;top: 0; right: 0;width: 100px">
+                <i class="layui-icon layui-icon-file-b"></i>
+            </a>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="Demo">重置安全码</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".copy").click(function() {
+            var e = document.getElementById("safe");
+            if( e.value == "" ){
+                return toastr.success("请先获取安全码！");
+            }
+            e.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            return toastr.success("复制成功！");
+        })
+        var m = 60;
+        $(document).on( "click", ".send_sms",function () {
+            var that = $(this);
+            that.removeClass("layui-btn-primary").addClass("layui-btn-disabled").attr("disabled", true);
+            $.post('/sms.html',{mobile:"{$user.mobile}"},function (res) {
+                if( res.code !== 1 ){
+                    toastr.error( res.msg );
+                }
+            })
+            var intval = setInterval(function () {
+                m--;
+                if( m < 0 ){
+                    clearInterval( intval );
+                    m = 60;
+                    that.removeClass("layui-btn-disabled").addClass("layui-btn-primary").attr("disabled", false);
+                    that.html( "获取验证码" );
+                } else {
+                    that.html( "重新获取("+m+")");
+                }
+            },1000)
+        })
+    })
+    layui.use(['form','layer'], function(){
+        var form=layui.form,layer=layui.layer;
+        //自定义验证规则
+        form.on('submit(formDemo)', function(data){
+            $.post('',data.field,function (res) {
+                if( res.code === 1 ){
+                    $('#safe').val( res.data );
+                } else {
+                    toastr.error( res.msg )
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.on('submit(Demo)', function(data){
+            data.field.reset = 1;
+            layer.confirm("请注意修改安全码后，需更改网站的安全码参数，否则接口会调用失败",function ( index ) {
+                layer.close(index)
+                $.post('',data.field,function (res) {
+                    if( res.code === 1 ){
+                        $('#safe').val( res.data );
+                    } else {
+                        toastr.error( res.msg )
+                    }
+                })
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
