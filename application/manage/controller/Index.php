@@ -58,7 +58,7 @@ class Index extends Manage
         ])->field( "p.name,group_concat(up.id) upid" )->where( "p.status", 1 )->group("p.id")->select();
         foreach ( $passageway as $key => $value ){
             $upid = $value['upid'];
-            $t = Db::name("order")->field("count(*) num,IFNULL( sum(amount), 0.00) amount")->where(['user_passageway_id'=>['in', $upid]])->whereTime('create_time', 'today')->find();
+            $t = Db::name("order")->field("count(*) num,IFNULL( sum(amount), 0.00) amount")->where(['user_passageway_id'=>['in', $upid],'status'=> 1])->whereTime('create_time', 'today')->find();
             $passageway[$key] = array_merge( $value, $t);
         }
         $list = [
