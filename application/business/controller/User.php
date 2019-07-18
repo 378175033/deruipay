@@ -10,6 +10,7 @@ namespace app\business\controller;
 use app\common\controller\Business;
 use app\common\controller\Rsa;
 use app\common\controller\Sign;
+use app\index\model\Certificate;
 use think\Db;
 use think\Request;
 
@@ -338,5 +339,42 @@ class User extends Business
         ];
         $sign = new Sign( $param );
         var_dump( $sign );
+    }
+
+    /**
+     * 2019/7/18 0018 16:49
+     * @param Request $request
+     * 公钥和私钥下载
+     */
+    public function download(Request $request){
+
+        $type = $request->param('type');
+
+        $file_dir = 'certs/';
+        $business = $this->user['shop_sn'];
+        $file_name = 'cert_'.$type.'_'.$business.'.key';
+
+        if(!file_exists($file_dir.$file_name)){
+
+            $Certificate = new Certificate();
+
+            $Certificate->exportOpenSSLFile($business);
+        }
+        $file = fopen ( $file_dir . $file_name, "rb" );
+
+        //告诉浏览器这是一个文件流格式的文件
+        Header ( "Content-type: application/octet-stream" );
+        //请求范围的度量单位
+        Header ( "Accept-Ranges: bytes" );
+        //Content-Length是指定包含于请求或响应中数据的字节长度
+        Header ( "Accept-Length: " . filesize ( $file_dir . $file_name ) );
+        //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
+        Header ( "Content-Disposition: attachment; filename=" . $file_name );
+
+        //读取文件内容并直接输出到浏览器
+        echo fread ( $file, filesize ( $file_dir . $file_name ) );
+        fclose ( $file );
+        exit ();
+
     }
 }

@@ -18,7 +18,13 @@
                 <tr><td class="align-right">最近登录时间</td><td>{$user.last_login_time}</td></tr>
                 <tr><td class="align-right">最近登录IP</td><td>{$user.last_login_ip}</td></tr>
                 <tr><td class="align-right">最近登录地址</td><td>{:GetIpLookup($user.last_login_ip)}</td></tr>
-                <tr><td class="align-right">证书下载</td><td><a href="{:url('download')}" class="layui-btn layui-btn-checked download">下载</a></td></tr>
+                <tr>
+                    <td class="align-right">证书下载</td>
+                    <td>
+                        <a href="{:url('download?type=public')}" class="layui-btn layui-btn-checked download">公钥下载</a>
+                        <a href="{:url('download?type=private')}" class="layui-btn layui-btn-checked download">私钥下载</a>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <a href="javascript:;" class="layui-btn layui-btn changePass">修改密码</a>
