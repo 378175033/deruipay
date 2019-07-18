@@ -145,28 +145,36 @@ class Pay extends Controller
 
         $amount = $order['amount'];//金额
 
-        $rate = db('passageway p')->join('user_passageway up','up.passageway_id = p.id')
+        $data = db('passageway p')
+            ->field('p.*,up.rate as rates,up.cost')
+            ->join('user_passageway up','up.passageway_id = p.id')
             ->where('up.id',$order['user_passageway_id'])
             ->where('up.business_id',$this->business)
             ->find();
+        $rate = $data['rates'];//用户通道费率
 
-        if($rate['rate']>0){
+        if($rate <=0 ){
+            $rate = $data['rate'];//通道基础费率
 
-            $ratePrice = $amount*$rate['rate'];//平台金额
-            if($ratePrice<$rate['cost']){
-                $this->error('抱歉,费率金额不能小于最低金额,最低金额：'.$rate['cost']);
+            if($rate<=0){
+                $ratePrice = $data['cost'];//费率最低金额
+
+            }else{
+                $ratePrice = $amount*$rate;//
             }
-            $arrivalPrice = $amount-$ratePrice;
-            $data = [
-                'ratePrice'=>$ratePrice,
-                'arrivalPrice'=>$arrivalPrice
-            ];
-            return $data;
+        }else{
+            $ratePrice = $amount*$rate;
         }
+
+        if($amount < $ratePrice){
+            $this->error('抱歉,支付金额不能小于最低金额,最低金额：'.$rate['cost']);
+        }
+        $arrivalPrice = $amount-$ratePrice;
         $data = [
-            'ratePrice'=>0,
-            'arrivalPrice'=>$amount
+            'ratePrice'=>$ratePrice,
+            'arrivalPrice'=>$arrivalPrice
         ];
+
         return $data;
     }
     public function spage()
