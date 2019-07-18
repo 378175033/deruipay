@@ -18,7 +18,7 @@ class Certificate extends Model
      * @return bool
      * 生成公匙和私匙
      */
-    public function exportOpenSSLFile($mobile){
+    public function exportOpenSSLFile($business){
         $config = array(
             'config' => 'D:\phpStudy\PHPTutorial\php\php-7.2.1-nts\extras\ssl\openssl.cnf',
             "digest_alg"        => "sha512",
@@ -30,8 +30,8 @@ class Certificate extends Model
         openssl_pkey_export($res, $private_key, null, $config);
         $public_key = openssl_pkey_get_details($res);
         $public_key = $public_key["key"];
-        $public_path = 'certs/cert_public_'.$mobile.'.key';
-        $private_path = 'certs/cert_private_'.$mobile.'.key';
+        $public_path = 'certs/cert_public_'.$business.'.key';
+        $private_path = 'certs/cert_private_'.$business.'.key';
         file_put_contents($public_path, $public_key);
         file_put_contents($private_path, $private_key);
         openssl_free_key($res);
