@@ -62,7 +62,6 @@ class Pay extends Controller
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
-
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
