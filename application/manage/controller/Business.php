@@ -390,7 +390,11 @@ class Business extends Manage
     public function setPassageway()
     {
         $param = $this->request->param();
+
         if( $this->request->isPost() && $this->request->isAjax() ){
+            if($param['rate']>=1){
+                $this->error('通道费率不能大于1');
+            }
             $isUpdate = $param['id'] ? true : false;
             $res = model( 'userPassageway')->allowField( true )->isUpdate( $isUpdate )->save( $param );
             if( $res ){

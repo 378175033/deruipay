@@ -26,9 +26,14 @@ class Pay extends Controller
     {
         parent::_initialize(); // TODO: del $this->business default
         if( !session("?business") ){
-            $this->business= $this->request->param('business_id', "");
-            if( empty( $this->business ) ){
+            $business= $this->request->param('business_id', "");
+            if( empty( $business ) ){
                 $this->error("请求参数错误！");
+            }
+            $Business = new Business();
+            $this->business = $Business->where('shop_sn',$business)->value('id');
+            if(empty($this->business)){
+                $this->error('查无商户');
             }
         } else {
             $this->business = session('business')['id'];
