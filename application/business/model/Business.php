@@ -53,6 +53,7 @@ class Business extends Model
             return $msg;
         }
         $business = $this->where('mobile',$data['mobile'])->find();
+
         if(!$business){
             $msg['msg'] = '用户不存在！';
             return $msg;

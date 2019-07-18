@@ -41,10 +41,9 @@ class Index extends Controller
             if( !checkSms( $request->param('code') ) ){
                 $this->error( "验证码错误！");
             }
-
             $business = $Business->doLogin($request->param());
-            if(empty( $business['status'])){
-                $this->error( $business['msg']);
+            if(!$business['status']){
+                $this->error($business['msg']);
             }
             //写入登录日志
             $LoginLog = new LoginLog();
