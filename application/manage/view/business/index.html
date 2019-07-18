@@ -64,9 +64,9 @@
 <script type="text/html" id="status">
     <div>
         {{#  if(d.status == 1){ }}
-        <a class="layui-btn layui-btn-normal layui-btn-xs status-toggle" data-value="0" data-id="{{ d.id }}">正常</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs status-toggle" data-value="0" data-id="{{ d.id }}" data-notice="禁用|正常">正常</a>
         {{#  } else { }}
-        <a class="layui-btn layui-btn-danger layui-btn-xs status-toggle" data-value="1" data-id="{{ d.id }}">禁用</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs status-toggle" data-value="1" data-id="{{ d.id }}" data-notice="禁用|正常">禁用</a>
         {{#  } }}
         {{# if(d.check == 0){ }}
             <a href="javascript:openIframe({content:'check?id={{d.id}}&val=0',area:['30%','50%'],title:'商家审核'});" class="layui-btn layui-btn-xs layui-btn-danger" >待审核</a>
