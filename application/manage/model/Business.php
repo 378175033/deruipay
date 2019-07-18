@@ -30,7 +30,7 @@ class Business extends Model
      * @return bool
      * 金额变动
      */
-    public function changeMoney( $money, $now_money , $id ,$type = 0  )
+    public function changeMoney( $money, $now_money , $id ,$type = 0  ,$desc = '')
     {
         $con = [
             'money' => $now_money
@@ -43,9 +43,11 @@ class Business extends Model
             $data = [
                 'account'   => $money,
                 'bus_id'    => $id,
+                'user_id'   => session( 'userInfo')['id'],
                 'now_account'   => $now_money,
                 'info'      => $type,
-                'create_time'   => time()
+                'create_time'   => time(),
+                'desc' => $desc
             ];
             //写入商户余额日志
             Db::name( 'AccountLog')->insert( $data );

@@ -14,7 +14,7 @@
 </body>
 <script type="text/html" id="barDemo">
 
-    {{# if(d.user_id == 1){ }}
+    {if condition = "$user_id eq 1"}
         <a class="layui-btn layui-btn-xs layui-btn-normal btn-update" data-id="{{ d.id }}" title="修改数据">
             <i class="layui-icon layui-icon-edit"></i>
         </a>
@@ -26,7 +26,7 @@
             <i class="layui-icon layui-icon-set-fill"></i>
         </a>
         {{# } }}
-    {{# }else{ }}
+    {else}
         <button class="layui-btn layui-btn-xs layui-btn-normal btn-update layui-btn-disabled"  data-id="{{ d.id }}" title="修改数据" disabled>
             <i class="layui-icon layui-icon-edit"></i>
         </button>
@@ -38,7 +38,7 @@
             <i class="layui-icon layui-icon-set-fill"></i>
         </button>
         {{# } }}
-    {{# } }}
+    {/if}
 
 </script>
 <script type="text/html" id="status">
@@ -102,7 +102,7 @@
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data.list//解析数据列表
+                    "data": res.data.list,//解析数据列表
                 };
             }
         });
