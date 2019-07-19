@@ -390,8 +390,11 @@ class User extends Business
 
         $file_dir = 'certs/';
         $business = $this->user['shop_sn'];
-        $file_name = 'cert_'.$type.'_'.$business.'.key';
-
+        if($type == 'public'){
+            $file_name = 'cert_'.$type.'.key';
+        }else{
+            $file_name = 'cert_'.$type.'_'.$business.'.key';
+        }
         if(!file_exists($file_dir.$file_name)){
 
             $Certificate = new Certificate();
