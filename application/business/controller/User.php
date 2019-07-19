@@ -338,18 +338,19 @@ class User extends Business
             if( !checkSms( $data['verify'] ) ){
                 $this->error( "验证码错误！");
             }
-            $api_key = Db::name("business")->where('id',$this->user['id'] )->value("api_key");
+            $business = Db::name("business")->where('id',$this->user['id'] )->find();
             $reset = $this->request->post('reset', 0, 'intval');
-            if( empty( $api_key ) || $reset == 1){
+            if( empty( $business['api_key'] ) || $reset == 1){
                 //生成随机32位安全码
-                $salt = $this->createRandomStr( 32 );;
-                $res = Db::name("business")->where('id',$this->user['id'] )->update(['api_key'=>$salt]);
+                $key = $this->createRandomStr( 32 );
+                $secret = $this->createRandomStr( 64 );
+                $res = Db::name("business")->where('id',$this->user['id'] )->update(['api_key'=>$key,'api_secret'=>$secret]);
                 if( $res ){
-                    $this->success( "成功获取！",'', $salt);
+                    $this->success( "成功获取！",'', ['api_key'=>$key,'api_secret'=>$secret]);
                 }
                 $this->error( "获取失败！重新获取！");
             } else {
-                $this->success("成功获取！",'',$api_key);
+                $this->success("成功获取！",'',['api_key'=>$business['api_key'],'api_secret'=>$business['api_secret']]);
             }
 
         }

@@ -33,6 +33,15 @@
             </a>
         </div>
     </div>
+    <div class="layui-form-item keyCon">
+        <label class="layui-form-label layui-col-md4">我的令牌</label>
+        <div class="layui-input-block" style="position: relative">
+            <input type="text" id="secret" readonly class="layui-bg-red layui-input" title="我的令牌" style="border: none"/>
+            <a class="layui-btn layui-btn-primary copySecret" title="复制令牌" style="position: absolute;top: 0; right: 0;width: 100px">
+                <i class="layui-icon layui-icon-file-b"></i>
+            </a>
+        </div>
+    </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <!--<button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>-->
@@ -51,6 +60,15 @@
             var e = document.getElementById("safe");
             if( e.value == "" ){
                 return toastr.success("请先获取安全码！");
+            }
+            e.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            return toastr.success("复制成功！");
+        });
+        $(".copySecret").click(function() {
+            var e = document.getElementById("secret");
+            if( e.value == "" ){
+                return toastr.success("请先获取令牌！");
             }
             e.select(); // 选择对象
             document.execCommand("Copy"); // 执行浏览器复制命令
@@ -97,7 +115,8 @@
                 if( res.code === 1 ){
                     $('.verify').hide();
                     $('.keyCon').show();
-                    $('#safe').val( res.data );
+                    $('#safe').val( res.data.api_key );
+                    $('#secret').val( res.data.api_secret );
                 } else {
                     toastr.error( res.msg )
                 }
