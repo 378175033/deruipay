@@ -154,7 +154,7 @@ function decode($message, $encodingaeskey = '')
     $iv = substr($key, 0, 16);
 
     $decrypted = openssl_decrypt($ciphertext_dec, 'aes-256-ofb', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-return $decrypted;
+//return $decrypted;
     $pad = ord(substr($decrypted, -1));
     if ($pad < 1 || $pad > 32) {
         $pad = 0;

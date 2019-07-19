@@ -12,13 +12,14 @@ namespace app\index\controller;
 use think\Controller;
 use phpseclib\Crypt\RSA;
 use think\Exception;
+use think\Request;
 
 class Key extends Controller
 {
     public function create_rsa_key($business_id)
     {
         $rsa = new RSA();
-        $res = $rsa->createKey();
+        $res = $rsa->createKey($bits = 1024);
         if ($res['partialkey']){
             $this->error('密钥生成失败！');
         }
@@ -32,7 +33,7 @@ class Key extends Controller
     protected function create_my_rsa_key()
     {
         $rsa = new RSA();
-        $res = $rsa->createKey();
+        $res = $rsa->createKey($bits = 1024);
         if ($res['partialkey']){
             $this->error('密钥生成失败！');
         }
@@ -54,6 +55,7 @@ class Key extends Controller
         return true;
     }
 
+    //用商户的公钥加密
     public function encrypt($content, $business_id)
     {
         $rsa = new RSA();
@@ -65,6 +67,7 @@ class Key extends Controller
         return false;
     }
 
+    //用平台的私钥解密
     public function decrypt($content)
     {
         $rsa = new RSA();
@@ -75,5 +78,13 @@ class Key extends Controller
             return $rsa->decrypt($content);
         }
         return false;
+    }
+
+    public function fun()
+    {
+        $a = '016CdA8bG3Q0N7/bimVaTImJdFm3i+wlPR/qx2D/TdZTefmX8L/Ck8KIw61NcH2DD/M7fCBvV1Iw6cV2lqqxKHDI3P/0LYjZgHITKFUJhCZQJbTZnRQRMs+T5SoqWVWkmhjpjzawiz0oaehdWPuBTmS0ZgmMQ+VUO/BxhFPtx+exAAXlnWMWZxrBFWiyzugMCTErIVtpd32anRGx6FtZrw==';
+        $encodingaeskey  = base64_encode('1234567891011121');
+        halt(decode($a), $encodingaeskey);
+        dump(encode($this->encrypt('{asd:asd,dsa:dsa}',1), $encodingaeskey));
     }
 }
