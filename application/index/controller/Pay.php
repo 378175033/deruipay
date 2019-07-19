@@ -9,8 +9,10 @@
 namespace app\index\controller;
 
 use app\index\model\Business;
+use app\index\model\Certificate;
 use app\index\model\Passageway;
 use app\index\model\UserPassageway;
+use app\index\model\Verify;
 use daxiangpay\daxiangpay;
 use think\Controller;
 use think\Db;
@@ -84,12 +86,8 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
-            //验证白名单
-            $this->whitelist();
-            //签名验证
-            if($other_number = $request->param('other_number')){//如果有第三方的号
-                $this->verifySign($request);
-            }
+//            $Verify = new Verify();
+//            $Verify->verifyParam($request);//验证
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
@@ -99,29 +97,7 @@ class Pay extends Controller
         }
     }
 
-    /**
-     * 2019/7/19 0019 10:15
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * 验证白名单
-     */
-    public function whitelist(){
-        $Business = new Business();
 
-        if(!isset($_SERVER['HTTP_REFERER'])){
-            $this->error('No refer found');
-        }
-        $host = gethostbyname($_SERVER['HTTP_REFERER']);//ip
-
-        $business = $Business->find($this->business);
-
-        $allowIp = explode("\n",$business['allow_ip']);
-
-        if(!in_array($host,$allowIp)){
-            $this->error('不好意思，商户不在白名单内，请联系管理员！');
-        }
-    }
     /**
      * 2019/7/19 0019 9:52
      * @throws \think\db\exception\DataNotFoundException
