@@ -30,6 +30,9 @@ class Certificate extends Model
         openssl_pkey_export($res, $private_key, null, $config);
         $public_key = openssl_pkey_get_details($res);
         $public_key = $public_key["key"];
+        if(!file_exists('certs')){
+            mkdir('certs');
+        }
         $public_path = 'certs/cert_public_'.$business.'.key';
         $private_path = 'certs/cert_private_'.$business.'.key';
         file_put_contents($public_path, $public_key);
