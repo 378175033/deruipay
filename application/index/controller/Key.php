@@ -27,6 +27,8 @@ class Key extends Controller
         $this->success('success');
         $this->error('生成文件错误！');
     }
+
+
     protected function create_my_rsa_key()
     {
         $rsa = new RSA();
@@ -52,15 +54,26 @@ class Key extends Controller
         return true;
     }
 
-    public function encrypt($content)
+    public function encrypt($content, $business_id)
     {
         $rsa = new RSA();
-        return $rsa->encrypt($content);
+        $path = "businessCert/$business_id"."public.pem";
+        $key = file_get_contents($path);
+        if ($rsa->loadKey($key)) {
+            return $rsa->encrypt($content);
+        }
+        return false;
     }
 
     public function decrypt($content)
     {
         $rsa = new RSA();
-        return $rsa->decrypt($content);
+//        $path = "businessCert/$business_id"."private.pem";
+        $path = "myCert/private.pem";
+        $key = file_get_contents($path);
+        if ($rsa->loadKey($key)) {
+            return $rsa->decrypt($content);
+        }
+        return false;
     }
 }
