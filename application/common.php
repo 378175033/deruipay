@@ -246,6 +246,7 @@ function deploy( $name = '' )
 {
     $data = session("deploy");
     if( empty( $name ) ) return $data;
+    if( !is_array( $data ) ) return false;
     foreach ( $data as $v ){
         if( $v['vname'] == $name ){
             return $v['value'];
