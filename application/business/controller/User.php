@@ -110,6 +110,18 @@ class User extends Business
                     }
                     $this->success( "白名单配置成功！" );
                     break;
+                case 'url':
+                    $url = $this->request->post("url", "");
+                    if( empty( $url ) ){
+                        $this->error("请输入回调url");
+                    }
+                    try{
+                        $this->model->allowField(['notify_url'])->save(['notify_url'=>$url],['id'=>$this->user['id']]);
+                    }catch (Exception $e){//抛出异常
+                        $this->error( $e->getMessage() );
+                    }
+                    $this->success( "回调路径配置成功！" );
+                    break;
             }
         }
         return $this->fetch();

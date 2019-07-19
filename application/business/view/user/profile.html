@@ -25,12 +25,14 @@
                         <a href="{:url('download?type=private')}" class="layui-btn layui-btn-checked download">私钥下载</a>
                     </td>
                 </tr>
+                <tr><td class="align-right">回传路径</td><td>{$user.notify_url}</td></tr>
                 <tr>
                     <td colspan="2">
                         <a href="javascript:;" class="layui-btn layui-btn changePass">修改密码</a>
                         <a href="javascript:;" class="layui-btn layui-btn-normal safePass">设置支付安全密码</a>
                         <a href="javascript:;" class="layui-btn layui-btn-normal rsa">重置开发者密钥</a>
                         <a href="javascript:;" class="layui-btn layui-btn-warm allowIp">IP白名单</a>
+                        <a href="javascript:;" class="layui-btn layui-btn-danger url">设置回传路径</a>
                     </td>
                 </tr>
             </tbody>
@@ -75,6 +77,9 @@
 <script type="text/html" id="ip">
     <textarea id="ipCon" class="layui-textarea" style="width: 400px;height: 180px;margin: 10px auto" placeholder="每行为一条数据白名单">{$user.allow_ip}</textarea>
 </script>
+<script type="text/html" id="url">
+    <textarea id="notifyUrl" class="layui-textarea" style="width: 400px;height: 180px;margin: 10px auto" placeholder="第三方回调路径">{$user.notify_url}</textarea>
+</script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -108,6 +113,37 @@
                 yes:function ( index ) {
                     var val = $('#ipCon').val();
                     $.post('',{act:'ip',ip:val},function (res) {
+                        console.log( res )
+                        if( res.code === 1 ){
+                            toastr.success("设置成功！",function () {
+                                setTimeout(function () {
+                                    layer.close(index);
+                                    window.location.reload();
+                                },1200)
+                            })
+                        } else {
+                            toastr.error( res.msg );
+                        }
+                    })
+                },
+                btn2:function (index) {
+                    layer.close( index )
+                }
+            })
+        })
+    });
+    $('.url').click(function () {
+        layui.use(['layer'],function () {
+            var layer = layui.layer;
+            layer.open({
+                type : 1,
+                content: $('#url').html(),
+                btn:['设置','取消'],
+                title: "设置回调路径",
+                area: ["450px","300px"],
+                yes:function ( index ) {
+                    var val = $('#notifyUrl').val();
+                    $.post('',{act:'url',url:val},function (res) {
                         console.log( res )
                         if( res.code === 1 ){
                             toastr.success("设置成功！",function () {

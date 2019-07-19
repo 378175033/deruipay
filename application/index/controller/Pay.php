@@ -49,7 +49,10 @@ class Pay extends Controller
         if ($request->isPost()){
             //验证白名单
             $this->whitelist();
-
+            //签名验证
+            if($other_number = $request->param('other_number')){//如果有第三方的号
+                $this->verifySign($request);
+            }
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
@@ -87,15 +90,12 @@ class Pay extends Controller
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
-     * 创建订单和验证签名
+     * 创建订单
      */
     public function createOrder(){
         $request = $this->request;
         $user_passageway = new UserPassageway();
         if($request->isPost()){
-            if($other_number = $request->param('other_number')){//如果有第三方的号
-                $this->verifySign($request);
-            }
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('该通道已被禁用，请联系网站管理员！');
@@ -103,7 +103,7 @@ class Pay extends Controller
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
             $moneys = $this->getArrivalPrice($data);
-            $res = $this->create_order($data,$other_number);
+            $res = $this->create_order($data,$request->param('other_number'));
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
                 model('Order')
