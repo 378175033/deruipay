@@ -11,6 +11,7 @@ namespace app\common\model;
 
 use app\common\controller\Curl;
 use app\index\model\Business;
+use app\index\model\Certificate;
 use think\Exception;
 use think\Model;
 
@@ -35,19 +36,27 @@ class Notify extends Model
         }
         $time = time();
 
-        $sign = getSign($business['api_key'],$time,$business['api_secret']);
+        $sign = getSign($business['api_key'],$business['api_secret'],$business['shop_sn'],$time,$order['batch']);
 
         $Curl = new Curl();
-
         $data = [
-            'key'=>$business['api_key'],
-            'timestamp'=>$time,
             'sign'=>$sign,
+            'timestamp'=>$time,
             'business_id'=>$business['shop_sn'],
-            'order'=>$order,
+        ];
+        ksort($data);
+
+        $content = http_build_query($data);
+
+        $Certificate = new Certificate();
+
+        $content = $Certificate->authcode($content,'E',$business['shop_sn']);
+        $tmp =[
+            'enData'=>$content,
+            'order_sn'=>$order['batch'],
         ];
         try{
-            $curl = $Curl->post($business['notify_url'],$data);
+            $curl = $Curl->post($business['notify_url'],$tmp);
             if($curl){
                 return '回调请求成功';
             }else{

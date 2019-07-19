@@ -27,13 +27,11 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        if( !session("?business") ){
-            $business= $this->request->param('business_id', "");
-            if( empty( $business ) ){
-                $this->error("请求参数错误！");
-            }
+        if( !session("?business")){
+            $Verify = new Verify();
+            $data = $Verify->verifyParam($this->request->post());//验证
             $Business = new Business();
-            $this->business = $Business->where('shop_sn',$business)->value('id');
+            $this->business = $Business->where('shop_sn',$data['business_id'])->value('id');
             if(empty($this->business)){
                 $this->error('查无商户');
             }
@@ -86,8 +84,6 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
-//            $Verify = new Verify();
-//            $Verify->verifyParam($request);//验证
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
@@ -387,41 +383,4 @@ class Pay extends Controller
         }
         $this->fetch();
     }
-
-    /**
-     * 2019/7/18 0018 13:05
-     * @param $request
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * 签名验证
-     */
-    public function verifySign(Request $request){
-
-        $rule = [
-            'key|key' => 'require',
-            'sign|签名' => 'require',
-            'timestamp|时间' => 'require',
-        ];
-
-        $validate = new Validate($rule);
-        $result = $validate->check($request->param());
-        if (!$result) {
-            $this->error($validate->getError());
-        }
-        $key = $request->param('key');
-        $Business = new Business();
-        $business = $Business->where('api_key',$key)->where('id',$this->business)->find();
-        if(!$business){
-            $this->error('查无商户');
-        }
-        if($business['api_key'] != $key){
-            $this->error('参数key不对');
-        }
-        $sign = getSign($request->param('key'),$request->param('timestamp'),$business['api_secret']);
-        if($request->param('sign') != $sign){
-            $this->error('签名错误');
-        }
-    }
-
 }

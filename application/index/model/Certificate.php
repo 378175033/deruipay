@@ -47,8 +47,8 @@ class Certificate extends Model
      * @return string
      * 加密 E/解密 D
      */
-    public function authcode($string, $operation = 'E') {
-        $ssl_public     = file_get_contents("myCert/public.pem");
+    public function authcode($string, $operation = 'E',$business_id='') {
+        $ssl_public     = file_get_contents("businessCert/".$business_id."/public.pem");
         $ssl_private    = file_get_contents("myCert/private.pem");
         $pi_key         = openssl_pkey_get_private($ssl_private);//这个函数可用来判断私钥是否是可用的，可用返回资源id Resource id
         $pu_key         = openssl_pkey_get_public($ssl_public);//这个函数可用来判断公钥是否是可用的

@@ -263,14 +263,15 @@ function deploy( $name = '' )
  * @return string
  * 生成签名
  */
-function getSign($key,$timestamp,$secret){
+function getSign($key,$secret,$business_id,$timestamp,$order_sn){
 
     $data = [
         'api_key'=>$key,
         'api_secret'=>$secret,
         'timestamp'=>$timestamp,
+        'business_id'=>$business_id,
+        'order_sn'=>$order_sn,
     ];
-
     ksort($data);//先升序排序
 
     $data = http_build_query($data);//把数组转成http格式

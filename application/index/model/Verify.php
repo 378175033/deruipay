@@ -23,14 +23,14 @@ class Verify extends Model
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function verifyParam(string $content)
+    public function verifyParam($datas)
     {
-
-        $data = $this->certificateDecrypt($content);//证书验证
+        $enData = $datas['enData'];
+        $data = $this->certificateDecrypt($enData);//证书验证
 
         $this->whitelist($data['business_id']);//白名单验证
 
-        $data = $this->verifySign($data,$data['business_id']);//签名验证
+        $data = $this->verifySign($data,$datas['order_sn']);//签名验证
 
         return $data;
 
@@ -68,16 +68,25 @@ class Verify extends Model
     public function certificateDecrypt($content){
 
         //证书验证
-        $Key = new Key();
-        $content = $Key->decrypt($content);
+//        $Key = new Key();
+//
+//        $content = $Key->decrypt($content);
+
+        $Certificate = new Certificate();
+        $content = $Certificate->authcode($content,'D');
+
 
         if(!$content){
             return msg("证书验证错误");
         }
-        //base64解密
-        $content = base64_decode($content);
+        $res = [];
+        $data = explode('&',$content);
+        foreach($data as $value){
+            $arr = explode('=', $value);
+            $res[$arr[0]] = $arr[1];
+        }
 
-        return $content;
+        return $res;
 
     }
 
@@ -90,9 +99,10 @@ class Verify extends Model
      * @throws \think\exception\DbException
      * 签名验证
      */
-    public function verifySign($param,$business_id){
+    public function verifySign($param,$ordr_sn){
+
+
         $rule = [
-            'key|key' => 'require',
             'sign|签名' => 'require',
             'timestamp|时间' => 'require',
         ];
@@ -102,16 +112,17 @@ class Verify extends Model
         if (!$result) {
             return msg($validate->getError());
         }
-        $key = $param['key'];
         $Business = new Business();
-        $business = $Business->where('api_key',$key)->where('id',$business_id)->find();
+        $business = $Business->where('shop_sn',$param['business_id'])->find();
+
+        $key = $business['api_key'];
+
         if(!$business){
             return msg("查无商户");
         }
-        if($business['api_key'] != $key){
-            $msg = '参数key不对';
-        }
-        $sign = getSign($param['key'],$param['timestamp'],$business['api_secret']);
+
+        $sign = getSign($key,$business['api_secret'],$param['business_id'],$param['timestamp'],$ordr_sn);
+
         if($param['sign'] != $sign){
             return msg("签名错误");
         }
