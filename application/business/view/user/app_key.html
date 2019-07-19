@@ -44,7 +44,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <!--<button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>-->
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">查看安全码</button>
             <button class="layui-btn submitBtn_add" lay-submit lay-filter="Demo">重置安全码</button>
         </div>
     </div>
@@ -102,7 +102,10 @@
         form.on('submit(formDemo)', function(data){
             $.post('',data.field,function (res) {
                 if( res.code === 1 ){
-                    $('#safe').val( res.data );
+                    $('.verify').hide();
+                    $('.keyCon').show();
+                    $('#safe').val( res.data.api_key );
+                    $('#secret').val( res.data.api_secret );
                 } else {
                     toastr.error( res.msg )
                 }
