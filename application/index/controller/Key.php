@@ -23,8 +23,8 @@ class Key extends Controller
         if ($res['partialkey']){
             $this->error('密钥生成失败！');
         }
-        $public = $this->save_key("businessCert/public_".$business_id.".pem", $res['publickey']);
-        $private = $this->save_key("businessCert/private_".$business_id.".pem", $res['privatekey']);
+        $public = $this->save_key("businessCert/".$business_id."/public.pem", $res['publickey']);
+        $private = $this->save_key("businessCert/".$business_id."/private.pem", $res['privatekey']);
         if(!$public || !$private){
             $this->error('生成文件错误！');
         }
@@ -63,7 +63,7 @@ class Key extends Controller
     public function encrypt($content, $business_id)
     {
         $rsa = new RSA();
-        $path = "businessCert/$business_id"."public.pem";
+        $path = "businessCert_".$business_id."/public.pem";
         $key = file_get_contents($path);
         if ($rsa->loadKey($key)) {
             return $rsa->encrypt($content);

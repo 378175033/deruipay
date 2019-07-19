@@ -402,25 +402,27 @@ class User extends Business
 
         $type = $request->param('type');
 
-
-
         $business = $this->user['shop_sn'];
         if($type == 'public'){
             $file_dir = 'myCert/';
             $file_name = $type.'.pem';
         }else{
-            $file_dir = 'businessCert/';
-            $file_name = $type.'_'.$business.'.pem';
-        }
-        if(!file_exists($file_dir)){
-            mkdir($file_dir,'0770');
-        }
-        //生成公钥和私钥
-        $Key = new Key();
-        $Key->create_rsa_key($business);
+            $cert = 'businessCert/';
 
+
+            if(!file_exists($cert)){
+                mkdir($cert,'0770');
+            }
+            $file_dir = $cert.$business.'/';
+            $file_name = $type.'.pem';
+            if(!file_exists($file_dir)){
+                mkdir($file_dir,'0770');
+            }
+            //生成公钥和私钥
+            $Key = new Key();
+            $Key->create_rsa_key($business);
+        }
         $file = fopen ( $file_dir . $file_name, "rb" );
-
         //告诉浏览器这是一个文件流格式的文件
         Header ( "Content-type: application/octet-stream" );
         //请求范围的度量单位
