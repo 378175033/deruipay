@@ -9,6 +9,9 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 //\think\Route::post('sign','index/Pay/verifySign');
+//创建订单
+\think\Route::post('create_order','index/Pay/createOrder');
+\think\Route::post('get_pay','index/Pay/getPay');
 
 return [
     '__pattern__' => [

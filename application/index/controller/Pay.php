@@ -43,6 +43,43 @@ class Pay extends Controller
     public function index()
     {
         $passageway = new Passageway();
+        $user_passageway = new UserPassageway();
+        $request = $this->request;
+        // todo: 检查商户信息
+        if ($request->isPost()){
+            $this->verify($request, 'stage1');
+            if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
+                $this->error('该通道已被禁用，请联系网站管理员！');
+            }
+            $data = $request->param();
+            $data['user_passageway_id'] = $up['id'];
+            $moneys = $this->getArrivalPrice($data);
+            $res = $this->create_order($data,$request->param('other_number'));
+            if( $res ) {
+                $order = model('Order')->where('order_id',$data['order_id'])->find();
+                model('Order')
+                    ->where('order_id',$data['order_id'])
+                    ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
+                $this->success('成功', url('pay',array( "id"=> $order['id'] )));
+            }
+            $this->error('系统繁忙，请稍后再试！');
+        } else {
+            $this->assign('way', $passageway->getList($this->business));
+            $this->assign('name', session('business')['name']);
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 2019/7/19 0019 13:20
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 第三方分离支付接口
+     */
+    public function getPay(){
+        $passageway = new Passageway();
 
         $request = $this->request;
         // todo: 检查商户信息
@@ -112,8 +149,10 @@ class Pay extends Controller
                 $this->success('成功', url('pay',array( "id"=> $order['id'] )));
             }
             $this->error('系统繁忙，请稍后再试！');
-        }else{
-            $this->error('请求方式错误');
+        } else {
+            $this->assign('way', $passageway->getList());
+            $this->assign('name', session('business')['name']);
+            return $this->fetch();
         }
     }
 
