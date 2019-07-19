@@ -10,6 +10,7 @@ namespace app\business\controller;
 use app\common\controller\Business;
 use app\common\controller\Rsa;
 use app\common\controller\Sign;
+use app\index\controller\Key;
 use app\index\model\Certificate;
 use think\Db;
 use think\Request;
@@ -358,19 +359,23 @@ class User extends Business
 
         $type = $request->param('type');
 
-        $file_dir = 'certs/';
+
+
         $business = $this->user['shop_sn'];
         if($type == 'public'){
-            $file_name = 'cert_'.$type.'.key';
+            $file_dir = 'myCert/';
+            $file_name = $type.'.pem';
         }else{
-            $file_name = 'cert_'.$type.'_'.$business.'.key';
+            $file_dir = 'businessCert/';
+            $file_name = $type.'_'.$business.'.pem';
         }
-        if(!file_exists($file_dir.$file_name)){
-
-            $Certificate = new Certificate();
-
-            $Certificate->exportOpenSSLFile($business);
+        if(!file_exists($file_dir)){
+            mkdir($file_dir,'0770');
         }
+        //生成公钥和私钥
+        $Key = new Key();
+        $Key->create_rsa_key($business);
+
         $file = fopen ( $file_dir . $file_name, "rb" );
 
         //告诉浏览器这是一个文件流格式的文件

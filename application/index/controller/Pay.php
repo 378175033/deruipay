@@ -43,10 +43,56 @@ class Pay extends Controller
     public function index()
     {
         $passageway = new Passageway();
-        $user_passageway = new UserPassageway();
+
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
+            //验证白名单
+            $this->whitelist();
+
+            $this->assign('way', $passageway->getList($this->business));
+            $this->assign('name', session('business')['name']);
+            return $this->fetch();
+
+        }else{
+            $this->error('请求方式错误');
+        }
+    }
+
+    /**
+     * 2019/7/19 0019 10:15
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 验证白名单
+     */
+    public function whitelist(){
+        $Business = new Business();
+
+        if(!isset($_SERVER['HTTP_REFERER'])){
+            $this->error('No refer found');
+        }
+        $host = gethostbyname($_SERVER['HTTP_REFERER']);//ip
+
+        $business = $Business->find($this->business);
+
+        $allowIp = explode("\n",$business['allow_ip']);
+
+        if(!in_array($host,$allowIp)){
+            $this->error('不好意思，商户不在白名单内，请联系管理员！');
+        }
+    }
+    /**
+     * 2019/7/19 0019 9:52
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 创建订单和验证签名
+     */
+    public function createOrder(){
+        $request = $this->request;
+        $user_passageway = new UserPassageway();
+        if($request->isPost()){
             if($other_number = $request->param('other_number')){//如果有第三方的号
                 $this->verifySign($request);
             }
@@ -66,10 +112,8 @@ class Pay extends Controller
                 $this->success('成功', url('pay',array( "id"=> $order['id'] )));
             }
             $this->error('系统繁忙，请稍后再试！');
-        } else {
-            $this->assign('way', $passageway->getList($this->business));
-            $this->assign('name', session('business')['name']);
-            return $this->fetch();
+        }else{
+            $this->error('请求方式错误');
         }
     }
 
@@ -360,7 +404,6 @@ class Pay extends Controller
             $this->error('参数key不对');
         }
         $sign = getSign($request->param('key'),$request->param('timestamp'),$business['api_secret']);
-
         if($request->param('sign') != $sign){
             $this->error('签名错误');
         }
