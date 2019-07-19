@@ -23,14 +23,18 @@ class Key extends Controller
         if ($res['partialkey']){
             $this->error('密钥生成失败！');
         }
-        $this->save_key("businessCert/$business_id"."public.pem", $res['publickey'])&&
-        $this->save_key("businessCert/$business_id"."private.pem", $res['privatekey'])&&
-        $this->success('success');
-        $this->error('生成文件错误！');
+        $public = $this->save_key("businessCert/public_".$business_id.".pem", $res['publickey']);
+        $private = $this->save_key("businessCert/private_".$business_id.".pem", $res['privatekey']);
+        if(!$public || !$private){
+            $this->error('生成文件错误！');
+        }
     }
 
-
-    protected function create_my_rsa_key()
+    /**
+     * 2019/7/19 0019 10:41
+     * 生成平台公钥和私钥
+     */
+    public function create_my_rsa_key()
     {
         $rsa = new RSA();
         $res = $rsa->createKey($bits = 1024);

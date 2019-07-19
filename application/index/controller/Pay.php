@@ -47,9 +47,6 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
-            if($other_number = $request->param('other_number')){//如果有第三方的号
-                $this->verifySign($request);
-            }
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
                 $this->error('该通道已被禁用，请联系网站管理员！');
@@ -57,7 +54,7 @@ class Pay extends Controller
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
             $moneys = $this->getArrivalPrice($data);
-            $res = $this->create_order($data,$other_number);
+            $res = $this->create_order($data,$request->param('other_number'));
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
                 model('Order')
@@ -68,6 +65,92 @@ class Pay extends Controller
             $this->error('系统繁忙，请稍后再试！');
         } else {
             $this->assign('way', $passageway->getList($this->business));
+            $this->assign('name', session('business')['name']);
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 2019/7/19 0019 13:20
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 第三方分离支付接口
+     */
+    public function getPay(){
+        $passageway = new Passageway();
+
+        $request = $this->request;
+        // todo: 检查商户信息
+        if ($request->isPost()){
+            //验证白名单
+            $this->whitelist();
+            //签名验证
+            if($other_number = $request->param('other_number')){//如果有第三方的号
+                $this->verifySign($request);
+            }
+            $this->assign('way', $passageway->getList($this->business));
+            $this->assign('name', session('business')['name']);
+            return $this->fetch();
+
+        }else{
+            $this->error('请求方式错误');
+        }
+    }
+
+    /**
+     * 2019/7/19 0019 10:15
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 验证白名单
+     */
+    public function whitelist(){
+        $Business = new Business();
+
+        if(!isset($_SERVER['HTTP_REFERER'])){
+            $this->error('No refer found');
+        }
+        $host = gethostbyname($_SERVER['HTTP_REFERER']);//ip
+
+        $business = $Business->find($this->business);
+
+        $allowIp = explode("\n",$business['allow_ip']);
+
+        if(!in_array($host,$allowIp)){
+            $this->error('不好意思，商户不在白名单内，请联系管理员！');
+        }
+    }
+    /**
+     * 2019/7/19 0019 9:52
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 创建订单
+     */
+    public function createOrder(){
+        $request = $this->request;
+        $user_passageway = new UserPassageway();
+        if($request->isPost()){
+            $this->verify($request, 'stage1');
+            if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
+                $this->error('该通道已被禁用，请联系网站管理员！');
+            }
+            $data = $request->param();
+            $data['user_passageway_id'] = $up['id'];
+            $moneys = $this->getArrivalPrice($data);
+            $res = $this->create_order($data,$request->param('other_number'));
+            if( $res ) {
+                $order = model('Order')->where('order_id',$data['order_id'])->find();
+                model('Order')
+                    ->where('order_id',$data['order_id'])
+                    ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
+                $this->success('成功', url('pay',array( "id"=> $order['id'] )));
+            }
+            $this->error('系统繁忙，请稍后再试！');
+        } else {
+            $this->assign('way', $passageway->getList());
             $this->assign('name', session('business')['name']);
             return $this->fetch();
         }
@@ -360,7 +443,6 @@ class Pay extends Controller
             $this->error('参数key不对');
         }
         $sign = getSign($request->param('key'),$request->param('timestamp'),$business['api_secret']);
-
         if($request->param('sign') != $sign){
             $this->error('签名错误');
         }
