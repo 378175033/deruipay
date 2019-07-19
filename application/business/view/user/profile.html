@@ -72,6 +72,9 @@
         </div>
     </form>
 </script>
+<script type="text/html" id="ip">
+    <textarea id="ipCon" class="layui-textarea" style="width: 400px;height: 180px;margin: 10px auto" placeholder="每行为一条数据白名单">{$user.allow_ip}</textarea>
+</script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
 <script type="text/javascript" src="__LAYUI__/layui.js"></script>
 <script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
@@ -96,15 +99,32 @@
     $('.allowIp').click(function () {
         layui.use(['layer'],function () {
             var layer = layui.layer;
-            layer.prompt({
-                formType: 2,
-                value: '初始值',
-                title: '设置IP白名单',
-                area: ['400px', '200px'] //自定义文本域宽高
-            }, function(value, index){
-                alert(value); //得到value
-                layer.close(index);
-            });
+            layer.open({
+                type : 1,
+                content: $('#ip').html(),
+                btn:['设置','取消'],
+                title: "设置IP白名单",
+                area: ["450px","300px"],
+                yes:function ( index ) {
+                    var val = $('#ipCon').val();
+                    $.post('',{act:'ip',ip:val},function (res) {
+                        console.log( res )
+                        if( res.code === 1 ){
+                            toastr.success("设置成功！",function () {
+                                setTimeout(function () {
+                                    layer.close(index);
+                                    window.location.reload();
+                                },1200)
+                            })
+                        } else {
+                            toastr.error( res.msg );
+                        }
+                    })
+                },
+                btn2:function (index) {
+                    layer.close( index )
+                }
+            })
         })
     })
     $('.changePass').click(function () {

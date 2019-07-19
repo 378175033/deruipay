@@ -13,6 +13,7 @@ use app\common\controller\Sign;
 use app\index\controller\Key;
 use app\index\model\Certificate;
 use think\Db;
+use think\Exception;
 use think\Request;
 
 class User extends Business
@@ -79,6 +80,35 @@ class User extends Business
                         $this->success( "安全密码设置成功！","",1);
                     }
                     $this->error( "请求错误！请稍后再试！");
+                    break;
+                case "ip"://设置IP
+                    $ip = $this->request->post("ip", "");
+                    if( empty( $ip ) ){
+                        $this->error("请输入设置的IP值，每行为一条IP");
+                    }
+                    $ip = explode( "\n", $ip);
+                    $newIp = [];
+                    foreach ( $ip as $key =>$val ){
+                        $s = trim( $val );
+                        if( empty( $s ) ) continue;
+                        if( !filter_var( $s, FILTER_VALIDATE_IP ) ){
+                            $this->error( "第".($key+1)."行的IP不合法");
+                        } else {
+                            $newIp[] = $s;
+                        }
+                    }
+                    if ( count($newIp) != count(array_unique($newIp))) {
+                        $this->error('IP有重复的值');
+                    }
+                    $num = count( $newIp );
+                    if( $num > 3 ) $this->error("您最多可以将3个IP加入白名单");
+                    $newIp = implode("\n",$newIp);
+                    try{
+                        $this->model->allowField(['allow_ip'])->save(['allow_ip'=>$newIp],['id'=>$this->user['id']]);
+                    } catch ( Exception $ex){//抛出异常
+                        $this->error( $ex->getMessage() );
+                    }
+                    $this->success( "白名单配置成功！" );
                     break;
             }
         }

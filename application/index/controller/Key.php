@@ -15,11 +15,6 @@ use think\Exception;
 
 class Key extends Controller
 {
-    /**
-     * 2019/7/19 0019 10:41
-     * @param $business_id
-     * 生成商户公钥和私钥
-     */
     public function create_rsa_key($business_id)
     {
         $rsa = new RSA();
@@ -63,15 +58,26 @@ class Key extends Controller
         return true;
     }
 
-    public function encrypt($content)
+    public function encrypt($content, $business_id)
     {
         $rsa = new RSA();
-        return $rsa->encrypt($content);
+        $path = "businessCert/$business_id"."public.pem";
+        $key = file_get_contents($path);
+        if ($rsa->loadKey($key)) {
+            return $rsa->encrypt($content);
+        }
+        return false;
     }
 
     public function decrypt($content)
     {
         $rsa = new RSA();
-        return $rsa->decrypt($content);
+//        $path = "businessCert/$business_id"."private.pem";
+        $path = "myCert/private.pem";
+        $key = file_get_contents($path);
+        if ($rsa->loadKey($key)) {
+            return $rsa->decrypt($content);
+        }
+        return false;
     }
 }
