@@ -12,6 +12,7 @@ namespace app\index\model;
 use app\common\controller\Curl;
 use app\index\controller\Key;
 use think\Exception;
+use think\Log;
 use think\Model;
 use think\Validate;
 
@@ -128,6 +129,7 @@ class Verify extends Model
         if($param['sign'] != $sign){
             return msg("签名错误");
         }
+        $param['status'] = 1;
         return $param;
     }
 
@@ -142,7 +144,7 @@ class Verify extends Model
      * 回调第三方推送
      */
     public function verifyNotify($order,$business_id){
-
+        Log::info('测试回调请求');
         $Business = new Business();
         $business = $Business->find($business_id);
 
@@ -169,7 +171,7 @@ class Verify extends Model
         $content = $Certificate->authcode($content,'E',$business['shop_sn']);
         $tmp =[
             'enData'=>$content,
-            'order_sn'=>$order['batch'],
+            'order_sn'=>$order['order_sn'],
         ];
         try{
             $curl = $Curl->post($business['notify_url'],$tmp);

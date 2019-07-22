@@ -177,7 +177,7 @@ class App
             }
 
             Loader::addNamespace(self::$namespace, APP_PATH);
-
+            Loader::addNamespace( 'pay',PAY_PATH);
             // 初始化应用
             $config       = self::init();
             self::$suffix = $config['class_suffix'];

@@ -47,7 +47,7 @@ class Pay extends Controller
             $data = $request->param();
             $data['user_passageway_id'] = $up['id'];
             $moneys = $this->getArrivalPrice($data);
-            $res = $this->create_order($data,$request->param('other_number'));
+            $res = $this->create_order($data,$request->param('order_sn'));
             if( $res ) {
                 $order = model('Order')->where('order_id',$data['order_id'])->find();
                 model('Order')
@@ -80,53 +80,17 @@ class Pay extends Controller
             $Verify = new Verify();
             $data = $Verify->verifyParam($this->request->post());//验证
             $Business = new Business();
-            $business = $Business->where('shop_sn',$data['business_id'])->value('id');
-            if(empty($this->business)){
+            $business = $Business->where('shop_sn',$data['business_id'])->find();
+            if(empty($business)){
                 $this->error('查无商户');
             }
             session( "business", $business );
-            $this->assign('way', $passageway->getList($business));
-            $this->assign('name', session('business')['name']);
-            return $this->fetch();
-
-        }else{
-            $this->error('请求方式错误');
-        }
-    }
-
-
-    /**
-     * 2019/7/19 0019 9:52
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * 创建订单
-     */
-    public function createOrder(){
-        $request = $this->request;
-        $user_passageway = new UserPassageway();
-        $passageway = new Passageway();
-        if($request->isPost()){
-            $this->verify($request, 'stage1');
-            if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
-                $this->error('该通道已被禁用，请联系网站管理员！');
-            }
-            $data = $request->param();
-            $data['user_passageway_id'] = $up['id'];
-            $moneys = $this->getArrivalPrice($data);
-            $res = $this->create_order($data,$request->param('other_number'));
-            if( $res ) {
-                $order = model('Order')->where('order_id',$data['order_id'])->find();
-                model('Order')
-                    ->where('order_id',$data['order_id'])
-                    ->update(['rate_price'=>$moneys['ratePrice'],'arrival_price'=>$moneys['arrivalPrice']]);
-                $this->success('成功', url('pay',array( "id"=> $order['id'] )));
-            }
-            $this->error('系统繁忙，请稍后再试！');
-        } else {
+            $this->business = $business['id'];
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
+        }else{
+            $this->error('请求方式错误');
         }
     }
 
@@ -252,7 +216,7 @@ class Pay extends Controller
         return $this->fetch();
     }
 
-    public function create_order($data,$other_number='')
+    public function create_order($data,$order_sn='')
     {
         $str = [
             'business_id' => $this->business,
@@ -266,8 +230,8 @@ class Pay extends Controller
             'title' => session("business")['name'],
             'back_status' => 0,
         ];
-        if($other_number){//如果有第三方订单号
-            $str['batch'] = $other_number;
+        if($order_sn){//如果有第三方订单号
+            $str['order_sn'] = $order_sn;
         }
         if ($order = Db('order')->insert($str)) {
             return $order;

@@ -174,11 +174,10 @@ class FreeApi extends Controller
             ->update($data);
         $api = new \app\manage\controller\Api();
         $api->accountLog($order);
-
-        $Verify = new Verify();
-        $Verify->verifyNotify($order,$order['bussiness_id']);
-
-
+        if($order['order_sn']){
+            $Verify = new Verify();
+            $Verify->verifyNotify($order,$order['bussiness_id']);
+        }
     }
 
     /**

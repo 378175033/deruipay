@@ -144,10 +144,10 @@ class Daxiangpay extends controller
             db('order')->where(['order_id' => $orderId])->update($order);
             //支付成功的逻辑
             $this->accountLog($order);
-
-            $Verify = new Verify();
-            $Verify->verifyNotify($order,$order['business_id']);
-
+            if($order['order_sn']){
+                $Verify = new Verify();
+                $Verify->verifyNotify($order,$order['business_id']);
+            }
         } else {
             echo $paidInfo['paystate'];
             echo '非支付成功状态';
