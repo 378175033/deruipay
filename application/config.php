@@ -275,10 +275,9 @@ return [
 //网关地址
         'CC_PAY_POST_URL' => 'http://ds.desheng520.com/api/pay/',
 
-        'callbackurl' => 'http://103.84.108.214/manage/daxiangpay/callbacknotify',
-//        'callbackurl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/back.php ',
-        's2surl' => 'http://103.84.108.214/manage/daxiangpay/notify',
-//        's2surl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/s2s.php',
+        'callbackurl' => 'http://' . $_SERVER['HTTP_HOST'] . '/manage/daxiangpay/callbacknotify ',
+
+        's2surl' => 'http://' . $_SERVER['HTTP_HOST'] . '/manage/daxiangpay/notify',
 //支持的银行列表（不同的通道，支持的银行不同，请在商户中心查询所支持的银行）
         'PAY_BANK_LIST' => array('上海农商行','上海银行','东亚银行','中信银行','中国银行','交通银行','光大银行','兰州银行','兴业银行','农业银行','北京农商行','北京银行','华夏银行','南京银行','天津银行','宁波银行','平安银行','广发银行','广州银行','建设银行','恒丰银行','成都银行','招商银行','杭州银行','民生银行','浙商银行','浦发银行','深发展','渤海银行','邮政储蓄','青岛银行')
     ],
