@@ -21,6 +21,8 @@ class Rsa{
         self::$_privkey = $privkey;
         self::$_pubkey = $pubkey;
         self::$_isbase64 = $isbase64;
+
+
     }
     /**
      * 公钥加密
