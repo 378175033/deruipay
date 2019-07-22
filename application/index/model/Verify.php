@@ -157,6 +157,9 @@ class Verify extends Model
         if (!$result) {
             return msg($validate->getError());
         }
+        if(time()-$param['timestamp']>300){
+            return msg('生成签名时间过期');
+        }
 
         $Business = new Business();
         $business = $Business->where('shop_sn',$param['business_id'])->find();
