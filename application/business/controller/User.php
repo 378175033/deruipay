@@ -407,7 +407,7 @@ class User extends Business
             $file_dir = 'myCert/';
             if(!file_exists($file_dir)){
 
-                mkdir($file_dir,'0770');
+                mkdir($file_dir,0770);
             }
             $file_name = $type.'.pem';
 
@@ -418,12 +418,12 @@ class User extends Business
 
 
             if(!file_exists($cert)){
-                mkdir($cert,'0770');
+                mkdir($cert,0770);
             }
             $file_dir = $cert.$business.'/';
             $file_name = $type.'.pem';
             if(!file_exists($file_dir)){
-                mkdir($file_dir,'0770');
+                mkdir($file_dir,0770);
             }
             //生成公钥和私钥
             $Key = new Key();

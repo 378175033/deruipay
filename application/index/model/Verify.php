@@ -155,7 +155,7 @@ class Verify extends Model
         $time = time();
 
         $sign = getSign($business['api_key'],$business['api_secret'],$business['shop_sn'],$time,$order['order_sn']);
-
+        Log::info('签名：'.$sign);
         $Curl = new Curl();
         $data = [
             'sign'=>$sign,
@@ -173,15 +173,16 @@ class Verify extends Model
             'enData'=>$content,
             'order_sn'=>$order['order_sn'],
         ];
-        try{
+        Log::info($tmp);
+        //try{
             $curl = $Curl->post($business['notify_url'],$tmp);
             if($curl){
                 return msg('回调请求成功',1);
             }else{
                 return msg('回调请求失败');
             }
-        }catch (Exception $e){
-            return msg($e->getMessage());
-        }
+//        }catch (Exception $e){
+//            return msg($e->getMessage());
+//        }
     }
 }
