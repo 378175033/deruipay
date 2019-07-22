@@ -31,8 +31,11 @@ class Verify extends Model
         $enData = $datas['enData'];
         $data = $this->certificateDecrypt($enData);//证书验证
 
-        $this->whitelist($data['business_id']);//白名单验证
+        $white = $this->whitelist($data['business_id']);//白名单验证
 
+        if(!$white['status']){
+           return $white;
+        }
         $data = $this->verifySign($data,$datas['order_sn']);//签名验证
 
         return $data;
@@ -60,6 +63,8 @@ class Verify extends Model
 
         if(!in_array($host,$allowIp)){
             return msg("不好意思，商户不在白名单内，请联系管理员！");
+        }else{
+            return msg('请求成功',1);
         }
     }
     /**
