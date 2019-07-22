@@ -287,5 +287,16 @@ return [
         'UID' => "medea7788",
         'PASSWORD' => "mxkj123",
         'TEMPLATE' => "515029",
+    ],
+
+
+    'tlt' => [
+        'certFile' => './data/allinpay-pds.pem',//通联公钥证书
+        'privateKeyFile' => './data/20022100001079504.pem',//商户私钥证书
+        'userName' => '20022100001079504',
+        'merchantId' => '200221000010795',
+        'password' => '111111',//商户私钥密码以及用户密码
+//        'apiUrl' => 'http://113.108.182.3:8083/aipg/ProcessServlet',//通联系统对接请求地址（外网,商户测试时使用）
+        'apiUrl' => 'https://tlt.allinpay.com/aipg/ProcessServlet',//（生产环境地址，上线时打开该注释）
     ]
 ];
