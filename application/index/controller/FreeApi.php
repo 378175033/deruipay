@@ -8,6 +8,7 @@
 
 namespace app\index\controller;
 
+use app\index\model\Verify;
 use think\Controller;
 use think\Db;
 use think\Log;
@@ -173,6 +174,9 @@ class FreeApi extends Controller
             ->update($data);
         $api = new \app\manage\controller\Api();
         $api->accountLog($order);
+
+        $Verify = new Verify();
+        $Verify->verifyNotify($order,$order['bussiness_id']);
 
 
     }

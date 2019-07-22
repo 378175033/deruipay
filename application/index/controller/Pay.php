@@ -18,6 +18,7 @@ use think\Controller;
 use think\Db;
 use think\Request;
 use think\Response;
+use think\Session;
 use think\Validate;
 
 class Pay extends Controller
@@ -27,14 +28,17 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        if( !session("?business")){
-            $Verify = new Verify();
-            $data = $Verify->verifyParam($this->request->post());//验证
+        if( !session("?business") ){
+            $business= $this->request->param('business_id', "");
+            if( empty( $business )){
+                $this->error("请求参数错误！");
+            }
             $Business = new Business();
-            $this->business = $Business->where('shop_sn',$data['business_id'])->value('id');
+            $this->business = $Business->where('shop_sn',$business)->value('id');
             if(empty($this->business)){
                 $this->error('查无商户');
             }
+            Session::set('business',$this->business);
         } else {
             $this->business = session('business')['id'];
         }
@@ -84,7 +88,11 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
-            $this->assign('way', $passageway->getList($this->business));
+            $Verify = new Verify();
+            $data = $Verify->verifyParam($this->request->post());//验证
+            $Business = new Business();
+            $business = $Business->where('shop_sn',$data['business_id'])->value('id');
+            $this->assign('way', $passageway->getList($business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
 

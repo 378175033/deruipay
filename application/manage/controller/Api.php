@@ -8,6 +8,8 @@
 
 namespace app\manage\controller;
 
+use app\common\model\Notify;
+use app\index\model\Verify;
 use think\Controller;
 use think\Log;
 use app\manage\model\Business;
@@ -225,6 +227,9 @@ class Api extends Controller
             db('order')->where(['order_id' => $param['out_trade_no']])->update($order);
             //支付成功的逻辑
             $this->accountLog($order);
+
+            $Verify = new Verify();
+            $Verify->verifyNotify($order,$order['business_id']);//回调验证
             return 'success';
 
         } else {

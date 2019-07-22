@@ -48,17 +48,17 @@ class Certificate extends Model
      * 加密 E/解密 D
      */
     public function authcode($string, $operation = 'E',$business_id='') {
-        $ssl_public     = file_get_contents("businessCert/".$business_id."/public.pem");
-        $ssl_private    = file_get_contents("myCert/private.pem");
-        $pi_key         = openssl_pkey_get_private($ssl_private);//这个函数可用来判断私钥是否是可用的，可用返回资源id Resource id
-        $pu_key         = openssl_pkey_get_public($ssl_public);//这个函数可用来判断公钥是否是可用的
-        if( false == ($pi_key || $pu_key) ) return '证书错误';
-        $data = "";
-        if( $operation == 'D') {
-            openssl_private_decrypt(base64_decode($string),$data,$pi_key);//私钥解密
-        } else {
+        if($business_id && $operation == "E"){//加密
+            $ssl_public     = file_get_contents("businessCert/".$business_id."/public.pem");
+            $pu_key         = openssl_pkey_get_public($ssl_public);//这个函数可用来判断公钥是否是可用的
+            if($pu_key == false) return '证书错误';
             openssl_public_encrypt($string, $data, $pu_key);//公钥加密
             $data = base64_encode($data);
+        }else{//解密
+            $ssl_private    = file_get_contents("myCert/private.pem");
+            $pi_key         = openssl_pkey_get_private($ssl_private);//这个函数可用来判断私钥是否是可用的，可用返回资源id Resource id
+            if($pi_key == false) return '证书错误';
+            openssl_private_decrypt(base64_decode($string),$data,$pi_key);//私钥解密
         }
         return $data;
     }

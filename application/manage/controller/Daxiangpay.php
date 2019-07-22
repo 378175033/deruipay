@@ -1,5 +1,6 @@
 <?php
 namespace app\manage\controller;
+use app\index\model\Verify;
 use think\Controller;
 use daxiangpay\daxiangpay as api;
 use think\Request;
@@ -143,6 +144,9 @@ class Daxiangpay extends controller
             db('order')->where(['order_id' => $orderId])->update($order);
             //支付成功的逻辑
             $this->accountLog($order);
+
+            $Verify = new Verify();
+            $Verify->verifyNotify($order,$order['business_id']);
 
         } else {
             echo $paidInfo['paystate'];

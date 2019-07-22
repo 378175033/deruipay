@@ -405,7 +405,14 @@ class User extends Business
         $business = $this->user['shop_sn'];
         if($type == 'public'){
             $file_dir = 'myCert/';
+            if(!file_exists($file_dir)){
+
+                mkdir($file_dir,'0770');
+            }
             $file_name = $type.'.pem';
+
+            $Key = new Key();
+            $Key->create_my_rsa_key();
         }else{
             $cert = 'businessCert/';
 

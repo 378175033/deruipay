@@ -41,10 +41,11 @@ class Key extends Controller
         if ($res['partialkey']){
             $this->error('密钥生成失败！');
         }
-        $this->save_key("myCert/public.pem", $res['publickey'])&&
-        $this->save_key("myCert/private.pem", $res['privatekey'])&&
-        $this->success('success');
-        $this->error('生成文件错误！');
+        $public = $this->save_key("myCert/public.pem", $res['publickey']);
+        $private = $this->save_key("myCert/private.pem", $res['privatekey']);
+        if(!$public || !$private){
+            $this->error('生成文件错误！');
+        }
     }
 
     private function save_key($path, $content)
