@@ -154,7 +154,7 @@ class Verify extends Model
         }
         $time = time();
 
-        $sign = getSign($business['api_key'],$business['api_secret'],$business['shop_sn'],$time,$order['batch']);
+        $sign = getSign($business['api_key'],$business['api_secret'],$business['shop_sn'],$time,$order['order_sn']);
 
         $Curl = new Curl();
         $data = [
