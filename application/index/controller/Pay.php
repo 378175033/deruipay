@@ -28,18 +28,7 @@ class Pay extends Controller
     protected function _initialize()
     {
         parent::_initialize(); // TODO: del $this->business default
-        if( !session("?business") ){
-            $business= $this->request->param('business_id', "");
-            if( empty( $business )){
-                $this->error("请求参数错误！");
-            }
-            $Business = new Business();
-            $this->business = $Business->where('shop_sn',$business)->value('id');
-            if(empty($this->business)){
-                $this->error('查无商户');
-            }
-            Session::set('business',$this->business);
-        } else {
+        if( session("?business")){
             $this->business = session('business')['id'];
         }
     }
@@ -92,6 +81,10 @@ class Pay extends Controller
             $data = $Verify->verifyParam($this->request->post());//验证
             $Business = new Business();
             $business = $Business->where('shop_sn',$data['business_id'])->value('id');
+            if(empty($this->business)){
+                $this->error('查无商户');
+            }
+            session( "business", $business );
             $this->assign('way', $passageway->getList($business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
@@ -112,6 +105,7 @@ class Pay extends Controller
     public function createOrder(){
         $request = $this->request;
         $user_passageway = new UserPassageway();
+        $passageway = new Passageway();
         if($request->isPost()){
             $this->verify($request, 'stage1');
             if (!$up = $user_passageway->in($request->param('passageway'), $this->business )) {
@@ -130,7 +124,7 @@ class Pay extends Controller
             }
             $this->error('系统繁忙，请稍后再试！');
         } else {
-            $this->assign('way', $passageway->getList());
+            $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
         }
