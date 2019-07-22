@@ -28,18 +28,56 @@ class Verify extends Model
      */
     public function verifyParam($datas)
     {
+        $Business = new Business();
         $enData = $datas['enData'];
         $data = $this->certificateDecrypt($enData);//证书验证
 
-        $white = $this->whitelist($data['business_id']);//白名单验证
+        $business = $Business->where('shop_sn',$data['business_id'])->find();
+
+        $white = $this->whitelist($business);//白名单验证
 
         if(!$white['status']){
-           return $white;
+           return msg($white['msg']);
+        }
+        $user = $this->verifyUser($business);
+
+        if(!$user['status']){
+
+            return msg($user['msg']);
         }
         $data = $this->verifySign($data,$datas['order_sn']);//签名验证
 
+        $data['business'] =$business;
+
         return $data;
 
+    }
+
+    /**
+     * 2019/7/22 0022 16:13
+     * @param $business_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * 商户验证
+     */
+    public function verifyUser($business){
+
+        if(!$business){
+            return msg("用户不存在!");
+        }
+        if($business['check'] == 0){
+            return msg("用户信息审核中...请耐心等待！");
+        }
+        if($business['check'] == 1){
+            return msg("用户信息审核未通过！");
+        }
+
+        if($business['status'] != 1){
+            return msg("用户已被禁用，请前往联系客服申请启用！");
+        }
+        return $business;
     }
     /**
      * 2019/7/19 0019 15:39
@@ -49,15 +87,14 @@ class Verify extends Model
      * @throws \think\exception\DbException
      * 验证白名单
      */
-    public function whitelist($business_id){
-        $Business = new Business();
+    public function whitelist($business){
 
         if(!isset($_SERVER['HTTP_REFERER'])){
             return msg("No refer found");
         }
-        $host = gethostbyname($_SERVER['HTTP_REFERER']);//ip
+        $path = parse_url($_SERVER['HTTP_REFERER']);
 
-        $business = $Business->find($business_id);
+        $host = gethostbyname($path['host']);//ip
 
         $allowIp = explode("\n",$business['allow_ip']);
 
@@ -120,6 +157,7 @@ class Verify extends Model
         if (!$result) {
             return msg($validate->getError());
         }
+
         $Business = new Business();
         $business = $Business->where('shop_sn',$param['business_id'])->find();
 

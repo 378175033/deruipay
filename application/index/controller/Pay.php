@@ -77,18 +77,15 @@ class Pay extends Controller
         $request = $this->request;
         // todo: 检查商户信息
         if ($request->isPost()){
+
             $Verify = new Verify();
             $data = $Verify->verifyParam($this->request->post());//验证
+
             if(!$data['status']){
-                $this->error($data['msg']);
+                return $data['msg'];
             }
-            $Business = new Business();
-            $business = $Business->where('shop_sn',$data['business_id'])->find();
-            if(empty($business)){
-                $this->error('查无商户');
-            }
-            session( "business", $business );
-            $this->business = $business['id'];
+            session( "business", $data['business']);
+            $this->business = $data['business']['id'];
             $this->assign('way', $passageway->getList($this->business));
             $this->assign('name', session('business')['name']);
             return $this->fetch();
