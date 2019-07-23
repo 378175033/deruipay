@@ -9,6 +9,7 @@
 namespace app\index\controller;
 
 
+use pay\speech\AipSpeech;
 use think\Controller;
 use phpseclib\Crypt\RSA;
 use think\Exception;
@@ -83,13 +84,5 @@ class Key extends Controller
             return $rsa->decrypt($content);
         }
         return false;
-    }
-
-    public function fun()
-    {
-        $a = '016CdA8bG3Q0N7/bimVaTImJdFm3i+wlPR/qx2D/TdZTefmX8L/Ck8KIw61NcH2DD/M7fCBvV1Iw6cV2lqqxKHDI3P/0LYjZgHITKFUJhCZQJbTZnRQRMs+T5SoqWVWkmhjpjzawiz0oaehdWPuBTmS0ZgmMQ+VUO/BxhFPtx+exAAXlnWMWZxrBFWiyzugMCTErIVtpd32anRGx6FtZrw==';
-        $encodingaeskey  = base64_encode('1234567891011121');
-        halt(decode($a), $encodingaeskey);
-        dump(encode($this->encrypt('{asd:asd,dsa:dsa}',1), $encodingaeskey));
     }
 }
