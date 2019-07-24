@@ -231,7 +231,6 @@
                 },
                 sendSms(){
                     if($('.login-send').attr('isDisabled') == "isDisabled"){
-
                         return;
                     }
                     let vm = this;
@@ -273,6 +272,7 @@
                             layer.msg( res.msg );
                         }
                     })
+                    $('.login-send').attr('isDisabled','isDisabled');
                 },
                 login(){
                     let lg = this.model;
