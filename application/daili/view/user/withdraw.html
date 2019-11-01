@@ -1,0 +1,111 @@
+{include file='common:head'}
+<style>
+    .layui-layer-msg{
+        display: none;
+    }
+</style>
+<div class="layui-card">
+    <div class="layui-card-body layui-bg-red">
+        提现说明：
+        <br />单次提现金额范围&yen;{:number_format(deploy("min_withdraw"),2)}--&yen;{:number_format(deploy("max_withdraw"),2)}
+        <br/>每日提现最大值：&yen;{:number_format(deploy("day_withdraw"),2)}，最高次数：{:deploy("rate_withdraw")}
+        <br/>结算方式： {if condition='deploy("way_withdraw") eq 1'}即时到账
+                        {elseif condition='deploy("way_withdraw") eq 2'}次日到账
+                        {elseif condition='deploy("way_withdraw") eq 3'}每周一到账
+                        {elseif condition='deploy("way_withdraw") eq 4'}每月一号到账
+                        {/if}
+        <br />
+        手续费：每次收取提现金额的{:deploy("ratePay_withdraw")*100}%，不足{:deploy("Pay_withdraw")}元的按{:deploy("Pay_withdraw")}元收取
+        <br />
+        手续费扣除方式：{if condition='deploy("payWay_withdraw") eq 1'}从到账金额里扣除
+        {elseif condition='deploy("way_withdraw") eq 2'}从商户账户余额扣除
+        {/if}
+    </div>
+</div>
+<form class="layui-form mt20 layui-col-xs11">
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现金额</label>
+        <div class="layui-input-block">
+            <input class="layui-input" name="money" placeholder="输入提现金额，最大可提现{$user.money}" lay-verify="money">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">到账方式</label>
+        <div class="layui-input-block">
+            <select name="w_id" lay-verify="type">
+                <option value="0">--选择到账方式--</option>
+                <option value="1">支付宝</option>
+                <option value="2">微信</option>
+                <option value="3">银行卡</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">安全密码验证</label>
+        <div class="layui-input-block">
+            <input type="password" class="layui-input" name="safe_pass" placeholder="请输入您的安全密码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function(){
+        var form=layui.form;
+        //自定义验证规则
+        form.verify({
+            money: function(value) {
+                console.log(value);
+                if( value ===  "" ){
+                    toastr.error( "输入申请提现金额" );
+                    return "输入申请提现金额";
+                }
+                if( value > parseInt("{$user.money}") ){
+                    toastr.error( "提现金额不能超过{$user.money}" );
+                    return "1";
+                }
+
+                if( value < parseInt("{:deploy('min_withdraw')}") ){
+                    toastr.error( "单次提现金额不能少于{:deploy('min_withdraw')}");
+                    return "1";
+                }
+
+                if( value > parseInt("{:deploy('max_withdraw')}") ){
+                    toastr.error( "单次提现金额不能超过{:deploy('max_withdraw')}");
+                    return "1";
+                }
+            },
+            type: function (value) {
+                if( value === "0" ){
+                    toastr.error( "请选择提现到账方式" );
+                    return "1";
+                }
+            }
+        });
+        form.on('submit(formDemo)', function(data){
+            $.post('',data.field,function (res) {
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1500)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

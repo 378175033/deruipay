@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>支付管理系统</title>
+    <link rel="stylesheet" href="__CSS__/base.css">
+    <link rel="stylesheet" href="__CSS__/login.css">
+    <link rel="stylesheet" href="__JS__/toastr/build/toastr.css">
+    <link rel="stylesheet" href="__LAYUI__/css/layui.css">
+</head>
+<body>
+
+    <div class="main-page login-page">
+        <h2 class="title1">Business Login</h2>
+        <div class="widget-shadow">
+            <div class="login-body">
+                <form style="position: relative" class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-row">
+                            <div class="layui-col-xs8">
+                                <input type="text" class="user" name="username" placeholder="用户名/邮箱/手机" required="">
+                            </div>
+                            <div class="layui-col-xs4">
+                                <button type="button" class="layui-btn layui-btn-primary btnCode" lay-filter="btnCode" style="height: 46px;margin-left: 10px;width: 100%">发送验证码</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="text" name="code" class="captcha" placeholder="请输入手机验证码" required="">
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="password" name="password" class="lock" placeholder="密码" required="">
+                    </div>
+                    <!--<input type="text" name="captcha" class="captcha" placeholder="验证码" required="">-->
+                    <!--<div class="cap_image"><img src="{:url('Login/entry')}" id="captcha" alt="captcha" onclick="this.src='{:url('Login/entry')}'"/></div>-->
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
+                    <input type="submit" name="Sign In" value="Sign In" lay-submit="" lay-filter="login">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/login.js"></script>
+</html>

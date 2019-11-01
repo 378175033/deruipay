@@ -20,7 +20,7 @@ $('#clear').click( function () {
     $.post( "manage/Api/clear",{},function () {
         toastr.success( "成功清除缓存！");
     })
-})
+});
 
 function openIframe( obj )
 {
@@ -44,8 +44,9 @@ function openIframe( obj )
  * 编辑页面
  */
 $(document).on('click', '.btn-update',function () {
+    var url = $(this).data('url') ? $(this).data('url') : 'edit';
     var obj = {
-        content : 'edit?id='+$(this).data('id'),
+        content : url + '?id='+$(this).data('id'),
         title   : '更新数据信息'
     };
     openIframe( obj );
@@ -75,8 +76,9 @@ $(document).on('click','.status-toggle',function () {
     var value = parseInt ( $(this).data('value') );
     var that = $(this);
     var notice = $(this).data('notice') ? $(this).data('notice') : "隐藏|显示";
+    var url = $(this).data('url') ? $(this).data('url') : 'changeStatus';
     notice = notice.split("|");
-    $.post('changeStatus',{id:id,value:value},function ( res ) {
+    $.post(url,{id:id,value:value},function ( res ) {
         if( res.code ===  1 ){
             toastr.success( res.msg ,function () {
                 if( value === 1 ){
@@ -99,7 +101,8 @@ $(document).on('click','.status-toggle',function () {
  */
 $(document).on('blur','.sort-order',function () {
     var id = $(this).data( 'id' );
-    $.post( "sortOrder",{value:$(this).val(),id:id},function ( res ) {
+    var url = $(this).data('url') ? $(this).data('url') : 'sortOrder';
+    $.post( url,{value:$(this).val(),id:id},function ( res ) {
         if( res.code ===  1 ){
             toastr.success( res.msg );
         } else {
@@ -113,8 +116,8 @@ $(document).on('blur','.sort-order',function () {
 $(document).on('click','.btn-remove',function () {
     var id = parseInt( $(this).data('id') );
     var ptr = $(this).parents('tr');
-    var url = $(this).data('url');
-    $.post( url ? url : 'remove',{id:id},function (res) {
+    var url = $(this).data('url') ? $(this).data('url') : 'remove';
+    $.post( url,{id:id},function (res) {
         if( res.code === 1 ){
             toastr.success( res.msg, function () {
                 ptr.remove();
@@ -130,8 +133,9 @@ $(document).on('click','.btn-remove',function () {
 $(document).on('click','.btn-delete',function () {
     var id = parseInt( $(this).data('id') );
     var ptr = $(this).parents('tr');
+    var url = $(this).data('url') ? $(this).data('url') : 'delete';
     layer.confirm("您确定要删除吗？无法找回哟！",function () {
-        $.post('delete',{id:id},function (res) {
+        $.post(url,{id:id},function (res) {
             if( res.code === 1 ){
                 layer.msg( res.msg, {icon:1});
                 ptr.remove();

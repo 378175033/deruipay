@@ -47,11 +47,13 @@ function into_recycle( $rid, $table, $desc = "")
  * @desc生成随机盐
  * @ApiParams
  * @ApiReturnParams
+ * @param int $length
+ * @return bool|string
  */
-function getSalt()
+function getSalt($length = 4)
 {
     $str = "2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY";
-    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-5),4);
+    $name=substr(str_shuffle($str),mt_rand(0,strlen($str)-5),$length);
     return $name;
 }
 

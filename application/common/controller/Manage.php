@@ -8,6 +8,8 @@
 
 namespace app\common\controller;
 use think\Controller;
+use think\Model;
+
 /**
  * Class Manage
  * @desc 后端公共文件
@@ -16,7 +18,7 @@ use think\Controller;
 class Manage extends Controller
 {
     /**
-     * @var resource 模型变量
+     * @var Model 模型变量
      */
     protected $model;
     protected $_limit = '';
@@ -349,6 +351,21 @@ class Manage extends Controller
             $value = $this->request->param('value', 0, 'intval');
             $this->model->where('id', $id)->update(['sort' => $value]);
             operaLog($this->admin_id.'排序设置');
+            $this->success('设置成功！');
+        }
+        $this->error('请求方式错误！');
+    }
+
+    public function setToken()
+    {
+        $id = $this->request->param('id', 0, 'intval');
+        if (empty($id)) {
+            $this->error('参数错误');
+        }
+        if (request()->isPost() && \request()->isAjax()) {
+            $value = $this->request->param('value', '');
+            $this->model->where('id', $id)->update(['token' => $value]);
+            operaLog($this->admin_id.'邀请码设置');
             $this->success('设置成功！');
         }
         $this->error('请求方式错误！');

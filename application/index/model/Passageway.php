@@ -24,6 +24,7 @@ class Passageway extends Model
         foreach ($list as $value){
             $user_passageway = $UserPassageway->where('passageway_id',$value['id'])
                 ->where('business_id',$business_id)
+                ->where(['status' => 1, 'delete_time' => 0])
                 ->find();
             $is_open = 1;
             if(!$user_passageway || !$user_passageway['status']){
@@ -31,6 +32,10 @@ class Passageway extends Model
             }
             $value['is_open'] = $is_open;
         }
+        foreach ($list as $v){
+            dump($v->toArray());
+        }
+        halt(1);
         return $list;
     }
 }

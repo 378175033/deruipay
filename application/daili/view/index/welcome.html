@@ -1,27 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:85:"D:\phpStudy\PHPTutorial\WWW\F4\public/../application/business\view\index\welcome.html";i:1563242933;s:73:"D:\phpStudy\PHPTutorial\WWW\F4\application\business\view\common\head.html";i:1563242933;}*/ ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>后台管理</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all"/>
-    <link rel="stylesheet" href="/static/manage/js/toastr/build/toastr.css">
-    <style>
-        .align-right{
-            text-align: right;
-        }
-        .mt20{
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+{include file='common:head'}
 <style>
     .bgf {
         background: #fff;
@@ -126,7 +103,7 @@
                         </div>
                     </div>
 
-                    <div class="number"><?php echo $user['money']; ?></div>
+                    <div class="number">{$user.money}</div>
                 </div>
 
             </div>
@@ -138,7 +115,7 @@
                             <div class="layui-progress-bar layui-bg-red" lay-percent="30%"></div>
                         </div>
                     </div>
-                    <div class="number"><?php echo $frozen_money; ?></div>
+                    <div class="number">{$frozen_money}</div>
                 </div>
             </div>
             <div class="layui-col-md3">
@@ -160,7 +137,7 @@
                             <div class="layui-progress-bar layui-bg-green" lay-percent="30%"></div>
                         </div>
                     </div>
-                    <div class="number">¥ <?php echo $user['money']; ?>
+                    <div class="number">¥ {$user.money}
                         <a  href="javascript:openIframe({title:'余额提现申请',content:'/business/user/withdraw',area:['600px','400px']});" class="layui-btn layui-btn-danger">提现</a>
                     </div>
                 </div>
@@ -175,17 +152,17 @@
                 <div class="layui-card-header"><h3 class="h4">平台公告</h3></div>
                 <div class="layui-card-body">
                    <ul class="bulletin">
-                       <?php if(is_array($notices) || $notices instanceof \think\Collection || $notices instanceof \think\Paginator): $i = 0; $__LIST__ = $notices;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$notice): $mod = ($i % 2 );++$i;?>
+                       {volist name="notices" id="notice"}
                            <li>
                                <a href="javascript:" class="layui-btns">
                                    <i class="layui-icon layui-icon-form"></i>
-                                   <span><?php echo $notice['name']; ?></span>
+                                   <span>{$notice.name}</span>
                                    <div class="hide" style="display: none">
-                                       <?php echo $notice['content']; ?>
+                                       {$notice.content}
                                    </div>
                                </a>
                            </li>
-                       <?php endforeach; endif; else: echo "" ;endif; ?>
+                       {/volist}
                    </ul>
                 </div>
             </div>
@@ -196,13 +173,13 @@
                 <div class="layui-card-body">
                     <ul class="bulletin">
                         <li>
-                            <a href="">
+                            <a href="/众和支付API技术文档.docx">
                                 <i class="layui-icon layui-icon-about"></i>
                                 <span>点击：在线阅读开发文档</span>
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a href="/demo.zip">
                                 <i class="layui-icon layui-icon-about"></i>
                                 <span>点击：下载开发文档</span>
                             </a>
@@ -219,19 +196,19 @@
                         <li>
                             <a>
                                 <i class="layui-icon layui-icon-form"></i>
-                                <span>上次登录ip:<?php echo $logs['ip']; ?></span>
+                                <span>上次登录ip:{$logs.ip}</span>
                             </a>
                         </li>
                         <li>
                             <a>
                                 <i class="layui-icon layui-icon-form"></i>
-                                <span>登录地址：<?php echo $logs['address']; ?></span>
+                                <span>登录地址：{$logs.address}</span>
                             </a>
                         </li>
                         <li>
                             <a>
                                 <i class="layui-icon layui-icon-form"></i>
-                                <span>登录时间：<?php echo $logs['create_time']; ?></span>
+                                <span>登录时间：{$logs.create_time}</span>
                             </a>
                         </li>
                     </ul>
@@ -240,10 +217,10 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/static/manage/js/jquery.js"></script>
-<script type="text/javascript" src="/static/layui/layui.js"></script>
-<script type="text/javascript" src="/static/manage/js/toastr/toastr.js"></script>
-<script type="text/javascript" src="/static/manage/js/base.js"></script>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
 <script>
     layui.use('element', function(){
         var element = layui.element;

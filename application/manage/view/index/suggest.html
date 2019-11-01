@@ -8,10 +8,10 @@
 <script type="text/html" id="status">
     <div>
         {{# if(d.status == 0){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','50%'],title:'提款审核'});"
+        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=0',area:['30%','50%'],title:'审核'});"
            class="layui-btn layui-btn-xs layui-btn-danger">待处理</a>
         {{# } else if( d.status == 1 ){ }}
-        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','50%'],title:'提款审核'});"
+        <a href="javascript:openIframe({content:'check_status?id={{d.id}}&val=1',area:['30%','50%'],title:'审核'});"
            class="layui-btn layui-btn-xs">已处理</a>
         {{# } }}
     </div>

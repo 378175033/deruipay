@@ -138,6 +138,18 @@ layui.define(mods,
                                 component: "/index/pay/index",
                                 name: "我的收银台",
                                 iframe: !0
+                            },
+                            {
+                                path: "/daili/index",
+                                component: "business/daili/index",
+                                name: "下属商户管理",
+                                iframe: !0
+                            },
+                            {
+                                path: "/daili/order",
+                                component: "business/daili/order",
+                                name: "下属商户订单查询",
+                                iframe: !0
                             }
                         ]
                     };

@@ -43,16 +43,16 @@ class Index extends Manage
         $withdraw[0] = model("withdraw")->field("status,sum(money) amount,count(*) num")->where(['status' => 0])->group("status")->find();
         $withdraw[1] = model("withdraw")->field("status,sum(money) amount,count(*) num")->where(['status' => 1])->group("status")->find();
         //通道订单
-        $d = "`create_time` BETWEEN " . strtotime(date("Y-m-d")) . " AND " . strtotime(date("Y-m-d", strtotime("+1 day")));
-        $passageway = model('passageway')->alias('p')->join([
-            ['user_passageway up', 'up.passageway_id = p.id', 'left'],
-        ])->where([
-            'p.status' => 1
-        ])->field([
-            "(SELECT COUNT(*) AS tp_count FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1)" => 'num',
-            "IFNULL((SELECT SUM(amount) AS tp_sum FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1),0.00)" => 'amount',
-            "p.name"
-        ])->group("p.id")->select();
+//        $d = "`create_time` BETWEEN " . strtotime(date("Y-m-d")) . " AND " . strtotime(date("Y-m-d", strtotime("+1 day")));
+//        $passageway = model('passageway')->alias('p')->join([
+//            ['user_passageway up', 'up.passageway_id = p.id', 'left'],
+//        ])->where([
+//            'p.status' => 1
+//        ])->field([
+//            "(SELECT COUNT(*) AS tp_count FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1)" => 'num',
+//            "IFNULL((SELECT SUM(amount) AS tp_sum FROM `ss_order` WHERE `status` = 1 AND `user_passageway_id` = up.id AND " . $d . " LIMIT 1),0.00)" => 'amount',
+//            "p.name"
+//        ])->group("p.id")->select();
         $passageway = Db::name("passageway")->alias("p")->join([
             ['user_passageway up','up.passageway_id = p.id','left']
         ])->field( "p.name,group_concat(up.id) upid" )->where( "p.status", 1 )->group("p.id")->select();

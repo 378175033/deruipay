@@ -35,19 +35,19 @@
             <div class="layui-layout-right">
                 <ul class="kit-nav" lay-filter="header_right">
                     <li class="kit-item">
-                        <a href="javascript:;" id="clear">
+                        <a href="javascript:" id="clear">
                             <i class="layui-icon">&#xe669;</i>
                             <span>清除缓存</span>
                         </a>
                     </li>
                     <li class="kit-item" kit-target="help">
-                        <a href="javascript:;">
+                        <a href="javascript:">
                             <i class="layui-icon">&#xe607;</i>
                             <span>帮助</span>
                         </a>
                     </li>
                     <li class="kit-item" id="ccleft">
-                        <a href="javascript:;">
+                        <a href="javascript:">
                             <i class="layui-icon">&#xe60e;</i>
                         </a>
                     </li>
@@ -59,7 +59,7 @@
                     </li>
                     -->
                     <li class="kit-item">
-                        <a href="javascript:;">
+                        <a href="javascript:">
                   <span>
                       {empty name="user.avatar"}
                         <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img avatar">
@@ -77,7 +77,7 @@
                                 </a>
                             </li>
                             <li class="kit-item" kit-target="setting">
-                                <a href="javascript:;">
+                                <a href="javascript:">
                                     <i class="layui-icon">&#xe614;</i>
                                     <span>设置</span>
                                 </a>
@@ -94,6 +94,29 @@
                 </ul>
             </div>
         </div>
+        <!--<style>-->
+            <!--.kit-theme-default .layui-layout-admin .layui-side .layui-side-scroll .kit-menu a{-->
+                <!--height: 22px;-->
+                <!--padding: 15px;-->
+                <!--font-size: 16px;-->
+            <!--}-->
+            <!--iframe{-->
+                <!--padding-left: 60px;-->
+                <!--box-sizing: border-box;-->
+            <!--}-->
+           <!--.layui-layout-admin .layui-side {-->
+                <!--width: 260px!important;-->
+            <!--}-->
+            <!--.layui-side-scroll{-->
+                <!--width: 260px!important;-->
+            <!--}-->
+            <!--.layui-side-scroll li{-->
+                <!--width: 260px!important;-->
+            <!--}-->
+            <!--.layui-icon{-->
+                <!--margin-right: 30px;-->
+            <!--}-->
+        <!--</style>-->
         <!-- silds -->
         <div class="layui-side" kit-side="true">
             <div class="layui-side-scroll">
@@ -107,7 +130,7 @@
                                     <span>{$me.name}</span>
                                 </a>
                                 {else}
-                                <a href="javascript:;">
+                                <a href="javascript:">
                                     <i class="layui-icon {$me.icon}"></i>
                                     <span>{$me.name}</span>
                                 </a>

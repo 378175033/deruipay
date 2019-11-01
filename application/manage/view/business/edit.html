@@ -1,5 +1,5 @@
 {include file='common:head'}
-<div class="layui-card layui-col-md10 layui-col-md-offset1">
+<div class="layui-card layui-col-md10 layui-col-md-offset1" xmlns:1>
     <div class="layui-card-body ">
         <form class="layui-form">
             <!--<div class="layui-form-item">-->
@@ -33,6 +33,17 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">设置上级代理</label>
+                <div class="layui-input-block">
+                <select name="top_id">
+                    <option value="">空</option>
+                    {volist name="top_list" id="top"}
+                    <option value="{$key}" {eq name="key" value="$data.top_id"}selected{/eq}>{$top}</option>
+                    {/volist}
+                </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <div class="layui-input-block">
                     <input type="hidden" name="id" value="{$data.id}">
                     <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
@@ -48,7 +59,7 @@
 <script type="text/javascript" src="__JS__/base.js"></script>
 <script>
     layui.use(['form'], function() {
-        var form = layui.form
+        var form = layui.form;
         //自定义验证规则
         // form.verify({
         //     name: function(value) {
@@ -58,7 +69,7 @@
         //     }
         // });
         form.on('submit(formDemo)', function(data){
-            console.log(data.field)
+            console.log(data.field);
             $.post('{:url("edit")}',data.field,function (res) {
                 console.log( res );
                 if( res.code === 1 ){
@@ -72,7 +83,7 @@
                 } else {
                     toastr.error( res.msg )
                 }
-            })
+            });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });

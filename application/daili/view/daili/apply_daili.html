@@ -1,0 +1,45 @@
+{include file='common:head'}
+<div class="layui-card">
+    <div class="layui-card-body layui-bg-red">
+        你现在还不是代理，在下方申请成为代理！
+    </div>
+</div>
+<form class="layui-form mt20 layui-col-xs11">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">申请描述</label>
+        <div class="layui-input-block">
+            <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function(){
+        var form=layui.form;
+        form.on('submit(formDemo)', function(data){
+            $.post('daili_apply',data.field,function (res) {
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1500)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

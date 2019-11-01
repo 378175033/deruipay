@@ -1,0 +1,60 @@
+{include file='common:head'}
+<div class="layui-card layui-col-md10 layui-col-md-offset1">
+    <div class="layui-card-body ">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">设置费率</label>
+                <div class="layui-input-block">
+                    <input type="number" class="layui-input" name="rate" value="{$data.rate|default=''}" placeholder="设置费率百分比，默认为10%">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">设置最低手续费</label>
+                <div class="layui-input-block">
+                    <input type="number" class="layui-input" name="cost" value="{$data.cost|default=''}" placeholder="设置最低手续费">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否启用</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="status" value="0" {empty name="data.status"} checked{/empty} title="禁用">
+                    <input type="radio" name="status" value="1" {notempty name="data.status"} checked{/notempty} title="启用">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="{$data.id|default=''}">
+                    <input type="hidden" name="daili_id" value="{$param.id}">
+                    <input type="hidden" name="passageway_id" value="{$param.uid}">
+                    <button class="layui-btn submitBtn_add" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__LAYUI__/layui.js"></script>
+<script type="text/javascript" src="__JS__/toastr/toastr.js"></script>
+<script type="text/javascript" src="__JS__/base.js"></script>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form;
+        form.on('submit(formDemo)', function(data){
+            $.post('',data.field,function (res) {
+                if( res.code === 1 ){
+                    toastr.success( res.msg ,function () {
+                        setTimeout( function () {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },1000)
+                    });
+                } else {
+                    toastr.error( res.msg )
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>

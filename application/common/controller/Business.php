@@ -8,11 +8,12 @@
 
 namespace app\common\controller;
 use think\Controller;
+use think\Model;
 
 class Business extends Controller
 {
     /**
-     * @var resource 模型变量
+     * @var Model 模型变量
      */
     protected $model;
     protected $_limit = '';
@@ -44,7 +45,7 @@ class Business extends Controller
     /**
      * @var array 筛选查询
      */
-    protected $where;
+    protected $where = [];
 
     public function _initialize()
     {
@@ -90,7 +91,7 @@ class Business extends Controller
                         if (!empty($val)) $where[$vl] = ['like', '%' . $val . '%'];
                         break;
                     case 'e-':
-                        if (!empty($val))  $where[$vl] = $val;
+                        if (!empty($val) || $val === '0')  $where[$vl] = $val;
                         break;
                     case 'i-':
                         if (!empty($val)) $where[$vl] = ['in',$val];

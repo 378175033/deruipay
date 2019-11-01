@@ -20,7 +20,7 @@
         var data = $(this).data();
         openIframe({title:'设置'+data.name+'通道',content:"setPassageway?id={$id}&uid="+data.uid,area:['30%','70%']});
         return false;
-    })
+    });
     layui.use(['form', 'laydate','table'], function() {
         var table = layui.table;
         //表格数据渲染
@@ -40,8 +40,11 @@
                     {field: 'name',title: '通道名'},
                     {field: 'pay_type',title: '通道编码'},
                     {field: 'rate',title: '通道基础费率'},
+                    {field: 'mini',title: '通道最低手续费'},
                     {field: 'uRate',title: '用户通道费率'},
                     {field: 'cost',title: '用户通道最低手续费'},
+                    {field: 'dRate',title: '代理通道费率'},
+                    {field: 'dCost',title: '代理通道最低手续费'},
                     {field: 'status',title: '状态',templet:'#status'},
                     {field: 'operation',title: '操作',toolbar: '#barDemo'}
                 ]

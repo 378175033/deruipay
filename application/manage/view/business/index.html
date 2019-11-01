@@ -24,7 +24,6 @@
                         <!--<input type="text" name="l-login_name" autocomplete="off" placeholder="请输入登录名" class="layui-input">-->
                     <!--</div>-->
                 <!--</div>-->
-
                 <div class="layui-inline">
                     <label class="layui-form-label">手机号</label>
                     <div class="layui-input-inline">
@@ -77,11 +76,14 @@
         {{# } }}
     </div>
 </script>
+<script type="text/html" id="token">
+    <input type="text" class="layui-input token-order" style="height: 28px" value="{{ d.token }}" data-id="{{d.id}}">
+</script>
 <script type="text/html" id="sort">
     <input type="number" class="layui-input sort-order" style="height: 28px" value="{{ d.sort }}" data-id="{{d.id}}">
 </script>
 <script type="text/html" id="money">
-    <div style="width: 180px;line-height: 21px;float: left">
+    <div style="width: 165px;line-height: 21px;float: left">
         商户余额：<span class="layui-bg-green">{{ d.money }}</span>
         <br/>
         冻结金额：<span class="layui-bg-red">{{ d.frozen_money }}</span>
@@ -89,7 +91,7 @@
     <a href="javascript:openIframe({content:'account.html?id={{d.id}}&type=1',title:'设置商户-{{d.name}}余额',area:['30%','50%']});" class="layui-btn layui-btn-xs layui-btn-warm" title="设置商户余额"><i class="layui-icon">&#xe659;</i></a>
     <a href="javascript:openIframe({content:'account.html?id={{d.id}}&type=2',title:'设置商户-{{d.name}}冻结金额',area:['30%','50%']});" class="layui-btn layui-btn-xs" title="设置商户冻结金额"><i class="layui-icon">&#xe659;</i></a>
     <a href="javascript:openIframe({content:'account_log.html?id={{d.id}}',title:'查看商户-{{d.name}}余额明细',area:['80%','80%']});" class="layui-btn layui-btn-xs layui-btn-primary" title="查看商户余额变动明细"><i class="layui-icon">&#xe656;</i></a>
-    <a href="javascript:openIframe({content:'passageway.html?id={{d.id}}',title:'查看商户-{{d.name}}通道',area:['80%','80%']});" class="layui-btn layui-btn-xs layui-btn-danger" title="查看商户通道"><i class="layui-icon">&#xe663;</i></a>
+    <a href="javascript:openIframe({content:'passageway.html?id={{d.id}}',title:'查看商户-{{d.name}}通道',area:['95%','95%']});" class="layui-btn layui-btn-xs layui-btn-danger" title="查看商户通道"><i class="layui-icon">&#xe663;</i></a>
     <a href="javascript:openIframe({content:'qrcode.html?id={{d.id}}',title:'查看商户-{{d.name}}收款二维码',area:['80%','80%']});" class="layui-btn layui-btn-xs" title="查看商户收款二维码"><i class="layui-icon">&#xe679;</i></a>
 </script>
 <script type="text/javascript" src="__JS__/jquery.js"></script>
@@ -121,14 +123,24 @@
             }
         })
     });
+    $(document).on('blur','.token-order',function () {
+        var id = $(this).data( 'id' );
+        $.post( "setToken",{value:$(this).val(),id:id},function ( res ) {
+            if( res.code ===  1 ){
+                toastr.success( res.msg );
+            } else {
+                toastr.error( res.msg );
+            }
+        })
+    });
     layui.use(['form', 'laydate','table'], function() {
         var form = layui.form,
             laydate = layui.laydate,
             table = layui.table;
+
         //监听查询提交
         form.on('submit(query)', function(data) {
             table.reload('table', {
-                url: '{:url("index")}',
                 where: data.field
             });
             return false;
@@ -142,7 +154,7 @@
         table.render({
             elem: '#table',
             method: 'post',
-            url: '{:url("index")}',
+            url: '{:url()}',
             limit: 9999,
             page : true,
             limits: [5,10,15,20,50,100], //每页条数的选择项

@@ -15,7 +15,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">商户</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="l-username" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
+                    <input type="text" name="l-name" autocomplete="off" placeholder="请输入用户昵称" class="layui-input">
                 </div>
             </div>
             <button class="layui-btn" lay-filter="query" lay-submit="">
@@ -61,7 +61,17 @@
         });
 
         form.on('submit(clear)', function() {
-            window.refresh();
+            $('input[name="stime"]').val('');
+            $('input[name="ltime"]').val('');
+            $('input[name="l-name"]').val('');
+            table.reload('menu-table', {
+                url: '{:url("account_log",["id"=>$id])}',
+                where: {
+                    'stime' : '',
+                    'ltime' : '',
+                    'l-name' : ''
+                }
+            });
             return false;
         });
 
@@ -71,7 +81,6 @@
             method: 'post',
             url: '{:url("account_log",["id"=>$id])}',
             limit: 10,
-            id:'LogList',
             limits: [5,10,15,20,50,100], //每页条数的选择项
             loading: true,
             where:{ order:'id desc'},

@@ -9,6 +9,7 @@
 namespace app\manage\controller;
 use app\common\controller\Manage;
 use app\common\controller\QRcode as QR;
+use think\Db;
 
 class Business extends Manage
 {
@@ -47,7 +48,7 @@ class Business extends Manage
                 }
             }
             $data['shop_sn'] = $this->model->max("shop_sn")+1;
-            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile'] )->data($data)->isUpdate( false )->save();
+            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile','is_daili'] )->data($data)->isUpdate( false )->save();
             if ($res) {
                 $this->success('新增成功');
             }
@@ -84,7 +85,11 @@ class Business extends Manage
                     $this->error($validate->getError());
                 }
             }
-            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile'] )->data($data)->isUpdate( true )->save();
+            $old_top_id = $this->model->where('id', $data['id'])->value('top_id');
+            $res = $this->model->allowField( ['salt','password','create_time','update_time','name','login_name','shop_sn','mobile','is_daili','token','top_id'] )->data($data)->isUpdate( true )->save();
+            if ($res && $old_top_id != $data['top_id']) {
+                $this->changeParent($data);
+            }
             if ($res) {
                 operaLog($this->admin_id.'更新商户:'.$data['name'].'信息');
                 $this->success('更新成功');
@@ -92,9 +97,23 @@ class Business extends Manage
             $this->error('更新失败！');
         }
         $data = $this->model->where('id', $id)->find();
+        $top_list = model('daili')->where('status', 1)->column('id, name');
+        $this->assign('top_list', $top_list);
         $this->assign('data', $data);
         return $this->fetch();
     }
+
+
+    /* @desc 修改被修改商户的上级的top_list
+     * @param $data
+     */
+    public function changeParent($data)
+    {
+        $top_parent = model('daili')->where('id', $data['top_id'])->value('parent');
+        $current_parent = trim($top_parent ? $top_parent . ',' . $data['top_id'] : $data['top_id'], ',');
+        $this->model->where('id', $data['id'])->update(['top_list' => $current_parent]);
+    }
+
     /**
      * 2019/6/18 0018 15:52
      * @desc审核商户信息
@@ -230,7 +249,7 @@ class Business extends Manage
                 $vl = substr($key, 2);
                 switch ($ps) {
                     case 'l-':
-                        if (!empty($val)) $where["a.".$vl] = ['like', '%' . $val . '%'];
+                        if (!empty($val)) $where["b.".$vl] = ['like', '%' . $val . '%'];
                         break;
                     case 'e-':
                         if (!empty($val))  $where["a.".$vl] = $val;
@@ -359,13 +378,19 @@ class Business extends Manage
                 'a.status'    => 1,
                 'a.delete_time'   => 0
             ];
-            $ns = "(select * from ".config("database.prefix")."user_passageway where business_id =".$id.")";
+            $field = 'a.id,a.name,a.pay_type,a.rate,a.mini,b.rate uRate,b.cost,b.status,b.id uid,b.business_id';
+            $ns = model('UserPassageway')->where('business_id', $id)->buildSql();
+            $top_id = $this->model->where('id', $id)->value('top_id');
+            $join = [[ $ns.' b','b.passageway_id = a.id', 'left']];
+            if($top_id){
+                $ds = model('DailiPassageway')->where(['daili_id'=> $top_id, 'status' => 1])->buildSql();
+                $join[] = [$ds.' c',' c.passageway_id = a.id','right'];
+                $field .= ',c.rate dRate,c.cost dCost';
+            }
             $list = model('passageway')
                 ->alias('a')
-                ->field('a.id,a.name,a.pay_type,a.rate,b.rate uRate,b.cost,b.status,b.id uid,b.business_id')
-                ->join([
-                    [ $ns.' b','b.passageway_id = a.id','left'],
-                ])
+                ->field($field)
+                ->join($join)
                 ->where( $where )
                 ->limit( ($page-1)*$per, $per)
                 ->order( 'a.id asc' )
@@ -373,6 +398,7 @@ class Business extends Manage
             $sql = $this->model->getLastSql();
             $count = model('passageway')
                 ->alias('a')
+                ->join($join)
                 ->where($where)
                 ->count();
             $data = [
